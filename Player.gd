@@ -13,7 +13,7 @@ extends CharacterBody2D
 # position the previous frame, used for correcting velocity
 var old_position:Vector2
 
-func _ready()->void:
+func _enter_tree()->void:
 	old_position=position
 
 func _physics_process(delta: float) -> void:
@@ -29,7 +29,6 @@ func _physics_process(delta: float) -> void:
 		velocity = velocity.normalized() * max_speed
 
 	move_and_slide()
-	
 	
 	var actual_motion:Vector2 = (position-old_position)
 	var am_lsqr:float = actual_motion.length_squared()
