@@ -13,11 +13,10 @@ extends CharacterBody2D
 # position the previous frame, used for correcting velocity
 var old_position:Vector2
 
-func _ready():
+func _ready()->void:
 	old_position=position
 
 func _physics_process(delta: float) -> void:
-	var pre_move_position:Vector2 = position
 	
 	# since 'left' and 'right' are buttons, this will always be -1, 0, or 1
 	var rotation_input:float = Input.get_axis('left','right')

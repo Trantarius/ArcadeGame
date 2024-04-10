@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://gvye6ccvjd55"]
+[gd_scene load_steps=6 format=3 uid="uid://gvye6ccvjd55"]
 
 [ext_resource type="Texture2D" uid="uid://4xhd4jghtml5" path="res://grid.png" id="1_ennhv"]
+[ext_resource type="Script" path="res://BackgroundTexture.gd" id="2_0i1pn"]
 [ext_resource type="Script" path="res://Player.gd" id="2_o4bqb"]
 [ext_resource type="Texture2D" uid="uid://bude4na0hnosm" path="res://icon.svg" id="3_nlt01"]
 
@@ -13,7 +14,7 @@ size = Vector2(128, 128)
 layer = -1
 follow_viewport_enabled = true
 
-[node name="Background" type="TextureRect" parent="BackgroundLayer"]
+[node name="BackgroundTexture" type="TextureRect" parent="BackgroundLayer"]
 texture_filter = 1
 offset_left = -578.0
 offset_top = -578.0
@@ -21,6 +22,7 @@ offset_right = 574.0
 offset_bottom = 574.0
 texture = ExtResource("1_ennhv")
 stretch_mode = 1
+script = ExtResource("2_0i1pn")
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 
