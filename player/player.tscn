@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3 uid="uid://ccgupredk0a3f"]
+
+[ext_resource type="Script" path="res://player/Player.gd" id="1_n287t"]
+
+[node name="Player" type="CharacterBody2D" groups=["Players"]]
+motion_mode = 1
+script = ExtResource("1_n287t")
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+antialiased = true
+polygon = PackedVector2Array(-16, 16, 0, -24, 16, 16, 0, 8)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(-16, 16, 0, -24, 16, 16, 0, 8)
+
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="."]
+remote_path = NodePath("../../Camera2D")
+update_rotation = false
+update_scale = false

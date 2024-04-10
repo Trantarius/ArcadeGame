@@ -1,16 +1,13 @@
-[gd_scene load_steps=8 format=3 uid="uid://gvye6ccvjd55"]
+[gd_scene load_steps=7 format=3 uid="uid://gvye6ccvjd55"]
 
 [ext_resource type="Texture2D" uid="uid://4xhd4jghtml5" path="res://grid.png" id="1_ennhv"]
 [ext_resource type="Script" path="res://BackgroundTexture.gd" id="2_0i1pn"]
-[ext_resource type="Script" path="res://Player.gd" id="2_o4bqb"]
+[ext_resource type="PackedScene" uid="uid://ccgupredk0a3f" path="res://player/player.tscn" id="3_d6lla"]
 [ext_resource type="Texture2D" uid="uid://bude4na0hnosm" path="res://icon.svg" id="3_nlt01"]
-[ext_resource type="Script" path="res://Spiky.gd" id="5_bvmrc"]
+[ext_resource type="PackedScene" uid="uid://cb3satgchcg1i" path="res://spiky/spiky.tscn" id="5_geqg6"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3hhoi"]
 size = Vector2(128, 128)
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_qpxtk"]
-radius = 12.0
 
 [node name="Main" type="Node"]
 
@@ -33,21 +30,7 @@ script = ExtResource("2_0i1pn")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
-[node name="Player" type="CharacterBody2D" parent="." groups=["Players"]]
-motion_mode = 1
-script = ExtResource("2_o4bqb")
-
-[node name="Polygon2D" type="Polygon2D" parent="Player"]
-antialiased = true
-polygon = PackedVector2Array(-16, 16, 0, -24, 16, 16, 0, 8)
-
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Player"]
-polygon = PackedVector2Array(-16, 16, 0, -24, 16, 16, 0, 8)
-
-[node name="RemoteTransform2D" type="RemoteTransform2D" parent="Player"]
-remote_path = NodePath("../../Camera2D")
-update_rotation = false
-update_scale = false
+[node name="Player" parent="." instance=ExtResource("3_d6lla")]
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 position = Vector2(77, -275)
@@ -58,13 +41,4 @@ texture = ExtResource("3_nlt01")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
 shape = SubResource("RectangleShape2D_3hhoi")
 
-[node name="Spiky" type="CharacterBody2D" parent="." groups=["Enemies"]]
-position = Vector2(313, 37)
-script = ExtResource("5_bvmrc")
-
-[node name="Polygon2D" type="Polygon2D" parent="Spiky"]
-color = Color(0.686275, 0.231373, 0.207843, 1)
-polygon = PackedVector2Array(16, 0, 7.72741, 2.07055, 10.3923, 6, 5.65685, 5.65685, 8, 13.8564, 2.07055, 7.72741, -5.24537e-07, 12, -2.07055, 7.72741, -8, 13.8564, -5.65685, 5.65685, -10.3923, 6, -7.72741, 2.07055, -16, -1.39876e-06, -7.72741, -2.07055, -10.3923, -6, -5.65685, -5.65685, -8, -13.8564, -2.07055, -7.72741, 1.43099e-07, -12, 2.07055, -7.72741, 8, -13.8564, 5.65685, -5.65686, 10.3923, -6, 7.72741, -2.07055)
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Spiky"]
-shape = SubResource("CircleShape2D_qpxtk")
+[node name="Spiky" parent="." instance=ExtResource("5_geqg6")]
