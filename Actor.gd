@@ -18,10 +18,10 @@ signal damage_taken(damage:Damage)
 signal damage_dealt(damage:Damage)
 
 # position the previous frame, used for correcting velocity
-var _last_frame_position:Vector2
+var last_frame_position:Vector2
 
 func _enter_tree() -> void:
-	_last_frame_position=position
+	last_frame_position=position
 
 func take_damage(damage:Damage)->void:
 	damage.target=self
@@ -32,7 +32,8 @@ func take_damage(damage:Damage)->void:
 	if(damage.source is Actor):
 		damage.source.damage_dealt.emit(damage)
 	elif(damage.source is Projectile):
-		damage.source.source.damage_dealt.emit(damage)
+		if(is_instance_valid(damage.source.source)):
+			damage.source.source.damage_dealt.emit(damage)
 	if(health<=0):
 		death.emit()
 		queue_free()
@@ -46,9 +47,9 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 	
-	var actual_motion:Vector2 = (position-_last_frame_position)
+	var actual_motion:Vector2 = (position-last_frame_position)
 	var am_lsqr:float = actual_motion.length_squared()
 	if(am_lsqr>0.0001):
 		# project the velocity onto the actual movement direction
 		velocity = actual_motion * max(0,velocity.dot(actual_motion)) / am_lsqr
-	_last_frame_position=position
+	last_frame_position=position

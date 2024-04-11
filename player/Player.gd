@@ -6,6 +6,11 @@ extends Actor
 ## Time until the next shot can be taken
 var shot_timer:float
 
+func _ready()->void:
+	# ensure camera stays around after player dies
+	death.connect(func():
+		$Camera2D.reparent(get_parent()))
+
 func _physics_process(delta: float) -> void:
 	
 	# since 'left' and 'right' are buttons, this will always be -1, 0, or 1

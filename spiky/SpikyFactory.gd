@@ -1,5 +1,5 @@
 class_name SpikyFactory
-extends Actor
+extends Enemy
 
 ## Seconds between Spiky spawning events
 @export var spawn_time:float = 10
