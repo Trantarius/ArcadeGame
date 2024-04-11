@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://BackgroundTexture.gd" id="2_0i1pn"]
 [ext_resource type="PackedScene" uid="uid://ccgupredk0a3f" path="res://player/player.tscn" id="3_d6lla"]
 [ext_resource type="Texture2D" uid="uid://bude4na0hnosm" path="res://icon.svg" id="3_nlt01"]
-[ext_resource type="PackedScene" uid="uid://cb3satgchcg1i" path="res://spiky/spiky.tscn" id="5_geqg6"]
+[ext_resource type="PackedScene" uid="uid://b84l7h2qte8nl" path="res://spiky/spiky_factory.tscn" id="5_84w4x"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_3hhoi"]
 size = Vector2(128, 128)
@@ -40,5 +40,5 @@ texture = ExtResource("3_nlt01")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
 shape = SubResource("RectangleShape2D_3hhoi")
 
-[node name="Spiky" parent="." instance=ExtResource("5_geqg6")]
-position = Vector2(312, 214)
+[node name="SpikyFactory" parent="." instance=ExtResource("5_84w4x")]
+position = Vector2(459, 39)

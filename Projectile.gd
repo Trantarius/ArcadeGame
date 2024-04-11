@@ -3,7 +3,7 @@ extends PhysicsBody2D
 
 ## Time left until deletion
 @export var lifetime:float = 10
-@export var damage_amount:float = 10
+@export var damage_amount:float = 1
 var source:Actor
 var velocity:Vector2
 

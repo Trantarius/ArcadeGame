@@ -2,7 +2,7 @@ class_name Spiky
 extends Actor
 
 ## Damage dealt when colliding with player
-@export var contact_damage:float = 30
+@export var contact_damage:float = 3
 
 func find_target()->Player:
 	var players:Array[Node] = get_tree().get_nodes_in_group('Players')

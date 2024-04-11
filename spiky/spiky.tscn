@@ -10,6 +10,7 @@ collision_layer = 4
 collision_mask = 7
 motion_mode = 1
 script = ExtResource("1_185kc")
+max_health = 1.0
 velocity_damp = 0.5
 
 [node name="Polygon2D" type="Polygon2D" parent="."]

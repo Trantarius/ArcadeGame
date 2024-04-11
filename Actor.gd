@@ -1,7 +1,7 @@
 class_name Actor
 extends CharacterBody2D
 
-@export var max_health:float = 100
+@export var max_health:float = 10
 ## (Maximum) Linear acceleration
 @export var acceleration:float = 30
 ## (Maximum) Linear speed
@@ -25,7 +25,7 @@ func _enter_tree() -> void:
 
 func take_damage(damage:Damage)->void:
 	damage.target=self
-	if(health<0):
+	if(health<=0):
 		return # omae wa mo shindeiru
 	health -= damage.amount
 	damage_taken.emit(damage)
@@ -33,7 +33,7 @@ func take_damage(damage:Damage)->void:
 		damage.source.damage_dealt.emit(damage)
 	elif(damage.source is Projectile):
 		damage.source.source.damage_dealt.emit(damage)
-	if(health<0):
+	if(health<=0):
 		death.emit()
 		queue_free()
 
