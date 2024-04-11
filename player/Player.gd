@@ -1,20 +1,10 @@
 class_name Player
-extends CharacterBody2D
+extends Actor
 
-## Highest permitted linear speed
-@export var max_speed:float = 500
-
-## Linear acceleration applied when 'forward' is held
-@export var acceleration:float = 100
-
-## Rotation speed (in radians/second) when 'left' or 'right' is held
-@export var rotation_speed:float = 3
-
-# position the previous frame, used for correcting velocity
-var old_position:Vector2
-
-func _enter_tree()->void:
-	old_position=position
+## Bullets shot per second while holding the 'shoot' button
+@export var fire_rate:float
+## Time until the next shot can be taken
+var shot_timer:float
 
 func _physics_process(delta: float) -> void:
 	
@@ -25,15 +15,19 @@ func _physics_process(delta: float) -> void:
 	if(Input.is_action_pressed('forward')):
 		velocity += global_transform.basis_xform(Vector2.UP).normalized() * acceleration * delta
 	
-	if(velocity.length() > max_speed):
-		velocity = velocity.normalized() * max_speed
+	super(delta)
+	
+	shot_timer-=delta
+	if(Input.is_action_pressed('shoot') && shot_timer<=0):
+		fire_bullet()
+		shot_timer = 1.0/fire_rate
 
-	move_and_slide()
-	
-	var actual_motion:Vector2 = (position-old_position)
-	var am_lsqr:float = actual_motion.length_squared()
-	if(am_lsqr>0.0001):
-		# project the velocity onto the actual movement direction
-		velocity = actual_motion * max(0,velocity.dot(actual_motion)) / am_lsqr
-	
-	old_position=position
+func fire_bullet()->void:
+	var bullet:Projectile = preload("res://bullet.tscn").instantiate()
+	bullet.position = position
+	bullet.velocity = 500 * global_transform.basis_xform(Vector2.UP).normalized() + velocity
+	# enable collision with enemies
+	bullet.collision_mask|=0b100
+	bullet.modulate=Color(0.5,0.5,1)
+	bullet.source=self
+	get_parent().add_child(bullet)

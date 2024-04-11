@@ -27,8 +27,7 @@ stretch_mode = 1
 script = ExtResource("2_0i1pn")
 
 [node name="UILayer" type="CanvasLayer" parent="."]
-
-[node name="Camera2D" type="Camera2D" parent="."]
+layer = 2
 
 [node name="Player" parent="." instance=ExtResource("3_d6lla")]
 
@@ -42,3 +41,4 @@ texture = ExtResource("3_nlt01")
 shape = SubResource("RectangleShape2D_3hhoi")
 
 [node name="Spiky" parent="." instance=ExtResource("5_geqg6")]
+position = Vector2(312, 214)
