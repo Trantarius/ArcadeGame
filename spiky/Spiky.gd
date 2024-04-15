@@ -2,20 +2,13 @@ class_name Spiky
 extends Enemy
 
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	
-	var move_dir:Vector2
 	var target:Player = find_nearest_player()
 	if(target==null):
-		if(velocity==Vector2.ZERO):
-			move_dir=Vector2.ZERO
-		else:
-			move_dir=-velocity.normalized()
+		linear_target = position
+		angular_target = 0
 	else:
-		move_dir=(target.position-position).normalized()
-	
-	if(move_dir!=Vector2.ZERO):
-		rotate(sin(move_dir.angle_to(velocity)) * rotation_speed * delta)
-	velocity += move_dir * acceleration * delta
-	
-	super(delta)
+		linear_target = target.position
+		angular_target = sin(constant_force.angle_to(linear_velocity)) * max_angular_thrust
+

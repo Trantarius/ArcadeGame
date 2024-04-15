@@ -1,7 +1,7 @@
 class_name Enemy
 extends Actor
 
-## Damage dealt to player on contact
+## Damage dealt to player on contact (requires contact_monitor to be enabled)
 @export var contact_damage:float = 1
 ## Whether or not the enemy should die when dealing contact damage
 @export var contact_suicide:bool = false
@@ -26,20 +26,17 @@ func find_nearest_player()->Player:
 			closest_player_dsqr=dsqr
 	return closest_player
 
-# NB: MUST be called by subclass if the subclass implements _physics_process
-func _physics_process(delta: float) -> void:
+func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
+	super(state)
 	
-	super(delta)
-	
-	for coll_idx:int in range(get_slide_collision_count()):
-		var collision:KinematicCollision2D = get_slide_collision(coll_idx)
-		if(collision.get_collider() is Player):
+	for coll_idx:int in range(state.get_contact_count()):
+		if(state.get_contact_collider_object(coll_idx) is Player):
 			var damage:Damage = Damage.new()
 			damage.amount = contact_damage
-			damage.position = collision.get_position()
-			damage.direction = collision.get_normal()
+			damage.position = state.get_contact_collider_position(coll_idx)
+			damage.direction = state.transform.basis_xform(state.get_contact_local_normal(coll_idx))
 			damage.source = self
-			collision.get_collider().take_damage(damage)
+			state.get_contact_collider_object(coll_idx).take_damage(damage)
 			
 			if(contact_suicide):
 				var self_damage:Damage = Damage.new()
@@ -47,6 +44,7 @@ func _physics_process(delta: float) -> void:
 				self_damage.position = position
 				self_damage.source = self
 				take_damage(self_damage)
+				break
 	
 	var nearest_player:Player = find_nearest_player()
 	if(nearest_player!=null && (nearest_player.position-position).length()>despawn_distance):

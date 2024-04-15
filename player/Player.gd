@@ -8,19 +8,19 @@ var shot_timer:float
 
 func _ready()->void:
 	# ensure camera stays around after player dies
-	death.connect(func():
+	death.connect(func()->void:
 		$Camera2D.reparent(get_parent()))
 
 func _physics_process(delta: float) -> void:
 	
 	# since 'left' and 'right' are buttons, this will always be -1, 0, or 1
 	var rotation_input:float = Input.get_axis('left','right')
-	rotate(rotation_input * delta * rotation_speed)
+	angular_target = rotation_input * max_angular_speed
 	
 	if(Input.is_action_pressed('forward')):
-		velocity += global_transform.basis_xform(Vector2.UP).normalized() * acceleration * delta
-	
-	super(delta)
+		linear_target = global_transform.basis_xform(Vector2.UP).normalized() * max_linear_thrust
+	else:
+		linear_target = Vector2.ZERO
 	
 	shot_timer-=delta
 	if(Input.is_action_pressed('shoot') && shot_timer<=0):
@@ -30,7 +30,7 @@ func _physics_process(delta: float) -> void:
 func fire_bullet()->void:
 	var bullet:Projectile = preload("res://bullet.tscn").instantiate()
 	bullet.position = position
-	bullet.velocity = 500 * global_transform.basis_xform(Vector2.UP).normalized() + velocity
+	bullet.velocity = 500 * global_transform.basis_xform(Vector2.UP).normalized() + linear_velocity
 	# enable collision with enemies
 	bullet.collision_mask|=0b100
 	bullet.modulate=Color(0.5,0.5,1)

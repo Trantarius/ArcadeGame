@@ -52,7 +52,7 @@ func spawn_an_enemy()->void:
 	# pick a random scene from spawn list, weighted by spawn_rate
 	var choice:float = randf() * total_weight_in_list
 	var chosen_scene:PackedScene
-	for scene in spawn_list:
+	for scene:PackedScene in spawn_list:
 		choice-=spawn_list[scene]
 		if(choice<=0):
 			chosen_scene=scene

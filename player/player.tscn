@@ -2,14 +2,14 @@
 
 [ext_resource type="Script" path="res://player/Player.gd" id="1_n287t"]
 
-[node name="Player" type="CharacterBody2D" groups=["Players"]]
+[node name="Player" type="RigidBody2D" groups=["Players"]]
 collision_layer = 2
 collision_mask = 5
-motion_mode = 1
 script = ExtResource("1_n287t")
 fire_rate = 5.0
-acceleration = 100.0
-max_speed = 500.0
+max_linear_thrust = 200.0
+max_angular_thrust = 600.0
+angular_control_mode = 1
 
 [node name="Polygon2D" type="Polygon2D" parent="."]
 antialiased = true
