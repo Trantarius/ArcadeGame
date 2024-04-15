@@ -23,6 +23,6 @@ func spawn_spikies()->void:
 		var dir:Vector2 = global_transform.basis_xform(Vector2.RIGHT).rotated(n*TAU/6)
 		var spiky:Spiky = preload("res://spiky/spiky.tscn").instantiate()
 		spiky.position = position + dir * 32
-		spiky.linear_velocity = dir * spiky.max_linear_speed
+		spiky.linear_velocity = dir * spiky.max_linear_speed/2
 		spiky.add_collision_exception_with(self)
 		get_parent().add_child(spiky)

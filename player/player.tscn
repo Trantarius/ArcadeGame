@@ -7,6 +7,7 @@ collision_layer = 2
 collision_mask = 5
 script = ExtResource("1_n287t")
 fire_rate = 5.0
+auto_fire = true
 max_linear_thrust = 200.0
 max_angular_thrust = 600.0
 angular_control_mode = 1

@@ -32,7 +32,8 @@ var linear_target:Vector2
 @export var angular_brake:bool = true
 var angular_target:float
 
-signal death
+signal death(damage:Damage)
+signal kill(damage:Damage)
 signal damage_taken(damage:Damage)
 signal damage_dealt(damage:Damage)
 
@@ -46,13 +47,12 @@ func take_damage(damage:Damage)->void:
 		return # omae wa mo shindeiru
 	health -= damage.amount
 	damage_taken.emit(damage)
-	if(damage.source is Actor):
-		damage.source.damage_dealt.emit(damage)
-	elif(damage.source is Projectile):
-		if(is_instance_valid(damage.source.source)):
-			damage.source.source.damage_dealt.emit(damage)
+	if(is_instance_valid(damage.attacker)):
+		damage.attacker.damage_dealt.emit(damage)
 	if(health<=0):
-		death.emit()
+		death.emit(damage)
+		if(is_instance_valid(damage.attacker)):
+			damage.attacker.kill.emit(damage)
 		queue_free()
 
 func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:

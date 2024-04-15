@@ -21,6 +21,7 @@ func _physics_process(delta: float) -> void:
 			var damage:Damage = Damage.new()
 			damage.amount=damage_amount
 			damage.source=self
+			damage.attacker=source
 			damage.position = collision.get_position()
 			damage.direction = velocity.normalized()
 			collision.get_collider().take_damage(damage)

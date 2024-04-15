@@ -36,6 +36,7 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 			damage.position = state.get_contact_collider_position(coll_idx)
 			damage.direction = state.transform.basis_xform(state.get_contact_local_normal(coll_idx))
 			damage.source = self
+			damage.attacker = self
 			state.get_contact_collider_object(coll_idx).take_damage(damage)
 			
 			if(contact_suicide):
@@ -43,6 +44,7 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 				self_damage.amount = max_health
 				self_damage.position = position
 				self_damage.source = self
+				self_damage.attacker = self
 				take_damage(self_damage)
 				break
 	

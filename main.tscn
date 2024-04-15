@@ -1,8 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://gvye6ccvjd55"]
+[gd_scene load_steps=9 format=3 uid="uid://gvye6ccvjd55"]
 
 [ext_resource type="Texture2D" uid="uid://4xhd4jghtml5" path="res://grid.png" id="1_ennhv"]
 [ext_resource type="Script" path="res://BackgroundTexture.gd" id="2_0i1pn"]
 [ext_resource type="PackedScene" uid="uid://ccgupredk0a3f" path="res://player/player.tscn" id="3_d6lla"]
+[ext_resource type="Script" path="res://ui/score_display.gd" id="3_ms2pv"]
 [ext_resource type="Texture2D" uid="uid://bude4na0hnosm" path="res://icon.svg" id="3_nlt01"]
 [ext_resource type="PackedScene" uid="uid://b84l7h2qte8nl" path="res://spiky/spiky_factory.tscn" id="5_84w4x"]
 [ext_resource type="Script" path="res://EnemySpawner.gd" id="6_xg0x2"]
@@ -29,6 +30,13 @@ script = ExtResource("2_0i1pn")
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 layer = 2
+
+[node name="ScoreDisplay" type="Label" parent="UILayer"]
+offset_left = 16.0
+offset_top = 16.0
+offset_right = 16.0
+offset_bottom = 16.0
+script = ExtResource("3_ms2pv")
 
 [node name="Player" parent="." instance=ExtResource("3_d6lla")]
 
