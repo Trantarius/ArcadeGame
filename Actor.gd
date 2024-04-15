@@ -15,7 +15,7 @@ enum ControlMode{
 ## Maximum self-applied force.
 @export var max_linear_thrust:float = 100
 ## Linear velocity will be clamped if it exceeds this value.
-@export var max_linear_speed:float = 300
+@export var max_linear_speed:float = 400
 ## Determines how linear_target will be used.
 @export var linear_control_mode:ControlMode = ControlMode.THRUST
 ## When in position mode, thrust will be reversed to try to come to rest at the target position. Has no effect when linear_control_mode != POSITION.

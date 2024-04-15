@@ -1,10 +1,10 @@
 @tool
 extends EditorScript
 
-const outer_radius:float = 64
-const middle_radius:float = 48
-const inner_radius:float = 32
-const spokes:int = 6
+const outer_radius:float = 10
+const middle_radius:float = 7
+const inner_radius:float = 4
+const spokes:int = 3
 
 # Called when the script is executed (using File -> Run in Script Editor).
 func _run() -> void:

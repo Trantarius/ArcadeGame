@@ -5,7 +5,7 @@ extends Enemy
 @export var spawn_time:float = 10
 
 ## Time until next spawn event
-@onready var spawn_timer:float = spawn_time
+var spawn_timer:float = 0
 
 func _ready() -> void:
 	linear_target = Vector2.ZERO

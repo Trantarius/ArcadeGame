@@ -11,7 +11,7 @@ extends Actor
 ## Scales point_value for spawning purposes; higher rarity or point_value decreases spawn frequency
 @export var rarity:float = 1
 ## Maximum distance from a player before despawning
-@export var despawn_distance:float = 4096
+@export var despawn_distance:float = 2048
 
 func find_nearest_player()->Player:
 	var players:Array[Node] = get_tree().get_nodes_in_group('Players')

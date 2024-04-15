@@ -1,15 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://gvye6ccvjd55"]
+[gd_scene load_steps=7 format=3 uid="uid://gvye6ccvjd55"]
 
 [ext_resource type="Texture2D" uid="uid://4xhd4jghtml5" path="res://grid.png" id="1_ennhv"]
 [ext_resource type="Script" path="res://BackgroundTexture.gd" id="2_0i1pn"]
 [ext_resource type="PackedScene" uid="uid://ccgupredk0a3f" path="res://player/player.tscn" id="3_d6lla"]
 [ext_resource type="Script" path="res://ui/score_display.gd" id="3_ms2pv"]
-[ext_resource type="Texture2D" uid="uid://bude4na0hnosm" path="res://icon.svg" id="3_nlt01"]
 [ext_resource type="PackedScene" uid="uid://b84l7h2qte8nl" path="res://spiky/spiky_factory.tscn" id="5_84w4x"]
 [ext_resource type="Script" path="res://EnemySpawner.gd" id="6_xg0x2"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_3hhoi"]
-size = Vector2(128, 128)
 
 [node name="Main" type="Node"]
 
@@ -39,15 +35,6 @@ offset_bottom = 16.0
 script = ExtResource("3_ms2pv")
 
 [node name="Player" parent="." instance=ExtResource("3_d6lla")]
-
-[node name="StaticBody2D" type="StaticBody2D" parent="."]
-position = Vector2(77, -275)
-
-[node name="Sprite2D" type="Sprite2D" parent="StaticBody2D"]
-texture = ExtResource("3_nlt01")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-shape = SubResource("RectangleShape2D_3hhoi")
 
 [node name="EnemySpawner" type="Node" parent="."]
 script = ExtResource("6_xg0x2")

@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://spiky/Spiky.gd" id="1_185kc"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_qpxtk"]
-radius = 6.0
+radius = 7.0
 
 [node name="Spiky" type="RigidBody2D" groups=["Enemies"]]
 collision_layer = 4
@@ -12,12 +12,13 @@ script = ExtResource("1_185kc")
 contact_damage = 3.0
 contact_suicide = true
 max_health = 1.0
+max_linear_speed = 600.0
 linear_control_mode = 2
 linear_brake = false
 
 [node name="Polygon2D" type="Polygon2D" parent="."]
 color = Color(0.686275, 0.231373, 0.207843, 1)
-polygon = PackedVector2Array(8, 0, 3.8637, 1.03528, 5.19615, 3, 2.82843, 2.82843, 4, 6.9282, 1.03528, 3.8637, -2.62268e-07, 6, -1.03528, 3.8637, -4, 6.9282, -2.82843, 2.82843, -5.19615, 3, -3.8637, 1.03528, -8, -6.99382e-07, -3.8637, -1.03528, -5.19615, -3, -2.82843, -2.82843, -4, -6.9282, -1.03528, -3.8637, 7.15493e-08, -6, 1.03528, -3.8637, 4, -6.9282, 2.82843, -2.82843, 5.19615, -3, 3.8637, -1.03528)
+polygon = PackedVector2Array(10, 0, 3.4641, 2, 3.5, 6.06218, -1.74846e-07, 4, -5, 8.66025, -3.4641, 2, -7, -6.11959e-07, -3.4641, -2, -5, -8.66025, 4.76995e-08, -4, 3.5, -6.06218, 3.4641, -2)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_qpxtk")
