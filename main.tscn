@@ -40,4 +40,3 @@ script = ExtResource("3_ms2pv")
 script = ExtResource("6_xg0x2")
 target_points = 100.0
 enemy_list = Array[PackedScene]([ExtResource("5_84w4x")])
-print_spawns = true

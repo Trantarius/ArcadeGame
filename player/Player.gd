@@ -40,7 +40,7 @@ func _physics_process(delta: float) -> void:
 func fire_bullet()->void:
 	var bullet:Projectile = preload("res://bullet.tscn").instantiate()
 	bullet.position = position
-	bullet.velocity = 2 * max_linear_speed * global_transform.basis_xform(Vector2.UP).normalized() + linear_velocity
+	bullet.velocity = 800 * global_transform.basis_xform(Vector2.UP).normalized() + linear_velocity
 	# enable collision with enemies
 	bullet.collision_mask|=0b100
 	bullet.modulate=Color(0.5,0.5,1)

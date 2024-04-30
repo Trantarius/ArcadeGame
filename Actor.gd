@@ -20,6 +20,7 @@ enum ControlMode{
 @export var linear_control_mode:ControlMode = ControlMode.THRUST
 ## When in position mode, thrust will be reversed to try to come to rest at the target position. Has no effect when linear_control_mode != POSITION.
 @export var linear_brake:bool = true
+## See [member Actor.linear_control_mode]
 var linear_target:Vector2
 
 ## Maximum self-applied torque.
@@ -30,6 +31,7 @@ var linear_target:Vector2
 @export var angular_control_mode:ControlMode = ControlMode.THRUST
 ## When in position mode, thrust will be reversed to try to come to rest at the target position. Has no effect when angular_control_mode != POSITION.
 @export var angular_brake:bool = true
+## See [member Actor.angular_control_mode]
 var angular_target:float
 
 signal death(damage:Damage)
@@ -55,6 +57,9 @@ func take_damage(damage:Damage)->void:
 			damage.attacker.kill.emit(damage)
 		queue_free()
 
+func predict_position(delta:float)->Vector2:
+	return position + linear_velocity*delta + (constant_force/mass)*delta*delta/2
+
 func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 	
 	match(linear_control_mode):
@@ -77,18 +82,19 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 			else:
 				
 				var xlen:float = (linear_target-position).length()
-				var xdir:Vector2 = (linear_target-position)/xlen
-				var accel:float = max_linear_thrust*state.inverse_mass
-				
-				# 0 = (1/2) a t^2 + vi t + -d
-				# (-b + sqrt(b*b - 4*a*c))/(2*a)
-				var vi:float = state.linear_velocity.dot(xdir)
-				var xtime:float = (sqrt(vi*vi + 2*accel*xlen)-vi)/accel
-				
-				var ytime:float = abs(state.linear_velocity.dot(xdir.orthogonal()))*2/accel
-				var tdir:Vector2 = xtime*xdir - ytime*sign(state.linear_velocity.dot(xdir.orthogonal()))*xdir.orthogonal()
-				var thrust:Vector2 = tdir.normalized()*max_linear_thrust
-				state.set_constant_force(thrust)
+				if(xlen>0.01):
+					var xdir:Vector2 = (linear_target-position)/xlen
+					var accel:float = max_linear_thrust*state.inverse_mass
+					
+					# 0 = (1/2) a t^2 + vi t + -d
+					# (-b + sqrt(b*b - 4*a*c))/(2*a)
+					var vi:float = state.linear_velocity.dot(xdir)
+					var xtime:float = (sqrt(vi*vi + 2*accel*xlen)-vi)/accel
+					
+					var ytime:float = abs(state.linear_velocity.dot(xdir.orthogonal()))*2/accel
+					var tdir:Vector2 = xtime*xdir - ytime*sign(state.linear_velocity.dot(xdir.orthogonal()))*xdir.orthogonal()
+					var thrust:Vector2 = tdir.normalized()*max_linear_thrust
+					state.set_constant_force(thrust)
 	
 	match(angular_control_mode):
 		ControlMode.THRUST:

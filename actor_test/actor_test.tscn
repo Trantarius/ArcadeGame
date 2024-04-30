@@ -54,13 +54,12 @@ collision_layer = 0
 collision_mask = 0
 script = SubResource("GDScript_opxtt")
 linear_control_mode = 2
-linear_brake = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="LinearTestActor"]
 shape = SubResource("RectangleShape2D_opakp")
 
 [node name="Sprite2D" type="Sprite2D" parent="LinearTestActor"]
-scale = Vector2(0.25, 0.25)
+scale = Vector2(0.33, 0.33)
 texture = ExtResource("2_my3qk")
 
 [node name="Target" type="Line2D" parent="LinearTestActor"]

@@ -1,9 +1,9 @@
 @tool
 extends EditorScript
 
-const outer_radius:float = 10
-const middle_radius:float = 7
-const inner_radius:float = 4
+const outer_radius:float = 15
+const middle_radius:float = 10
+const inner_radius:float = 5
 const spokes:int = 3
 
 # Called when the script is executed (using File -> Run in Script Editor).
