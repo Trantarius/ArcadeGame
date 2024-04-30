@@ -9,8 +9,8 @@ max_contacts_reported = 1
 contact_monitor = true
 script = ExtResource("1_8hxwo")
 point_value = 10.0
-linear_control_mode = 1
-angular_control_mode = 1
+linear_control_mode = 2
+angular_control_mode = 2
 
 [node name="Polygon2D" type="Polygon2D" parent="."]
 color = Color(1, 0.5, 0.5, 1)

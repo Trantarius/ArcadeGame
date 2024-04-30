@@ -32,6 +32,7 @@ offset_left = 16.0
 offset_top = 16.0
 offset_right = 16.0
 offset_bottom = 16.0
+theme_override_font_sizes/font_size = 32
 script = ExtResource("3_ms2pv")
 
 [node name="Player" parent="." instance=ExtResource("3_d6lla")]
