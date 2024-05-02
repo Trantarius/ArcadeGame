@@ -13,4 +13,6 @@ func _physics_process(_delta: float) -> void:
 		linear_control_mode=ControlMode.POSITION
 		linear_target = target.position
 		angular_target = sin(constant_force.angle_to(linear_velocity)) * max_angular_thrust
+		reference_velocity = target.linear_velocity
+		reference_acceleration = target.linear_acceleration
 

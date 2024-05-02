@@ -1,5 +1,5 @@
 class_name Projectile
-extends PhysicsBody2D
+extends AnimatableBody2D
 
 ## Time left until deletion
 @export var lifetime:float = 10

@@ -11,11 +11,14 @@ var shot_timer:float
 var score:float
 
 func _ready()->void:
-	# ensure camera stays around after player dies
-	death.connect(func(_ignored:Damage)->void:
-		$Camera2D.reparent(get_parent()))
-	
+	death.connect(_on_death)
 	kill.connect(_on_kill)
+
+func _on_death(damage:Damage)->void:
+	# ensure camera stays around after player dies
+	$Camera2D.velocity=linear_velocity
+	$Camera2D.is_free=true
+	$Camera2D.reparent(get_parent())
 
 func _on_kill(damage:Damage)->void:
 	if(damage.target is Enemy):
@@ -38,11 +41,8 @@ func _physics_process(delta: float) -> void:
 		shot_timer = 1.0/fire_rate
 
 func fire_bullet()->void:
-	var bullet:Projectile = preload("res://bullet.tscn").instantiate()
+	var bullet:Projectile = preload("res://player/bullet.tscn").instantiate()
 	bullet.position = position
 	bullet.velocity = 800 * global_transform.basis_xform(Vector2.UP).normalized() + linear_velocity
-	# enable collision with enemies
-	bullet.collision_mask|=0b100
-	bullet.modulate=Color(0.5,0.5,1)
 	bullet.source=self
 	get_parent().add_child(bullet)

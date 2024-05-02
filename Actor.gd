@@ -3,6 +3,8 @@ extends RigidBody2D
 
 @export var max_health:float = 10
 @onready var health:float = max_health
+## Disables death. Can still take damage, but health never goes below 0.
+@export var immortal:bool = false
 
 enum ControlMode{
 	## Target is the desired thrust value (will be clamped to max thrust before being applied).
@@ -15,9 +17,9 @@ enum ControlMode{
 	POSITION}
 
 ## Maximum self-applied force.
-@export var max_linear_thrust:float = 100
+@export var max_linear_thrust:float = 128
 ## Linear velocity will be clamped if it exceeds this value.
-@export var max_linear_speed:float = 400
+@export var max_linear_speed:float = 1024
 ## Determines how linear_target will be used.
 @export var linear_control_mode:ControlMode = ControlMode.THRUST
 ## When in position mode, controls how much thrust will be reversed to try to come to rest at the target position.
@@ -33,9 +35,9 @@ var reference_velocity:Vector2
 var reference_acceleration:Vector2
 
 ## Maximum self-applied torque.
-@export var max_angular_thrust:float = 100
+@export var max_angular_thrust:float = 128
 ## Angular velocity will be clamped if it exceeds this value.
-@export var max_angular_speed:float = 3
+@export var max_angular_speed:float = 4
 ## Determines how angular_target will be used.
 @export var angular_control_mode:ControlMode = ControlMode.THRUST
 ## When in position mode, controls how much thrust will be reversed to try to come to rest at the target position.
@@ -70,7 +72,9 @@ func take_damage(damage:Damage)->void:
 	damage_taken.emit(damage)
 	if(is_instance_valid(damage.attacker)):
 		damage.attacker.damage_dealt.emit(damage)
-	if(health<=0):
+	if(immortal):
+		health = max(health,0)
+	elif(health<=0):
 		death.emit(damage)
 		if(is_instance_valid(damage.attacker)):
 			damage.attacker.kill.emit(damage)
@@ -155,15 +159,15 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 	linear_acceleration -= state.linear_velocity
 	
 	state.linear_velocity += linear_acceleration * state.step
-	position += state.linear_velocity * state.step
 	
 	angular_thrust = clamp(angular_thrust, -max_angular_thrust, max_angular_thrust)
 	var angular_force:float = angular_thrust + state.get_constant_torque()
 	state.set_constant_torque(0)
 	angular_acceleration = angular_force * state.inverse_inertia
-	var old_ang_vel:float = state.angular_velocity
+	
+	angular_acceleration += state.angular_velocity
+	angular_acceleration = clamp(angular_acceleration,-max_angular_speed,max_angular_speed)
+	angular_acceleration -= state.angular_velocity
+	
 	state.angular_velocity += angular_acceleration * state.step
-	state.angular_velocity = clamp(state.angular_velocity,-max_angular_speed,max_angular_speed)
-	angular_acceleration = (state.angular_velocity-old_ang_vel)/state.step
-	rotation += state.angular_velocity * state.step
 	

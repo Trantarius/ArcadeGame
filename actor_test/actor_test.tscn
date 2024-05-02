@@ -32,7 +32,7 @@ script/source = "extends Actor
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
-	var thrust:float = angular_thrust/1000
+	var thrust:float = angular_acceleration
 	var thrust_points:PackedVector2Array = [Vector2.RIGHT*64]
 	for n:float in range(floor(abs(thrust)*100)):
 		thrust_points.push_back(Vector2.RIGHT.rotated(sign(thrust)*n/100.0)*64)
@@ -96,6 +96,7 @@ stretch_mode = 1
 script = ExtResource("2_rjl8x")
 
 [node name="LinearTestActor" type="RigidBody2D" parent="."]
+visible = false
 position = Vector2(512, 512)
 collision_layer = 0
 collision_mask = 0
@@ -129,8 +130,6 @@ position = Vector2(512, 512)
 collision_layer = 0
 collision_mask = 0
 script = SubResource("GDScript_d57ax")
-max_angular_thrust = 1000.0
-max_angular_speed = 1000.0
 angular_control_mode = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AngularTestActor"]

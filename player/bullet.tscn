@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://bde3v6ered7ln"]
+
+[ext_resource type="Script" path="res://Projectile.gd" id="1_64ttv"]
+
+[sub_resource type="Gradient" id="Gradient_v04mo"]
+offsets = PackedFloat32Array(0, 0.8, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_y6rjq"]
+gradient = SubResource("Gradient_v04mo")
+width = 10
+height = 10
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_33omy"]
+radius = 4.0
+
+[node name="Bullet" type="AnimatableBody2D"]
+collision_layer = 0
+collision_mask = 5
+sync_to_physics = false
+script = ExtResource("1_64ttv")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = SubResource("GradientTexture2D_y6rjq")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+shape = SubResource("CircleShape2D_33omy")

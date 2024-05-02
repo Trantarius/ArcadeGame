@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://BackgroundTexture.gd" id="2_0i1pn"]
 [ext_resource type="PackedScene" uid="uid://ccgupredk0a3f" path="res://player/player.tscn" id="3_d6lla"]
 [ext_resource type="Script" path="res://ui/score_display.gd" id="3_ms2pv"]
-[ext_resource type="PackedScene" uid="uid://b84l7h2qte8nl" path="res://spiky/spiky_factory.tscn" id="5_84w4x"]
+[ext_resource type="PackedScene" uid="uid://d4epik40543it" path="res://hornet/hornet.tscn" id="6_x6syn"]
 [ext_resource type="Script" path="res://EnemySpawner.gd" id="6_xg0x2"]
 
 [node name="Main" type="Node"]
@@ -40,4 +40,4 @@ script = ExtResource("3_ms2pv")
 [node name="EnemySpawner" type="Node" parent="."]
 script = ExtResource("6_xg0x2")
 target_points = 100.0
-enemy_list = Array[PackedScene]([ExtResource("5_84w4x")])
+enemy_list = Array[PackedScene]([ExtResource("6_x6syn")])
