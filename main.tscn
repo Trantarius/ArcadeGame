@@ -1,29 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://gvye6ccvjd55"]
+[gd_scene load_steps=5 format=3 uid="uid://gvye6ccvjd55"]
 
-[ext_resource type="Texture2D" uid="uid://4xhd4jghtml5" path="res://grid.png" id="1_ennhv"]
-[ext_resource type="Script" path="res://BackgroundTexture.gd" id="2_0i1pn"]
 [ext_resource type="PackedScene" uid="uid://ccgupredk0a3f" path="res://player/player.tscn" id="3_d6lla"]
 [ext_resource type="Script" path="res://ui/score_display.gd" id="3_ms2pv"]
 [ext_resource type="PackedScene" uid="uid://d4epik40543it" path="res://hornet/hornet.tscn" id="6_x6syn"]
 [ext_resource type="Script" path="res://EnemySpawner.gd" id="6_xg0x2"]
 
 [node name="Main" type="Node"]
-
-[node name="BackgroundLayer" type="CanvasLayer" parent="."]
-layer = -1
-follow_viewport_enabled = true
-
-[node name="BackgroundTexture" type="TextureRect" parent="BackgroundLayer"]
-visible = false
-modulate = Color(0.223529, 0.223529, 0.223529, 1)
-offset_left = -770.0
-offset_top = -687.0
-offset_right = 760.0
-offset_bottom = 767.0
-texture = ExtResource("1_ennhv")
-stretch_mode = 1
-script = ExtResource("2_0i1pn")
-centered = true
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 layer = 2

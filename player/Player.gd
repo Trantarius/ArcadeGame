@@ -32,8 +32,11 @@ func _physics_process(delta: float) -> void:
 	
 	if(Input.is_action_pressed('forward')):
 		linear_target = global_transform.basis_xform(Vector2.UP).normalized() * max_linear_thrust
+		$RocketParticles.emitting=true
+		$RocketParticles.process_material.set_shader_parameter('base_velocity',linear_velocity)
 	else:
 		linear_target = Vector2.ZERO
+		$RocketParticles.emitting=false
 	
 	shot_timer-=delta
 	if((Input.is_action_pressed('shoot')!=auto_fire) && shot_timer<=0):
