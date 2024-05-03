@@ -14,15 +14,16 @@ layer = -1
 follow_viewport_enabled = true
 
 [node name="BackgroundTexture" type="TextureRect" parent="BackgroundLayer"]
-modulate = Color(0.25098, 0.25098, 0.25098, 1)
-texture_filter = 1
-offset_left = -512.0
-offset_top = -512.0
-offset_right = 512.0
-offset_bottom = 512.0
+visible = false
+modulate = Color(0.223529, 0.223529, 0.223529, 1)
+offset_left = -770.0
+offset_top = -687.0
+offset_right = 760.0
+offset_bottom = 767.0
 texture = ExtResource("1_ennhv")
 stretch_mode = 1
 script = ExtResource("2_0i1pn")
+centered = true
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 layer = 2

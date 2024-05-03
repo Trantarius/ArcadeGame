@@ -1,7 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://ccgupredk0a3f"]
+[gd_scene load_steps=5 format=3 uid="uid://ccgupredk0a3f"]
 
 [ext_resource type="Script" path="res://player/Player.gd" id="1_n287t"]
 [ext_resource type="Script" path="res://player/camera.gd" id="2_ccbte"]
+[ext_resource type="Shader" path="res://ambientparticles.gdshader" id="3_khmqt"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_v1xyb"]
+shader = ExtResource("3_khmqt")
+shader_parameter/width = 1024.0
+shader_parameter/height = 1024.0
+shader_parameter/drift_speed = 4.0
+shader_parameter/fade_time = 5.0
+shader_parameter/parallax = 0.0
 
 [node name="Player" type="RigidBody2D" groups=["Players"]]
 collision_layer = 2
@@ -29,3 +38,10 @@ update_scale = false
 [node name="Camera2D" type="Camera2D" parent="."]
 top_level = true
 script = ExtResource("2_ccbte")
+
+[node name="AmbientParticles" type="GPUParticles2D" parent="Camera2D"]
+amount = 256
+process_material = SubResource("ShaderMaterial_v1xyb")
+lifetime = 10.0
+preprocess = 10.0
+fixed_fps = 60

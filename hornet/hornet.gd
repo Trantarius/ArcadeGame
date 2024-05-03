@@ -19,6 +19,7 @@ func _physics_process(delta: float) -> void:
 		linear_target = Vector2.ZERO
 		angular_control_mode = ControlMode.THRUST
 		angular_target = 0
+		fire_timer = max(0,fire_timer-delta)
 	else:
 		
 		linear_control_mode = ControlMode.POSITION
@@ -36,13 +37,13 @@ func _physics_process(delta: float) -> void:
 		else:
 			fire_timer = max(0,fire_timer-delta)
 		
-		if(!is_instance_valid(charging_shot)):
-			make_new_shot()
+	if(!is_instance_valid(charging_shot)):
+		make_new_shot()
 		
-		charging_shot.scale = Vector2.ONE*fire_timer/fire_delay
-		if(fire_timer>fire_delay):
-			fire()
-			fire_timer-=fire_delay
+	charging_shot.scale = Vector2.ONE*fire_timer/fire_delay
+	if(fire_timer>fire_delay):
+		fire()
+		fire_timer-=fire_delay
 
 func make_new_shot()->void:
 	if(is_instance_valid(charging_shot)):
