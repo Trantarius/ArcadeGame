@@ -56,14 +56,20 @@ func rand_mul(std:float)->float:
 func spawn_asteroid(locator:Callable)->void:
 		
 	var aster:Asteroid = preload("res://asteroid/asteroid.tscn").instantiate()
-	add_child(aster)
 	aster.radius = mean_size * rand_mul(size_variation)
 	aster.noise.seed = randi()
 	aster.mass = (aster.radius/50)**3
-	aster.generate()
+	add_child(aster)
 	
 	var candidate:Transform2D = Transform2D(randf()*TAU,locator.call())
+	const max_attempts:int = 4
+	var attempt_count:int = 1
 	while(aster.test_move(candidate,Vector2.ZERO)):
+		if(attempt_count>=max_attempts):
+			push_error("Failed to place an asteroid after ",attempt_count," attempts")
+			remove_child(aster)
+			return
+		attempt_count+=1
 		candidate = Transform2D(randf()*TAU,locator.call())
 	
 	aster.transform = candidate

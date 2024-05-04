@@ -4,6 +4,8 @@ extends RigidBody2D
 
 @export var noise:FastNoiseLite:
 	set(to):
+		if(is_instance_valid(noise)):
+			noise.changed.disconnect(generate)
 		noise=to
 		noise.changed.connect(generate)
 		generate()
@@ -39,7 +41,6 @@ extends RigidBody2D
 		curvature_limit=to
 		generate()
 
-
 static func change_poly_resolution(poly:PackedVector2Array,resolution:float)->PackedVector2Array:
 	var retpoly:PackedVector2Array = []
 	var dist:float = 0
@@ -70,9 +71,6 @@ static func optimize_curvature(poly:PackedVector2Array, limit:float )->PackedVec
 			last_dir = dir
 	return retpoly
 
-func _ready()->void:
-	generate()
-
 static func is_polygon_self_intersecting(poly:PackedVector2Array)->bool:
 	for n in range(poly.size()):
 		for i in range(poly.size()):
@@ -81,52 +79,101 @@ static func is_polygon_self_intersecting(poly:PackedVector2Array)->bool:
 			if(Geometry2D.segment_intersects_segment(poly[n-1],poly[n],poly[i-1],poly[i])):
 				return true
 	return false
+
+## Generates the polygon for the asteroid in a worker thread. 
+static func create_asteroid_polygon(noise:FastNoiseLite, noise_strength:float, radius:float,
+	stretch_limit:float, resolution:float, curvature_limit:float)->PackedVector2Array:
+	
+	noise=noise.duplicate()
+	
+	# a dummy object to hold a 'done' signal
+	var done_object:Object = Object.new()
+	done_object.add_user_signal("done",[{'name':'poly','type':TYPE_PACKED_VECTOR2_ARRAY}])
+	var done_signal:Signal = Signal(done_object, "done")
+	
+	var thread_func:Callable=func():
+		var poly:PackedVector2Array = []
+		var rand:RandomNumberGenerator = RandomNumberGenerator.new()
+		rand.seed = noise.seed
+		var stretch:float = rand.randf()*stretch_limit
+		var rot:float = TAU*rand.randf()
+		noise.set_block_signals(true)
+		noise.frequency = 4.0/radius
+		noise.set_block_signals(false)
 		
+		for s in range(8):
+			var subshape:PackedVector2Array=[]
+			var bias:Vector2
+			bias.x = rand.randf_range(-1,1)*radius/2
+			bias.y = rand.randf_range(-1,1)*radius/2
+			bias *= Vector2(1+stretch,1-stretch)
+			bias = bias.rotated(rot)
+			for p in range(32):
+				var point:Vector2 = Vector2.from_angle(rand.randf()*TAU)*rand.randf()*radius/2.5
+				subshape.push_back(point+bias)
+			subshape = Geometry2D.convex_hull(subshape)
+			poly = Geometry2D.merge_polygons(poly,subshape)[0]
+		poly = change_poly_resolution(poly,radius/4)
+		
+		var normals:PackedVector2Array = calc_poly_normals(poly)
+		for n in range(poly.size()):
+			var nval:float = noise.get_noise_2dv(poly[n])
+			poly[n] += normals[n] * nval * noise_strength * radius
+		
+		poly = change_poly_resolution(poly,resolution)
+		
+		normals = calc_poly_normals(poly)
+		for n in range(poly.size()):
+			var nval:float = noise.get_noise_2dv(poly[n])
+			poly[n] += normals[n] * nval * noise_strength * radius
+		
+		poly = change_poly_resolution(poly,resolution)
+		poly = optimize_curvature(poly,curvature_limit)
+		if(is_polygon_self_intersecting(poly)):
+			poly=[]
+		done_object.call_deferred("emit_signal","done",poly)
+	
+	WorkerThreadPool.add_task(thread_func)
+	return await done_signal
+
+# helps to de-duplicate generate calls that may overlap due to multi-threading/coroutines
+var _generate_queued:bool = false
+var _generate_running:bool = false
+
+func _enter_tree()->void:
+	if(_generate_queued && !_generate_running):
+		_generate_queued=false
+		generate()
 
 func generate()->void:
-	if(!is_inside_tree()):
-		return
-		
-	var rand:RandomNumberGenerator = RandomNumberGenerator.new()
-	rand.seed = noise.seed
 	
-	var stretch:float = rand.randf()*stretch_limit
-	var rot:float = TAU*rand.randf()
-	noise.set_block_signals(true)
-	noise.frequency = 4.0/radius
-	noise.set_block_signals(false)
+	if(_generate_running || !is_inside_tree()):
+		_generate_queued=true
+		return
+	
+	# with the right parameters, a failed attempt is pretty rare, so just trying again with a new seed will probably fix it
+	const max_attempts:int=3
 	
 	var poly:PackedVector2Array = []
+	for a in range(max_attempts):
+		
+		_generate_running=true
+		poly = await create_asteroid_polygon(noise,noise_strength,radius,stretch_limit,resolution,curvature_limit)
+		_generate_running=false
+		if(_generate_queued):
+			_generate_queued=false
+			generate()
+			return
+		
+		if(poly.is_empty()):
+			noise.set_block_signals(true)
+			noise.seed += 1
+			noise.set_block_signals(false)
+		else:
+			break
 	
-	for s in range(8):
-		var subshape:PackedVector2Array=[]
-		var bias:Vector2
-		bias.x = rand.randf_range(-1,1)*radius/2
-		bias.y = rand.randf_range(-1,1)*radius/2
-		bias *= Vector2(1+stretch,1-stretch)
-		bias = bias.rotated(rot)
-		for p in range(32):
-			var point:Vector2 = Vector2.from_angle(rand.randf()*TAU)*rand.randf()*radius/2.5
-			subshape.push_back(point+bias)
-		subshape = Geometry2D.convex_hull(subshape)
-		poly = Geometry2D.merge_polygons(poly,subshape)[0]
-	poly = change_poly_resolution(poly,radius/4)
-	
-	var normals:PackedVector2Array = calc_poly_normals(poly)
-	for n in range(poly.size()):
-		var nval:float = noise.get_noise_2dv(poly[n])
-		poly[n] += normals[n] * nval * noise_strength * radius
-	
-	poly = change_poly_resolution(poly,resolution)
-	
-	normals = calc_poly_normals(poly)
-	for n in range(poly.size()):
-		var nval:float = noise.get_noise_2dv(poly[n])
-		poly[n] += normals[n] * nval * noise_strength * radius
-	
-	poly = change_poly_resolution(poly,resolution)
-	poly = optimize_curvature(poly,curvature_limit)
-	if(is_polygon_self_intersecting(poly)):
+	if(poly.is_empty()):
+		push_error("Failed to create asteroid polygon after ",max_attempts," attempts")
 		return
 	
 	$Polygon2D.polygon = poly
