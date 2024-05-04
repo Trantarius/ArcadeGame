@@ -20,7 +20,6 @@ extends Node
 # internal values for helping the spawn algorithm
 # keys are enemy scenes, values are weights
 var spawn_list:Dictionary
-var current_points:float = 0
 var total_weight_in_list:float
 
 func _ready()->void:

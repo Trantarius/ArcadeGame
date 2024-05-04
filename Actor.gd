@@ -5,6 +5,8 @@ extends RigidBody2D
 @onready var health:float = max_health
 ## Disables death. Can still take damage, but health never goes below 0.
 @export var immortal:bool = false
+## Toggles whether or not queue_free should automatically be called on death.
+@export var free_on_death:bool = true
 
 enum ControlMode{
 	## Target is the desired thrust value (will be clamped to max thrust before being applied).
@@ -60,25 +62,26 @@ signal damage_taken(damage:Damage)
 signal damage_dealt(damage:Damage)
 
 func _init()->void:
-	contact_monitor=true
-	max_contacts_reported=2
 	custom_integrator=true
+	contact_monitor=true
+	max_contacts_reported=3
 
 func take_damage(damage:Damage)->void:
 	damage.target=self
 	if(health<=0):
 		return # omae wa mo shindeiru
-	health -= damage.amount
-	damage_taken.emit(damage)
 	if(is_instance_valid(damage.attacker)):
 		damage.attacker.damage_dealt.emit(damage)
+	damage_taken.emit(damage)
+	health -= damage.amount
 	if(immortal):
 		health = max(health,0)
 	elif(health<=0):
-		death.emit(damage)
 		if(is_instance_valid(damage.attacker)):
 			damage.attacker.kill.emit(damage)
-		queue_free()
+		death.emit(damage)
+		if(free_on_death):
+			queue_free()
 
 func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 	

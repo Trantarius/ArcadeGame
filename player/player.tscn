@@ -59,6 +59,7 @@ shader_parameter/parallax = 0.0
 
 [node name="Player" type="RigidBody2D" groups=["Players"]]
 collision_layer = 2
+collision_mask = 9
 script = ExtResource("1_n287t")
 fire_rate = 5.0
 auto_fire = true
@@ -99,3 +100,6 @@ process_material = SubResource("ShaderMaterial_v1xyb")
 lifetime = 10.0
 preprocess = 10.0
 fixed_fps = 60
+
+[connection signal="death" from="." to="." method="_on_death"]
+[connection signal="kill" from="." to="." method="_on_kill"]

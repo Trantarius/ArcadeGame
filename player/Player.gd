@@ -5,14 +5,27 @@ extends Actor
 @export var fire_rate:float
 ## Allows for continuous shooting without holding the 'shoot' button
 @export var auto_fire:bool
+## Approximate radius at which to collect pickups
+@export var pickup_magnet:float = 256
 ## Time until the next shot can be taken
 var shot_timer:float
 ## Total value of all enemies this player has killed
 var score:float
 
-func _ready()->void:
-	death.connect(_on_death)
-	kill.connect(_on_kill)
+var movement_ability:PlayerAbility:
+	set(to):
+		if(movement_ability!=to):
+			var old:PlayerAbility = movement_ability
+			movement_ability = to
+			if(is_instance_valid(old)):
+				remove_child(old)
+			if(is_instance_valid(movement_ability)):
+				add_child(movement_ability)
+			ability_changed.emit(old,movement_ability)
+			if(is_instance_valid(old)):
+				old.queue_free()
+
+signal ability_changed(from:PlayerAbility,to:PlayerAbility)
 
 func _on_death(damage:Damage)->void:
 	# ensure camera stays around after player dies
@@ -51,12 +64,10 @@ func fire_bullet()->void:
 	get_parent().add_child(bullet)
 
 
-static func find_nearest_player(location:Vector2)->Player:
+static func find_nearest_player(location:Vector2, max_dist:float=-1)->Player:
 	var players:Array[Node] = Engine.get_main_loop().get_nodes_in_group('Players')
-	if(players.is_empty()):
-		return null
-	var closest_player:Player = players[0]
-	var closest_player_dsqr:float = (closest_player.position-location).length_squared()
+	var closest_player:Player = null
+	var closest_player_dsqr:float = max_dist*max_dist if max_dist>0 else INF
 	for player:Player in players:
 		var dsqr:float = (player.position-location).length_squared()
 		if(dsqr<closest_player_dsqr):
