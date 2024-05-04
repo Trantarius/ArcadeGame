@@ -4,7 +4,7 @@ extends Enemy
 
 func _physics_process(_delta: float) -> void:
 	
-	var target:Player = find_nearest_player()
+	var target:Player = Player.find_nearest_player(position)
 	if(target==null):
 		linear_control_mode=ControlMode.THRUST
 		linear_target = Vector2.ZERO

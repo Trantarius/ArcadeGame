@@ -49,3 +49,17 @@ func fire_bullet()->void:
 	bullet.velocity = 800 * global_transform.basis_xform(Vector2.UP).normalized() + linear_velocity
 	bullet.source=self
 	get_parent().add_child(bullet)
+
+
+static func find_nearest_player(location:Vector2)->Player:
+	var players:Array[Node] = Engine.get_main_loop().get_nodes_in_group('Players')
+	if(players.is_empty()):
+		return null
+	var closest_player:Player = players[0]
+	var closest_player_dsqr:float = (closest_player.position-location).length_squared()
+	for player:Player in players:
+		var dsqr:float = (player.position-location).length_squared()
+		if(dsqr<closest_player_dsqr):
+			closest_player=player
+			closest_player_dsqr=dsqr
+	return closest_player

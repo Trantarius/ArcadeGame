@@ -1,0 +1,44 @@
+[gd_scene load_steps=6 format=3 uid="uid://d0upt6jghwnyf"]
+
+[ext_resource type="Script" path="res://asteroid/asteroid.gd" id="1_fifpj"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_sf31h"]
+resource_local_to_scene = true
+seed = 4165
+frequency = 0.015625
+fractal_octaves = 3
+cellular_return_type = 0
+
+[sub_resource type="Gradient" id="Gradient_84e4i"]
+colors = PackedColorArray(0.299547, 0.299547, 0.299547, 1, 0.513233, 0.513233, 0.513233, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_53gf4"]
+noise_type = 2
+frequency = 0.0422
+fractal_octaves = 2
+fractal_lacunarity = 3.0
+cellular_return_type = 0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_tmmrp"]
+seamless = true
+color_ramp = SubResource("Gradient_84e4i")
+noise = SubResource("FastNoiseLite_53gf4")
+
+[node name="Asteroid" type="RigidBody2D"]
+process_thread_group = 2
+process_thread_group_order = 0
+process_thread_messages = 0
+collision_mask = 7
+script = ExtResource("1_fifpj")
+noise = SubResource("FastNoiseLite_sf31h")
+noise_strength = 0.102
+resolution = 64.0
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+texture_repeat = 2
+texture = SubResource("NoiseTexture2D_tmmrp")
+polygon = PackedVector2Array(187.96, -11.7829, 94.2054, 71.8847, 35.073, 92.4222, -15.7715, 129.953, -70.9513, 139.264, -118.12, 20.5025, -129.342, -42.0305, -116.456, -101.803, -70.1549, -132.981, -14.8028, -102.394, -14.051, -162.472, 40.5321, -193.801, 102.377, -192.218, 137.327, -155.018, 141.612, -102.425, 192.714, -75.0785)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+visible = false
+polygon = PackedVector2Array(187.96, -11.7829, 94.2054, 71.8847, 35.073, 92.4222, -15.7715, 129.953, -70.9513, 139.264, -118.12, 20.5025, -129.342, -42.0305, -116.456, -101.803, -70.1549, -132.981, -14.8028, -102.394, -14.051, -162.472, 40.5321, -193.801, 102.377, -192.218, 137.327, -155.018, 141.612, -102.425, 192.714, -75.0785)

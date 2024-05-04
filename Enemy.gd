@@ -13,19 +13,6 @@ extends Actor
 ## Maximum distance from a player before despawning
 @export var despawn_distance:float = 2048
 
-func find_nearest_player()->Player:
-	var players:Array[Node] = get_tree().get_nodes_in_group('Players')
-	if(players.is_empty()):
-		return null
-	var closest_player:Player = players[0]
-	var closest_player_dsqr:float = (closest_player.position-position).length_squared()
-	for player:Player in players:
-		var dsqr:float = (player.position-position).length_squared()
-		if(dsqr<closest_player_dsqr):
-			closest_player=player
-			closest_player_dsqr=dsqr
-	return closest_player
-
 func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 	super(state)
 	
@@ -48,6 +35,6 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 				take_damage(self_damage)
 				break
 	
-	var nearest_player:Player = find_nearest_player()
+	var nearest_player:Player = Player.find_nearest_player(position)
 	if(nearest_player!=null && (nearest_player.position-position).length()>despawn_distance):
 		queue_free()
