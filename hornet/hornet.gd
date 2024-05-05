@@ -60,7 +60,7 @@ func on_charging_shot_hit(_collision:KinematicCollision2D)->void:
 
 func fire()->void:
 	charging_shot.reparent(get_parent())
-	charging_shot.velocity = 200 * global_transform.basis_xform(Vector2.RIGHT).normalized() + linear_velocity
+	charging_shot.linear_velocity = 200 * global_transform.basis_xform(Vector2.RIGHT).normalized() + linear_velocity
 	charging_shot.hit.disconnect(on_charging_shot_hit)
 	charging_shot=null
 	make_new_shot()

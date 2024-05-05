@@ -67,6 +67,9 @@ var angular_thrust:float
 ## Angular acceleration applied last physics frame (excluding collisions).
 var angular_acceleration:float
 
+## Engine time (in usecs) that the last physics update happended. Used for interpolation.
+var last_update_time:int
+
 signal death(damage:Damage)
 signal kill(damage:Damage)
 signal damage_taken(damage:Damage)
@@ -203,4 +206,6 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 	angular_acceleration -= state.angular_velocity
 	
 	state.angular_velocity += angular_acceleration * state.step
+	
+	last_update_time = Time.get_ticks_usec()
 	

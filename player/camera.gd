@@ -19,9 +19,22 @@ func _on_viewport_size_changed()->void:
 	$AmbientParticles.amount = ambient_particle_density * vp.size.x*vp.size.y / 1_000_000
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _physics_process(delta: float) -> void:
+func _process(delta: float) -> void:
 	if(is_free):
 		position += velocity * delta
 	else:
-		velocity = (position-_last_pos)/delta
-		_last_pos = position
+		velocity = (global_position-_last_pos)/delta
+		_last_pos = global_position
+
+func _enter_tree()->void:
+	top_level=true
+	RenderingServer.frame_pre_draw.connect(update)
+
+func _exit_tree() -> void:
+	RenderingServer.frame_pre_draw.disconnect(update)
+
+func update() -> void:
+	var now:int = Time.get_ticks_usec()
+	var dt:float = Engine.get_physics_interpolation_fraction()/Engine.physics_ticks_per_second
+	global_position = get_parent().position + get_parent().linear_velocity * dt
+		

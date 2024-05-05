@@ -6,7 +6,8 @@ extends Area2D
 ## How valuable this pickup is, effects drop rate (same unit as [member Enemy.point_value]).
 @export var value:float = 1
 
-var velocity:Vector2
+var linear_velocity:Vector2
+var angular_velocity:float
 var target:Player
 
 signal picked_up(player:Player)
@@ -15,13 +16,14 @@ func _init()->void:
 	body_entered.connect(_pickup_on_body_entered)
 
 func _physics_process(delta: float) -> void:
-	position += velocity * delta
+	position += linear_velocity * delta
+	rotation += angular_velocity * delta
 	if(is_instance_valid(target)):
-		var currvel:Vector2 = velocity - target.linear_velocity
+		var currvel:Vector2 = linear_velocity - target.linear_velocity
 		var wantvel:Vector2 = (target.position-position).normalized() * min(currvel.length()*1.5,(target.position-position).length()/delta)
 		var dweight:float = (target.position-position).length()/target.pickup_magnet
 		dweight = 1/(exp(dweight**2)-1)
-		velocity += (wantvel-currvel) * min(1,dweight*delta)
+		linear_velocity += (wantvel-currvel) * min(1,dweight*delta)
 	lifetime -= delta
 	modulate.a = min(1,lifetime)
 	if(lifetime<0):

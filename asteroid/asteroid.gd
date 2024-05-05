@@ -176,5 +176,5 @@ func generate()->void:
 		push_error("Failed to create asteroid polygon after ",max_attempts," attempts")
 		return
 	
-	$Polygon2D.polygon = poly
+	$Interpolator/Polygon2D.polygon = poly
 	$CollisionPolygon2D.polygon = poly
