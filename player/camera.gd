@@ -1,12 +1,13 @@
 extends Camera2D
 
-var velocity:Vector2
+## Number of ambient particles per million pixels (ie, in a 1000x1000 area)
+@export var ambient_particle_density:float = 100
 
 ## Enables moving under its own velocity
 var is_free:bool = false
+var velocity:Vector2
 
-## Number of ambient particles per million pixels (ie, in a 1000x1000 area)
-@export var ambient_particle_density:float = 100
+var _last_pos:Vector2
 
 func _ready()->void:
 	get_viewport().size_changed.connect(_on_viewport_size_changed)
@@ -20,4 +21,7 @@ func _on_viewport_size_changed()->void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:
 	if(is_free):
-		position += velocity*delta
+		position += velocity * delta
+	else:
+		velocity = (position-_last_pos)/delta
+		_last_pos = position

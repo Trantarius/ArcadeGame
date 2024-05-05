@@ -1,4 +1,3 @@
-class_name EnemySpawner
 extends Node
 
 ## Scales how fast enemies spawn

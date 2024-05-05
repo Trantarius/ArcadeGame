@@ -12,7 +12,7 @@ var total_weight_in_list:float
 var min_value:float
 
 func _ready()->void:
-	get_tree().node_added.connect(_on_node_added)
+	Actor.something_died.connect(_on_something_died)
 	spawn_list = {}
 	total_weight_in_list = 0
 	min_value = INF
@@ -24,12 +24,8 @@ func _ready()->void:
 		spawn_list[scene] = pickup.value
 		total_weight_in_list += weight
 
-func _on_node_added(node:Node)->void:
-	if(node is Enemy):
-		node.death.connect(_on_enemy_death)
-
-func _on_enemy_death(damage:Damage)->void:
-	if(damage.attacker is Player):
+func _on_something_died(damage:Damage)->void:
+	if(damage.attacker is Player && damage.target is Enemy):
 	
 		var total = randf() * damage.target.point_value * (abs(randfn(1,1))+1)
 		

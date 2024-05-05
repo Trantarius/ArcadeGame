@@ -1,12 +1,15 @@
-[gd_scene load_steps=8 format=3 uid="uid://gvye6ccvjd55"]
+[gd_scene load_steps=11 format=3 uid="uid://gvye6ccvjd55"]
 
 [ext_resource type="PackedScene" uid="uid://ccgupredk0a3f" path="res://player/player.tscn" id="3_d6lla"]
 [ext_resource type="Script" path="res://ui/score_display.gd" id="3_ms2pv"]
+[ext_resource type="PackedScene" uid="uid://cb3satgchcg1i" path="res://spiky/spiky.tscn" id="5_cgv82"]
 [ext_resource type="Script" path="res://asteroid/AsteroidSpawner.gd" id="5_hea7j"]
 [ext_resource type="Script" path="res://PickupSpawner.gd" id="6_0lnqi"]
 [ext_resource type="PackedScene" uid="uid://c470br5y4agbp" path="res://pickups/health_pickup.tscn" id="6_h8vvy"]
 [ext_resource type="PackedScene" uid="uid://d4epik40543it" path="res://hornet/hornet.tscn" id="6_x6syn"]
+[ext_resource type="PackedScene" uid="uid://b84l7h2qte8nl" path="res://spiky/spiky_factory.tscn" id="6_x7aoa"]
 [ext_resource type="Script" path="res://EnemySpawner.gd" id="6_xg0x2"]
+[ext_resource type="Script" path="res://HitNumberSpawner.gd" id="10_mwqnm"]
 
 [node name="Main" type="Node"]
 
@@ -26,12 +29,20 @@ script = ExtResource("3_ms2pv")
 [node name="EnemySpawner" type="Node" parent="."]
 script = ExtResource("6_xg0x2")
 target_points = 100.0
-enemy_list = Array[PackedScene]([ExtResource("6_x6syn")])
+enemy_list = Array[PackedScene]([ExtResource("6_x6syn"), ExtResource("5_cgv82"), ExtResource("6_x7aoa")])
 
 [node name="AsteroidSpawner" type="Node" parent="."]
 script = ExtResource("5_hea7j")
+asteroid_count = 10.0
 max_linear_momentum = 20.0
 
 [node name="PickupSpawner" type="Node" parent="."]
 script = ExtResource("6_0lnqi")
 pickup_list = Array[PackedScene]([ExtResource("6_h8vvy")])
+
+[node name="HitNumberSpawner" type="Node" parent="."]
+script = ExtResource("10_mwqnm")
+enable_on_player = true
+player_color = Color(1, 0.454902, 0.478431, 1)
+enable_on_enemy = true
+enemy_color = Color(0.517647, 0.513726, 1, 1)

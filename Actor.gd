@@ -1,8 +1,19 @@
 class_name Actor
 extends RigidBody2D
 
-@export var max_health:float = 10
-@onready var health:float = max_health
+@export var max_health:float = 10:
+	set(to):
+		set_block_signals(true)
+		health = to * health/max_health
+		max_health = to
+		set_block_signals(false)
+		health_changed.emit()
+
+@onready var health:float = max_health:
+	set(to):
+		health=to
+		health_changed.emit()
+
 ## Disables death. Can still take damage, but health never goes below 0.
 @export var immortal:bool = false
 ## Toggles whether or not queue_free should automatically be called on death.
@@ -60,11 +71,28 @@ signal death(damage:Damage)
 signal kill(damage:Damage)
 signal damage_taken(damage:Damage)
 signal damage_dealt(damage:Damage)
+signal health_changed
+
+static var something_spawned:Signal
+static var something_died:Signal
+static var something_took_damage:Signal
+static func _static_init()->void:
+	(Actor as Object).add_user_signal('something_spawned',[{'name':'thing','type':TYPE_OBJECT}])
+	something_spawned = Signal(Actor,'something_spawned')
+	(Actor as Object).add_user_signal('something_died',[{'name':'damage','type':TYPE_OBJECT}])
+	something_died = Signal(Actor,'something_died')
+	(Actor as Object).add_user_signal('something_took_damage',[{'name':'damage','type':TYPE_OBJECT}])
+	something_took_damage = Signal(Actor,'something_took_damage')
 
 func _init()->void:
 	custom_integrator=true
 	contact_monitor=true
 	max_contacts_reported=3
+	# using _init instead of _ready for this to prevent it from being overridden
+	ready.connect(_actor_ready)
+	
+func _actor_ready()->void:
+	something_spawned.emit(self)
 
 func take_damage(damage:Damage)->void:
 	damage.target=self
@@ -73,6 +101,7 @@ func take_damage(damage:Damage)->void:
 	if(is_instance_valid(damage.attacker)):
 		damage.attacker.damage_dealt.emit(damage)
 	damage_taken.emit(damage)
+	something_took_damage.emit(damage)
 	health -= damage.amount
 	if(immortal):
 		health = max(health,0)
@@ -80,6 +109,7 @@ func take_damage(damage:Damage)->void:
 		if(is_instance_valid(damage.attacker)):
 			damage.attacker.kill.emit(damage)
 		death.emit(damage)
+		something_died.emit(damage)
 		if(free_on_death):
 			queue_free()
 
