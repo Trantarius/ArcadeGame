@@ -56,13 +56,20 @@ func spawn_an_enemy()->void:
 			chosen_scene=scene
 			break
 	var enemy:Enemy = chosen_scene.instantiate()
+	# it might somehow trigger a collision if it's at 0,0, so start it off really far away
+	enemy.position = Vector2(1000000,1000000)
 	add_child(enemy)
 	
 	var point_found:bool=false
 	var candidate:Transform2D
 	var attempts:int = 0
+	const max_attempts:int = 3
 	while(!point_found):
 		attempts += 1
+		if(attempts>max_attempts):
+			push_error("Failed to place an enemy after ",max_attempts," attempts")
+			enemy.queue_free()
+			return
 		
 		#pick a random position and rotation
 		var theta:float = randf()*TAU

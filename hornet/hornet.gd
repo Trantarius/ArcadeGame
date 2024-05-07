@@ -11,6 +11,11 @@ const base_distance:float = 512
 func _ready()->void:
 	make_new_shot()
 
+func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
+	super(state)
+	if(is_instance_valid(charging_shot)):
+		charging_shot.linear_velocity = state.get_velocity_at_local_position($Marker2D.position)
+
 func _physics_process(delta: float) -> void:
 	
 	var target:Player = Player.find_nearest_player(position)
@@ -39,7 +44,7 @@ func _physics_process(delta: float) -> void:
 		
 	if(!is_instance_valid(charging_shot)):
 		make_new_shot()
-		
+	
 	charging_shot.scale = Vector2.ONE*fire_timer/fire_delay
 	if(fire_timer>fire_delay):
 		fire()
@@ -52,6 +57,7 @@ func make_new_shot()->void:
 	add_child(charging_shot)
 	charging_shot.position=$Marker2D.position
 	charging_shot.source=self
+	charging_shot.process_mode = Node.PROCESS_MODE_DISABLED
 	charging_shot.hit.connect(on_charging_shot_hit)
 
 func on_charging_shot_hit(_collision:KinematicCollision2D)->void:
@@ -62,5 +68,6 @@ func fire()->void:
 	charging_shot.reparent(get_parent())
 	charging_shot.linear_velocity = 200 * global_transform.basis_xform(Vector2.RIGHT).normalized() + linear_velocity
 	charging_shot.hit.disconnect(on_charging_shot_hit)
+	charging_shot.process_mode = Node.PROCESS_MODE_INHERIT
 	charging_shot=null
 	make_new_shot()

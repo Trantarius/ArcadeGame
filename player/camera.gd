@@ -34,7 +34,8 @@ func _exit_tree() -> void:
 	RenderingServer.frame_pre_draw.disconnect(update)
 
 func update() -> void:
-	var now:int = Time.get_ticks_usec()
-	var dt:float = Engine.get_physics_interpolation_fraction()/Engine.physics_ticks_per_second
-	global_position = get_parent().position + get_parent().linear_velocity * dt
+	if(!is_free):
+		var now:int = Time.get_ticks_usec()
+		var dt:float = Engine.get_physics_interpolation_fraction()/Engine.physics_ticks_per_second
+		global_position = get_parent().position + get_parent().linear_velocity * dt
 		
