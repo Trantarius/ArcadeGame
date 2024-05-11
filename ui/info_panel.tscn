@@ -1,0 +1,98 @@
+[gd_scene load_steps=6 format=3 uid="uid://crylwoyahw6go"]
+
+[ext_resource type="Script" path="res://ui/info_panel.gd" id="1_40lju"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mww2x"]
+content_margin_left = 8.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
+bg_color = Color(0.0823529, 0.0823529, 0.0823529, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5k0ol"]
+bg_color = Color(0.705882, 0, 0, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n7qql"]
+bg_color = Color(0, 0.705882, 0, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7nde7"]
+content_margin_left = 8.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
+bg_color = Color(0.152941, 0.152941, 0.152941, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="InfoPanel" type="PanelContainer"]
+anchors_preset = -1
+offset_left = 32.0
+offset_top = 32.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_mww2x")
+script = ExtResource("1_40lju")
+score = 26.155
+health = 10.57
+max_health = 13.025
+include_basic_controls_in_abilities = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="ScoreLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Score: 26"
+
+[node name="HealthBar" type="ProgressBar" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 29.205)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_5k0ol")
+theme_override_styles/fill = SubResource("StyleBoxFlat_n7qql")
+max_value = 13.025
+value = 10.57
+show_percentage = false
+
+[node name="Label" type="Label" parent="VBoxContainer/HealthBar"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 4
+text = "11 / 14"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_7nde7")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Abilities:"
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 32
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/PanelContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2

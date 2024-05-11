@@ -10,7 +10,10 @@ extends Actor
 ## Time until the next shot can be taken
 var shot_timer:float
 ## Total value of all enemies this player has killed
-var score:float
+var score:float:
+	set(to):
+		score=to
+		score_changed.emit(score)
 
 var movement_ability:PlayerAbility:
 	set(to):
@@ -19,13 +22,11 @@ var movement_ability:PlayerAbility:
 			movement_ability = to
 			if(is_instance_valid(old)):
 				remove_child(old)
+				old.queue_free()
 			if(is_instance_valid(movement_ability)):
 				add_child(movement_ability)
-			ability_changed.emit(old,movement_ability)
-			if(is_instance_valid(old)):
-				old.queue_free()
 
-signal ability_changed(from:PlayerAbility,to:PlayerAbility)
+signal score_changed(to:float)
 
 func _on_death(damage:Damage)->void:
 	# ensure camera stays around after player dies

@@ -1,7 +1,7 @@
 [gd_scene load_steps=11 format=3 uid="uid://gvye6ccvjd55"]
 
+[ext_resource type="PackedScene" uid="uid://crylwoyahw6go" path="res://ui/info_panel.tscn" id="2_8k6rt"]
 [ext_resource type="PackedScene" uid="uid://ccgupredk0a3f" path="res://player/player.tscn" id="3_d6lla"]
-[ext_resource type="Script" path="res://ui/score_display.gd" id="3_ms2pv"]
 [ext_resource type="PackedScene" uid="uid://cb3satgchcg1i" path="res://spiky/spiky.tscn" id="5_cgv82"]
 [ext_resource type="Script" path="res://asteroid/AsteroidSpawner.gd" id="5_hea7j"]
 [ext_resource type="Script" path="res://PickupSpawner.gd" id="6_0lnqi"]
@@ -16,13 +16,8 @@
 [node name="UILayer" type="CanvasLayer" parent="."]
 layer = 2
 
-[node name="ScoreDisplay" type="Label" parent="UILayer"]
-offset_left = 16.0
-offset_top = 16.0
-offset_right = 16.0
-offset_bottom = 16.0
-theme_override_font_sizes/font_size = 32
-script = ExtResource("3_ms2pv")
+[node name="InfoPanel" parent="UILayer" instance=ExtResource("2_8k6rt")]
+anchors_preset = 0
 
 [node name="Player" parent="." instance=ExtResource("3_d6lla")]
 
