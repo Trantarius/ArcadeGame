@@ -16,6 +16,9 @@ extends Actor
 func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 	super(state)
 	
+	if(health<=0):
+		return
+	
 	for coll_idx:int in range(state.get_contact_count()):
 		if(state.get_contact_collider_object(coll_idx) is Player):
 			var damage:Damage = Damage.new()

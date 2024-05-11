@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://gvye6ccvjd55"]
+[gd_scene load_steps=12 format=3 uid="uid://gvye6ccvjd55"]
 
 [ext_resource type="PackedScene" uid="uid://crylwoyahw6go" path="res://ui/info_panel.tscn" id="2_8k6rt"]
 [ext_resource type="PackedScene" uid="uid://ccgupredk0a3f" path="res://player/player.tscn" id="3_d6lla"]
@@ -10,6 +10,7 @@
 [ext_resource type="PackedScene" uid="uid://b84l7h2qte8nl" path="res://spiky/spiky_factory.tscn" id="6_x7aoa"]
 [ext_resource type="Script" path="res://EnemySpawner.gd" id="6_xg0x2"]
 [ext_resource type="Script" path="res://HitNumberSpawner.gd" id="10_mwqnm"]
+[ext_resource type="Script" path="res://HealthBarSpawner.gd" id="11_bnywn"]
 
 [node name="Main" type="Node"]
 
@@ -18,8 +19,6 @@ layer = 2
 
 [node name="InfoPanel" parent="UILayer" instance=ExtResource("2_8k6rt")]
 anchors_preset = 0
-
-[node name="Player" parent="." instance=ExtResource("3_d6lla")]
 
 [node name="EnemySpawner" type="Node" parent="."]
 script = ExtResource("6_xg0x2")
@@ -41,3 +40,8 @@ enable_on_player = true
 player_color = Color(1, 0.454902, 0.478431, 1)
 enable_on_enemy = true
 enemy_color = Color(0.517647, 0.513726, 1, 1)
+
+[node name="HealthBarSpawner" type="Node" parent="."]
+script = ExtResource("11_bnywn")
+
+[node name="Player" parent="." instance=ExtResource("3_d6lla")]

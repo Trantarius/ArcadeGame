@@ -4,20 +4,25 @@ extends RigidBody2D
 @export var max_health:float = 10:
 	set(to):
 		set_block_signals(true)
-		health = to * health/max_health
+		if(is_inside_tree()):
+			health = to * health/max_health
+		else:
+			health = max_health
 		max_health = to
 		set_block_signals(false)
-		health_changed.emit()
+		health_changed.emit(health,max_health)
 
-@onready var health:float = max_health:
+var health:float = max_health:
 	set(to):
-		health=to
-		health_changed.emit()
+		health = clamp(to,0,max_health)
+		health_changed.emit(health,max_health)
 
 ## Disables death. Can still take damage, but health never goes below 0.
 @export var immortal:bool = false
 ## Toggles whether or not queue_free should automatically be called on death.
 @export var free_on_death:bool = true
+## Approximate size of the actor
+@export var radius:float = 32
 
 enum ControlMode{
 	## Target is the desired thrust value (will be clamped to max thrust before being applied).
@@ -71,7 +76,7 @@ signal death(damage:Damage)
 signal kill(damage:Damage)
 signal damage_taken(damage:Damage)
 signal damage_dealt(damage:Damage)
-signal health_changed
+signal health_changed(health:float, max_health:float)
 
 static var something_spawned:Signal
 static var something_died:Signal
@@ -93,6 +98,7 @@ func _init()->void:
 	
 func _actor_ready()->void:
 	something_spawned.emit(self)
+	health = max_health
 
 func take_damage(damage:Damage)->void:
 	damage.target=self
