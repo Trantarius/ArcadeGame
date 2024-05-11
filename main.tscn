@@ -18,7 +18,6 @@
 layer = 2
 
 [node name="InfoPanel" parent="UILayer" instance=ExtResource("2_8k6rt")]
-anchors_preset = 0
 
 [node name="EnemySpawner" type="Node" parent="."]
 script = ExtResource("6_xg0x2")

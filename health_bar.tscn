@@ -17,7 +17,6 @@ corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 
 [node name="HealthBar" type="Node2D" groups=["HealthBars"]]
-top_level = true
 script = ExtResource("1_tm061")
 rotation_behavior = 0
 

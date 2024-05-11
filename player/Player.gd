@@ -28,7 +28,7 @@ var movement_ability:PlayerAbility:
 
 signal score_changed(to:float)
 
-func _on_death(damage:Damage)->void:
+func _on_death(_damage:Damage)->void:
 	# ensure camera stays around after player dies
 	$Camera2D.is_free=true
 	$Camera2D.reparent(get_parent())

@@ -39,7 +39,6 @@ corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
 [node name="InfoPanel" type="PanelContainer"]
-anchors_preset = -1
 offset_left = 32.0
 offset_top = 32.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_mww2x")

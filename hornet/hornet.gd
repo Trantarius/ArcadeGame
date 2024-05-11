@@ -2,7 +2,7 @@ extends Enemy
 
 ## Time between shots (seconds).
 const fire_delay:float = 4
-var fire_timer = 0
+var fire_timer:float = 0
 var charging_shot:Projectile
 
 ## Desired distance from the target player
@@ -46,6 +46,7 @@ func _physics_process(delta: float) -> void:
 		make_new_shot()
 	
 	charging_shot.scale = Vector2.ONE*fire_timer/fire_delay
+	charging_shot.damage_amount = fire_timer/fire_delay
 	if(fire_timer>fire_delay):
 		fire()
 		fire_timer-=fire_delay

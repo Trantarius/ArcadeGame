@@ -24,29 +24,29 @@ func _ready()->void:
 	var player:Player = get_tree().get_first_node_in_group('Players')
 	if(player==null):
 		return
-	for n in range(asteroid_count):
-		spawn_asteroid(func(): return player.position + Vector2(randf_range(-despawn_distance,spawn_distance),randf_range(-despawn_distance,spawn_distance)))
+	for n:int in range(asteroid_count):
+		spawn_asteroid(func()->Vector2: return player.position + Vector2(randf_range(-despawn_distance,spawn_distance),randf_range(-despawn_distance,spawn_distance)))
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	var player:Player = get_tree().get_first_node_in_group('Players')
 	if(player==null):
 		return
 	
-	for child in get_children():
+	for child:Node in get_children():
 		if(player==null):
 			break
 		var relpos:Vector2 = child.position - player.position
 		if(relpos.x < -despawn_distance):
-			spawn_asteroid(func(): return player.position + Vector2(spawn_distance,(randf()-0.5)*despawn_distance))
+			spawn_asteroid(func()->Vector2: return player.position + Vector2(spawn_distance,(randf()-0.5)*despawn_distance))
 			child.queue_free()
 		elif(relpos.x > despawn_distance):
-			spawn_asteroid(func(): return player.position + Vector2(-spawn_distance,(randf()-0.5)*despawn_distance))
+			spawn_asteroid(func()->Vector2: return player.position + Vector2(-spawn_distance,(randf()-0.5)*despawn_distance))
 			child.queue_free()
 		elif(relpos.y < -despawn_distance):
-			spawn_asteroid(func(): return player.position + Vector2((randf()-0.5)*despawn_distance,spawn_distance))
+			spawn_asteroid(func()->Vector2: return player.position + Vector2((randf()-0.5)*despawn_distance,spawn_distance))
 			child.queue_free()
 		elif(relpos.y > despawn_distance):
-			spawn_asteroid(func(): return player.position + Vector2((randf()-0.5)*despawn_distance,-spawn_distance))
+			spawn_asteroid(func()->Vector2: return player.position + Vector2((randf()-0.5)*despawn_distance,-spawn_distance))
 			child.queue_free()
 
 func rand_mul(std:float)->float:

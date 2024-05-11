@@ -126,7 +126,7 @@ func get_controls_string(action:StringName)->String:
 	else:
 		ret = '['
 		ret += events[0].as_text().trim_suffix(' (Physical)')
-		for i in range(1,events.size()):
+		for i:int in range(1,events.size()):
 			ret += '|' + events[i].as_text().trim_suffix(' (Physical)')
 		ret += ']'
 	return ret

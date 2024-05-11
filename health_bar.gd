@@ -3,7 +3,7 @@ extends Interpolator
 ## Hides the health bar when the subject's health is full
 var hide_when_full:bool = false
 
-func update():
+func update()->void:
 	super()
 	$ProgressBar.offset_left = -get_parent().radius * 0.666
 	$ProgressBar.offset_right = get_parent().radius * 0.666

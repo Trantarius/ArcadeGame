@@ -35,7 +35,6 @@ func _exit_tree() -> void:
 
 func update() -> void:
 	if(!is_free):
-		var now:int = Time.get_ticks_usec()
 		var dt:float = Engine.get_physics_interpolation_fraction()/Engine.physics_ticks_per_second
 		global_position = get_parent().position + get_parent().linear_velocity * dt
 		

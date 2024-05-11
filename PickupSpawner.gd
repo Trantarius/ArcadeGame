@@ -27,7 +27,7 @@ func _ready()->void:
 func _on_something_died(damage:Damage)->void:
 	if(damage.attacker is Player && damage.target is Enemy):
 	
-		var total = randf() * damage.target.point_value * (abs(randfn(1,1))+1)
+		var total:float = randf() * damage.target.point_value * (abs(randfn(1,1))+1)
 		
 		while(total>min_value):
 			# pick a random scene from spawn list, weighted by value

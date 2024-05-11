@@ -41,22 +41,22 @@ extends RigidBody2D
 		curvature_limit=to
 		generate()
 
-static func change_poly_resolution(poly:PackedVector2Array,resolution:float)->PackedVector2Array:
+static func change_poly_resolution(poly:PackedVector2Array,res:float)->PackedVector2Array:
 	var retpoly:PackedVector2Array = []
 	var dist:float = 0
-	for idx in range(poly.size()):
+	for idx:int in range(poly.size()):
 		var seglen:float = (poly[(idx+1)%poly.size()]-poly[idx]).length()
 		dist += seglen
-		while(dist>resolution):
-			dist-=resolution
+		while(dist>res):
+			dist-=res
 			retpoly.push_back(lerp(poly[idx], poly[(idx+1)%poly.size()], (seglen-dist)/seglen))
-	if(dist>resolution/2):
+	if(dist>res/2):
 		retpoly.push_back(poly[0])
 	return retpoly
 
 static func calc_poly_normals(poly:PackedVector2Array)->PackedVector2Array:
 	var normals:PackedVector2Array=[]
-	for n in range(poly.size()):
+	for n:int in range(poly.size()):
 		var dir:Vector2 = ((poly[(n+1)%poly.size()]-poly[n])+(poly[n]-poly[n-1]))
 		normals.push_back(dir.normalized().orthogonal())
 	return normals
@@ -64,7 +64,7 @@ static func calc_poly_normals(poly:PackedVector2Array)->PackedVector2Array:
 static func optimize_curvature(poly:PackedVector2Array, limit:float )->PackedVector2Array:
 	var retpoly:PackedVector2Array=[]
 	var last_dir:Vector2 = (poly[0]-poly[-1]).normalized()
-	for idx in range(poly.size()):
+	for idx:int in range(poly.size()):
 		var dir:Vector2 = (poly[(idx+1)%poly.size()]-poly[idx]).normalized()
 		if(dir.dot(last_dir)<(1-limit)):
 			retpoly.push_back(poly[idx])
@@ -72,8 +72,8 @@ static func optimize_curvature(poly:PackedVector2Array, limit:float )->PackedVec
 	return retpoly
 
 static func is_polygon_self_intersecting(poly:PackedVector2Array)->bool:
-	for n in range(poly.size()):
-		for i in range(poly.size()):
+	for n:int in range(poly.size()):
+		for i:int in range(poly.size()):
 			if(i==n||i==n-1||i==n+1||(i==0&&n==poly.size()-1)||(i==poly.size()-1&&n==0)):
 				continue
 			if(Geometry2D.segment_intersects_segment(poly[n-1],poly[n],poly[i-1],poly[i])):
@@ -81,54 +81,54 @@ static func is_polygon_self_intersecting(poly:PackedVector2Array)->bool:
 	return false
 
 ## Generates the polygon for the asteroid in a worker thread. 
-static func create_asteroid_polygon(noise:FastNoiseLite, noise_strength:float, radius:float,
-	stretch_limit:float, resolution:float, curvature_limit:float)->PackedVector2Array:
+static func create_asteroid_polygon(_noise:FastNoiseLite, _noise_strength:float, _radius:float,
+	_stretch_limit:float, _resolution:float, _curvature_limit:float)->PackedVector2Array:
 	
-	noise=noise.duplicate()
+	_noise=_noise.duplicate()
 	
 	# a dummy object to hold a 'done' signal
 	var done_object:Object = Object.new()
 	done_object.add_user_signal("done",[{'name':'poly','type':TYPE_PACKED_VECTOR2_ARRAY}])
 	var done_signal:Signal = Signal(done_object, "done")
 	
-	var thread_func:Callable=func():
+	var thread_func:Callable=func()->void:
 		var poly:PackedVector2Array = []
 		var rand:RandomNumberGenerator = RandomNumberGenerator.new()
-		rand.seed = noise.seed
-		var stretch:float = rand.randf()*stretch_limit
+		rand.seed = _noise.seed
+		var stretch:float = rand.randf()*_stretch_limit
 		var rot:float = TAU*rand.randf()
-		noise.set_block_signals(true)
-		noise.frequency = 4.0/radius
-		noise.set_block_signals(false)
+		_noise.set_block_signals(true)
+		_noise.frequency = 4.0/_radius
+		_noise.set_block_signals(false)
 		
-		for s in range(8):
+		for s:int in range(8):
 			var subshape:PackedVector2Array=[]
-			var bias:Vector2
-			bias.x = rand.randf_range(-1,1)*radius/2
-			bias.y = rand.randf_range(-1,1)*radius/2
+			var bias:Vector2 = Vector2(
+				rand.randf_range(-1,1)*_radius/2,
+				rand.randf_range(-1,1)*_radius/2)
 			bias *= Vector2(1+stretch,1-stretch)
 			bias = bias.rotated(rot)
-			for p in range(32):
-				var point:Vector2 = Vector2.from_angle(rand.randf()*TAU)*rand.randf()*radius/2.5
+			for p:int in range(32):
+				var point:Vector2 = Vector2.from_angle(rand.randf()*TAU)*rand.randf()*_radius/2.5
 				subshape.push_back(point+bias)
 			subshape = Geometry2D.convex_hull(subshape)
 			poly = Geometry2D.merge_polygons(poly,subshape)[0]
-		poly = change_poly_resolution(poly,radius/4)
+		poly = change_poly_resolution(poly,_radius/4)
 		
 		var normals:PackedVector2Array = calc_poly_normals(poly)
-		for n in range(poly.size()):
-			var nval:float = noise.get_noise_2dv(poly[n])
-			poly[n] += normals[n] * nval * noise_strength * radius
+		for n:int in range(poly.size()):
+			var nval:float = _noise.get_noise_2dv(poly[n])
+			poly[n] += normals[n] * nval * _noise_strength * _radius
 		
-		poly = change_poly_resolution(poly,resolution)
+		poly = change_poly_resolution(poly,_resolution)
 		
 		normals = calc_poly_normals(poly)
-		for n in range(poly.size()):
-			var nval:float = noise.get_noise_2dv(poly[n])
-			poly[n] += normals[n] * nval * noise_strength * radius
+		for n:int in range(poly.size()):
+			var nval:float = _noise.get_noise_2dv(poly[n])
+			poly[n] += normals[n] * nval * _noise_strength * _radius
 		
-		poly = change_poly_resolution(poly,resolution)
-		poly = optimize_curvature(poly,curvature_limit)
+		poly = change_poly_resolution(poly,_resolution)
+		poly = optimize_curvature(poly,_curvature_limit)
 		if(is_polygon_self_intersecting(poly)):
 			poly=[]
 		done_object.call_deferred("emit_signal","done",poly)
@@ -155,10 +155,10 @@ func generate()->void:
 	const max_attempts:int=3
 	
 	var poly:PackedVector2Array = []
-	for a in range(max_attempts):
+	for a:int in range(max_attempts):
 		
 		_generate_running=true
-		poly = await create_asteroid_polygon(noise,noise_strength,radius,stretch_limit,resolution,curvature_limit)
+		poly = await Asteroid.create_asteroid_polygon(noise,noise_strength,radius,stretch_limit,resolution,curvature_limit)
 		_generate_running=false
 		if(_generate_queued):
 			_generate_queued=false

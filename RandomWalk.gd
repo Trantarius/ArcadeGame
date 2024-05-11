@@ -16,11 +16,11 @@ enum {LINEAR=0,CUBIC=1,BEZIER=2}
 ## Method of interpolation between steps
 @export_enum("Linear:0","Cubic:1","Bezier:2") var interpolation:int
 
-@export var draw_line:bool = false:
+@export var enable_draw_line:bool = false:
 	set(to):
-		if(draw_line!=to):
-			draw_line=to
-			if(draw_line):
+		if(enable_draw_line!=to):
+			enable_draw_line=to
+			if(enable_draw_line):
 				line=Line2D.new()
 				line.width=2
 				add_child(line,false,Node.INTERNAL_MODE_FRONT)
@@ -50,7 +50,7 @@ func _ready()->void:
 
 func reset(start:Vector2=Vector2(INF,INF))->void:
 	points=[]
-	if(draw_line):
+	if(enable_draw_line):
 		line_points=[]
 		current_line_length=0
 		line.points=line_points
@@ -78,7 +78,7 @@ func _physics_process(delta: float) -> void:
 		BEZIER:
 			position = lerp(lerp(points[0],points[1],(progress+1)/2),lerp(points[1],points[2],progress/2),progress)
 		
-	if(draw_line):
+	if(enable_draw_line):
 		if(!line_points.is_empty()):
 			current_line_length += (position-line_points.back()).length()
 			while(line_points.size()>=2 && current_line_length>=line_length):
