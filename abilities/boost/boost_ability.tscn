@@ -4,9 +4,6 @@
 
 [node name="BoostAbility" type="Node"]
 script = ExtResource("1_uo0u2")
-strength = 500.0
-ability_name = &"Boost"
 cooldown = 5.0
-equip_type = 1
-
-[connection signal="activate" from="." to="." method="_on_activate"]
+ability_name = &"Boost"
+mod_name = &"movement_ability"

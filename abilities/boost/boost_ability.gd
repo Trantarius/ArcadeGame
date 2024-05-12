@@ -1,8 +1,8 @@
-extends PlayerAbility
+extends CooldownAbility
 
-@export var strength:float = 100
+const strength:float = 500
 
-func _on_activate() -> void:
+func _activate() -> void:
 	var player:Player = get_parent()
 	var dir:Vector2 = Vector2.UP.rotated(player.global_rotation)
 	var impulse:Vector2 = dir*strength

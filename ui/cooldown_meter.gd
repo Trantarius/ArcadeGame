@@ -6,15 +6,12 @@ var text:String:
 	get:
 		return $Label.text
 
-var timer:CooldownTimer=CooldownTimer.new()
-
-func reset(time:float)->void:
-	timer.time=time
-	$ProgressBar.max_value=time
-	$ProgressBar.value=time
-	$Panel.hide()
+var ability:CooldownAbility
 
 func _process(_delta: float) -> void:
-	$ProgressBar.value = timer.time
-	if($ProgressBar.value<=0):
+	$ProgressBar.max_value = ability.cooldown
+	$ProgressBar.value = float(Time.get_ticks_usec()-ability.last_used_tick)/1_000_000
+	if($ProgressBar.value>=$ProgressBar.max_value):
 		$Panel.show()
+	else:
+		$Panel.hide()

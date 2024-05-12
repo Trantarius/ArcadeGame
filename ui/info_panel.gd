@@ -81,16 +81,15 @@ func update_abilities()->void:
 		abilities[key]=make_ability_entry(key)
 
 func make_ability_entry(ability:PlayerAbility)->Control:
-	if(ability.equip_type==PlayerAbility.MOVEMENT || ability.equip_type==PlayerAbility.ATTACK):
+	if(ability is CooldownAbility):
 		var cdm:Control = preload("res://ui/cooldown_meter.tscn").instantiate()
 		ability_list.add_child(cdm)
+		cdm.ability = ability
 		if(include_controls_in_abilities):
-			cdm.text = get_controls_string(&'movement_ability' if ability.equip_type==PlayerAbility.MOVEMENT else &'attack_ability')
+			cdm.text = get_controls_string(ability.mod_name)
 			cdm.text += ' ' + ability.ability_name
 		else:
 			cdm.text = ability.ability_name
-		
-		ability.activate.connect(cdm.reset.bind(ability.cooldown))
 		
 		return cdm
 	else:

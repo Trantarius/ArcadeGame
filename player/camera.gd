@@ -36,5 +36,7 @@ func _exit_tree() -> void:
 func update() -> void:
 	if(!is_free):
 		var dt:float = Engine.get_physics_interpolation_fraction()/Engine.physics_ticks_per_second
-		global_position = get_parent().position + get_parent().linear_velocity * dt
+		var targpos:Vector2 = get_parent().position + get_parent().linear_velocity * dt
+		var delta = (targpos-position).limit_length(get_parent().max_linear_speed*get_process_delta_time())
+		global_position += delta
 		

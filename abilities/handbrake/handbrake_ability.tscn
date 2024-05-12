@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://c8qt870yuj2yn"]
+
+[ext_resource type="Script" path="res://abilities/handbrake/handbrake_ability.gd" id="1_2d20b"]
+
+[node name="HandbrakeAbility" type="Node"]
+script = ExtResource("1_2d20b")
+cooldown = 5.0
+ability_name = &"Handbrake"
+mod_name = &"movement_ability"

@@ -72,6 +72,9 @@ var angular_thrust:float
 ## Angular acceleration applied last physics frame (excluding collisions).
 var angular_acceleration:float
 
+## Map of StringName:Modifier
+var modifiers:Dictionary
+
 signal death(damage:Damage)
 signal kill(damage:Damage)
 signal damage_taken(damage:Damage)
@@ -119,7 +122,40 @@ func take_damage(damage:Damage)->void:
 		if(free_on_death):
 			queue_free()
 
+func add_modifier(mod:Modifier)->void:
+	if(modifiers.has(mod.mod_name)):
+		remove_child(modifiers[mod.mod_name])
+		modifiers[mod.mod_name].queue_free()
+	modifiers[mod.mod_name]=mod
+	add_child(mod)
+
+func remove_modifier(mod_name:StringName)->void:
+	if(modifiers.has(mod_name)):
+		remove_child(modifiers[mod_name])
+		modifiers[mod_name].queue_free()
+	modifiers.erase(mod_name)
+
+
+var _actor_warp_queue:Array[Dictionary]
+
+## Warps the actor in a direction defined by motion. It will be stopped early by anything in the way.
+func slide_warp(motion:Vector2)->void:
+	_actor_warp_queue.push_back({&'type':&'slide',&'motion':motion})
+
+## Warps the actor in a direction defined by motion. It will be cancelled if there is anything at the destination.
+func jump_warp(motion:Vector2)->void:
+	_actor_warp_queue.push_back({&'type':&'jump',&'motion':motion})
+
 func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
+	
+	for warp:Dictionary in _actor_warp_queue:
+		if(warp.type==&'slide'):
+			move_and_collide(warp.motion)
+		else:
+			var dest:Transform2D = global_transform.translated(warp.motion)
+			if(!test_move(dest,Vector2.ZERO)):
+				state.transform = dest
+	_actor_warp_queue.clear()
 	
 	var current_position:Vector2 = state.transform.origin - reference_position
 	var current_velocity:Vector2 = state.linear_velocity - reference_velocity
@@ -131,17 +167,17 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 		var t_maxacc:float = max_linear_thrust*state.inverse_mass
 		var ret:Dictionary = {}
 		if(t_maxacc**2<perp.length_squared()):
-			ret['success']=false
+			ret[&'success']=false
 			# thrust won't be able to overcome current acc, just get as close as possible
 			if(current_acceleration.dot(wdir)>0):
-				ret['thrust'] = max_linear_thrust*-perp.normalized()
+				ret[&'thrust'] = max_linear_thrust*-perp.normalized()
 			else:
-				ret['thrust'] = max_linear_thrust*-current_acceleration.normalized()
+				ret[&'thrust'] = max_linear_thrust*-current_acceleration.normalized()
 		else:
-			ret['success'] = true
-			ret['final_acc'] = sqrt(t_maxacc**2 - perp.length_squared())+abs(cw)
+			ret[&'success'] = true
+			ret[&'final_acc'] = sqrt(t_maxacc**2 - perp.length_squared())+abs(cw)
 			var t_acc:Vector2 = wdir*(ret.final_acc)-current_acceleration
-			ret['thrust'] = t_acc/state.inverse_mass
+			ret[&'thrust'] = t_acc/state.inverse_mass
 		return ret
 	
 	match(linear_control_mode):
