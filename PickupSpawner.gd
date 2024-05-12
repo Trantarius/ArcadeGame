@@ -44,7 +44,6 @@ func _on_something_died(damage:Damage)->void:
 			var pickup:Pickup = chosen_scene.instantiate()
 			pickup.position = damage.target.position
 			pickup.linear_velocity = Vector2(randfn(0,20),randfn(0,20)) + damage.target.linear_velocity
-			pickup.target = damage.attacker
 			add_child(pickup)
 			total-=pickup.value
 		

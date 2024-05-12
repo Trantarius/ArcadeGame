@@ -46,28 +46,61 @@ func update_health()->void:
 		if(is_inside_tree()):
 			update_abilities()
 
-@export var abilities:Array[PlayerAbility]:
-	set(to):
-		abilities=to
-		if(is_inside_tree()):
-			update_abilities()
+var abilities:Dictionary
 
 func update_abilities()->void:
-	for child:Node in ability_list.get_children():
-		child.queue_free()
 	
 	if(include_basic_controls_in_abilities && include_controls_in_abilities):
-		add_ability_entry(get_controls_string(&'left')+' '+get_controls_string(&'right')+' Rotate')
-		add_ability_entry(get_controls_string(&'forward')+' Thrust')
+		if(!abilities.has(&'Rotate')):
+			var lbl:Label = Label.new()
+			ability_list.add_child(lbl)
+			abilities[&'Rotate']=lbl
+		if(!abilities.has(&'Thrust')):
+			var lbl:Label = Label.new()
+			ability_list.add_child(lbl)
+			abilities[&'Thrust']=lbl
+		abilities[&'Rotate'].text = get_controls_string(&'left')+' '+get_controls_string(&'right')+' Rotate'
+		abilities[&'Thrust'].text = get_controls_string(&'forward')+' Thrust'
+		
+	else:
+		if(abilities.has(&'Rotate')):
+			abilities[&'Rotate'].queue_free()
+			abilities.erase(&'Rotate')
+		if(!abilities.has(&'Thrust')):
+			abilities[&'Thrust'].queue_free()
+			abilities.erase(&'Thrust')
+			
+	var keys:Array = abilities.keys()
+	for key:Variant in keys:
+		if(!(key is PlayerAbility)):
+			continue
+		abilities[key].queue_free()
+		if(!is_instance_valid(key)):
+			abilities.erase(key)
+			continue
+		abilities[key]=make_ability_entry(key)
 
-	for ability:PlayerAbility in abilities:
-		if(is_instance_valid(ability)):
-			add_ability_entry(get_ability_string(ability))
-
-func add_ability_entry(entry:String)->void:
-	var lbl:Label = Label.new()
-	lbl.text = entry
-	ability_list.add_child(lbl)
+func make_ability_entry(ability:PlayerAbility)->Control:
+	if(ability.equip_type==PlayerAbility.MOVEMENT || ability.equip_type==PlayerAbility.ATTACK):
+		var cdm:Control = preload("res://ui/cooldown_meter.tscn").instantiate()
+		ability_list.add_child(cdm)
+		if(include_controls_in_abilities):
+			cdm.text = get_controls_string(&'movement_ability' if ability.equip_type==PlayerAbility.MOVEMENT else &'attack_ability')
+			cdm.text += ' ' + ability.ability_name
+		else:
+			cdm.text = ability.ability_name
+		
+		ability.activate.connect(cdm.reset.bind(ability.cooldown))
+		
+		return cdm
+	else:
+		var lbl:Label = Label.new()
+		if(include_controls_in_abilities):
+			lbl.text =  '[Passive] ' + ability.ability_name
+		else:
+			lbl.text = ability.ability_name
+		ability_list.add_child(lbl)
+		return lbl
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -92,31 +125,16 @@ func _on_player_score_changed(to:float)->void:
 
 func _on_player_child_added(child:Node)->void:
 	if(child is PlayerAbility):
-		abilities.push_back(child)
+		abilities[child]=make_ability_entry(child)
 
 func _on_player_child_removed(child:Node)->void:
-	if(child is PlayerAbility):
+	if(child is PlayerAbility && abilities.has(child)):
+		abilities[child].queue_free()
 		abilities.erase(child)
 
 func _on_player_health_changed(current:float, maximum:float)->void:
 	max_health = maximum
 	health = current
-
-func get_ability_string(ability:PlayerAbility)->String:
-	if(include_controls_in_abilities):
-		var ret:String
-		match ability.equip_type:
-			PlayerAbility.PASSIVE:
-				ret = '[Passive]'
-			PlayerAbility.MOVEMENT:
-				ret = get_controls_string(&'movement_ability')
-			PlayerAbility.ATTACK:
-				ret = get_controls_string(&'attack_ability')
-		
-		ret += ' ' + ability.ability_name
-		return ret
-	else:
-		return ability.ability_name
 
 func get_controls_string(action:StringName)->String:
 	var ret:String

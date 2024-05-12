@@ -62,7 +62,7 @@ func spawn_asteroid(locator:Callable)->void:
 	add_child(aster)
 	
 	var candidate:Transform2D = Transform2D(randf()*TAU,locator.call())
-	const max_attempts:int = 4
+	const max_attempts:int = 5
 	var attempt_count:int = 1
 	while(aster.test_move(candidate,Vector2.ZERO)):
 		if(attempt_count>=max_attempts):

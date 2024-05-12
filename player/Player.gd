@@ -7,13 +7,13 @@ extends Actor
 @export var auto_fire:bool
 ## Approximate radius at which to collect pickups
 @export var pickup_magnet:float = 256
-## Time until the next shot can be taken
-var shot_timer:float
 ## Total value of all enemies this player has killed
 var score:float:
 	set(to):
 		score=to
 		score_changed.emit(score)
+
+var shot_timer:CooldownTimer=CooldownTimer.new()
 
 var movement_ability:PlayerAbility:
 	set(to):
@@ -25,8 +25,33 @@ var movement_ability:PlayerAbility:
 				old.queue_free()
 			if(is_instance_valid(movement_ability)):
 				add_child(movement_ability)
+				
+var movement_ability_timer:CooldownTimer=CooldownTimer.new()
+
+var attack_ability:PlayerAbility:
+	set(to):
+		if(attack_ability!=to):
+			var old:PlayerAbility = attack_ability
+			attack_ability = to
+			if(is_instance_valid(old)):
+				remove_child(old)
+				old.queue_free()
+			if(is_instance_valid(attack_ability)):
+				add_child(attack_ability)
+				
+var attack_ability_timer:CooldownTimer=CooldownTimer.new()
 
 signal score_changed(to:float)
+
+func obtain_ability(ability:PlayerAbility)->void:
+	if(ability.equip_type==PlayerAbility.MOVEMENT):
+		movement_ability=ability
+		movement_ability_timer.time=0
+	elif(ability.equip_type==PlayerAbility.ATTACK):
+		attack_ability = ability
+		attack_ability_timer.time=0
+	else:
+		add_child(ability)
 
 func _on_death(_damage:Damage)->void:
 	# ensure camera stays around after player dies
@@ -51,10 +76,17 @@ func _physics_process(delta: float) -> void:
 		linear_target = Vector2.ZERO
 		$Interpolator/RocketParticles.emitting=false
 	
-	shot_timer-=delta
-	if((Input.is_action_pressed('shoot')!=auto_fire) && shot_timer<=0):
+	if((Input.is_action_pressed('shoot')!=auto_fire) && shot_timer.time<=0):
 		fire_bullet()
-		shot_timer = 1.0/fire_rate
+		shot_timer.time = 1.0/fire_rate
+
+func _input(event: InputEvent) -> void:
+	if(event.is_action_pressed("movement_ability") && movement_ability_timer.time<=0 && is_instance_valid(movement_ability)):
+		movement_ability.activate.emit()
+		movement_ability_timer.time = movement_ability.cooldown
+	elif(event.is_action_pressed("attack_ability") && attack_ability_timer.time<=0 && is_instance_valid(attack_ability)):
+		attack_ability.activate.emit()
+		attack_ability_timer.time = attack_ability.cooldown
 
 func fire_bullet()->void:
 	var bullet:Projectile = preload("res://player/bullet.tscn").instantiate()

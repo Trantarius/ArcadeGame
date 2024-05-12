@@ -63,7 +63,7 @@ func spawn_an_enemy()->void:
 	var point_found:bool=false
 	var candidate:Transform2D
 	var attempts:int = 0
-	const max_attempts:int = 3
+	const max_attempts:int = 5
 	while(!point_found):
 		attempts += 1
 		if(attempts>max_attempts):

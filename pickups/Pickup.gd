@@ -8,7 +8,6 @@ extends Area2D
 
 var linear_velocity:Vector2
 var angular_velocity:float
-var target:Player
 
 signal picked_up(player:Player)
 
@@ -16,6 +15,9 @@ func _init()->void:
 	body_entered.connect(_pickup_on_body_entered)
 
 func _physics_process(delta: float) -> void:
+	var target:Player = Player.find_nearest_player(position)
+	if(!is_instance_valid(target)):
+		return
 	position += linear_velocity * delta
 	rotation += angular_velocity * delta
 	if(is_instance_valid(target)):

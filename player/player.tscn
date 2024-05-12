@@ -98,5 +98,11 @@ process_material = SubResource("ShaderMaterial_v1xyb")
 lifetime = 10.0
 preprocess = 10.0
 
+[node name="MovementAbilityTimer" type="Timer" parent="."]
+
+[node name="AttackAbilityTimer" type="Timer" parent="."]
+
+[node name="ShotTimer" type="Timer" parent="."]
+
 [connection signal="death" from="." to="." method="_on_death"]
 [connection signal="kill" from="." to="." method="_on_kill"]

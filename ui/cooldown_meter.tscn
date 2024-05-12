@@ -1,0 +1,45 @@
+[gd_scene load_steps=5 format=3 uid="uid://cnxkpuwjy8u4q"]
+
+[ext_resource type="Script" path="res://ui/cooldown_meter.gd" id="1_sge5p"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u5bfv"]
+bg_color = Color(0.25098, 0.25098, 0.705882, 0.25098)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3vobt"]
+bg_color = Color(0.25098, 0.25098, 0.705882, 0.705882)
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_koswl"]
+bg_color = Color(0, 0.6, 0.4, 0.431373)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
+[node name="CooldownMeter" type="MarginContainer"]
+offset_right = 118.0
+offset_bottom = 38.0
+script = ExtResource("1_sge5p")
+
+[node name="ProgressBar" type="ProgressBar" parent="."]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_styles/background = SubResource("StyleBoxFlat_u5bfv")
+theme_override_styles/fill = SubResource("StyleBoxFlat_3vobt")
+fill_mode = 1
+show_percentage = false
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_koswl")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 2
+text = "Text"
+horizontal_alignment = 1
+vertical_alignment = 1

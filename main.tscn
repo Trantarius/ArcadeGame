@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://gvye6ccvjd55"]
+[gd_scene load_steps=13 format=3 uid="uid://gvye6ccvjd55"]
 
 [ext_resource type="PackedScene" uid="uid://crylwoyahw6go" path="res://ui/info_panel.tscn" id="2_8k6rt"]
 [ext_resource type="PackedScene" uid="uid://ccgupredk0a3f" path="res://player/player.tscn" id="3_d6lla"]
@@ -9,10 +9,13 @@
 [ext_resource type="PackedScene" uid="uid://d4epik40543it" path="res://hornet/hornet.tscn" id="6_x6syn"]
 [ext_resource type="PackedScene" uid="uid://b84l7h2qte8nl" path="res://spiky/spiky_factory.tscn" id="6_x7aoa"]
 [ext_resource type="Script" path="res://EnemySpawner.gd" id="6_xg0x2"]
+[ext_resource type="PackedScene" uid="uid://caglsq2mpkvoc" path="res://abilities/boost/boost_pickup.tscn" id="9_tblqw"]
 [ext_resource type="Script" path="res://HitNumberSpawner.gd" id="10_mwqnm"]
 [ext_resource type="Script" path="res://HealthBarSpawner.gd" id="11_bnywn"]
 
 [node name="Main" type="Node"]
+
+[node name="Player" parent="." instance=ExtResource("3_d6lla")]
 
 [node name="UILayer" type="CanvasLayer" parent="."]
 layer = 2
@@ -31,7 +34,7 @@ max_linear_momentum = 20.0
 
 [node name="PickupSpawner" type="Node" parent="."]
 script = ExtResource("6_0lnqi")
-pickup_list = Array[PackedScene]([ExtResource("6_h8vvy")])
+pickup_list = Array[PackedScene]([ExtResource("6_h8vvy"), ExtResource("9_tblqw")])
 
 [node name="HitNumberSpawner" type="Node" parent="."]
 script = ExtResource("10_mwqnm")
@@ -42,5 +45,3 @@ enemy_color = Color(0.517647, 0.513726, 1, 1)
 
 [node name="HealthBarSpawner" type="Node" parent="."]
 script = ExtResource("11_bnywn")
-
-[node name="Player" parent="." instance=ExtResource("3_d6lla")]

@@ -37,7 +37,7 @@ func _physics_process(delta: float) -> void:
 		reference_acceleration = target.linear_acceleration
 		
 		var tdist:float = (target.position-position).length()
-		if(tdist>base_distance/2 && tdist<3*base_distance/2):
+		if(tdist<3*base_distance/2):
 			fire_timer+=delta
 		else:
 			fire_timer = max(0,fire_timer-delta)
