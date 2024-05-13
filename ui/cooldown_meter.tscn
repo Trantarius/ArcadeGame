@@ -31,7 +31,6 @@ layout_mode = 2
 size_flags_vertical = 1
 theme_override_styles/background = SubResource("StyleBoxFlat_u5bfv")
 theme_override_styles/fill = SubResource("StyleBoxFlat_3vobt")
-fill_mode = 1
 show_percentage = false
 
 [node name="Panel" type="Panel" parent="."]

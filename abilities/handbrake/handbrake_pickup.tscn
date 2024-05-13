@@ -10,7 +10,7 @@ size = Vector2(32, 32)
 
 [node name="HandbrakePickup" type="Area2D"]
 collision_layer = 8
-collision_mask = 2
+collision_mask = 3
 script = ExtResource("1_210fq")
 ability_scene = ExtResource("2_xrbge")
 value = 10.0

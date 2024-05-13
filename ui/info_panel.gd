@@ -1,4 +1,5 @@
 @tool
+class_name InfoPanel
 extends Control
 
 @onready var score_label:Label = $VBoxContainer/ScoreLabel
@@ -135,7 +136,7 @@ func _on_player_health_changed(current:float, maximum:float)->void:
 	max_health = maximum
 	health = current
 
-func get_controls_string(action:StringName)->String:
+static func get_controls_string(action:StringName)->String:
 	var ret:String
 	var events:Array[InputEvent] = InputMap.action_get_events(action)
 	if(events.is_empty()):

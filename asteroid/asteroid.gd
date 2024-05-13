@@ -152,7 +152,7 @@ func generate()->void:
 		return
 	
 	# with the right parameters, a failed attempt is pretty rare, so just trying again with a new seed will probably fix it
-	const max_attempts:int=3
+	const max_attempts:int=5
 	
 	var poly:PackedVector2Array = []
 	for a:int in range(max_attempts):

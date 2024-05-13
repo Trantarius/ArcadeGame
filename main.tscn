@@ -19,7 +19,7 @@
 
 [node name="Player" parent="." instance=ExtResource("3_d6lla")]
 
-[node name="UILayer" type="CanvasLayer" parent="."]
+[node name="UILayer" type="CanvasLayer" parent="." groups=["UILayer"]]
 layer = 2
 
 [node name="InfoPanel" parent="UILayer" instance=ExtResource("2_8k6rt")]
@@ -36,6 +36,7 @@ max_linear_momentum = 20.0
 
 [node name="PickupSpawner" type="Node" parent="."]
 script = ExtResource("6_0lnqi")
+global_drop_rate_multiplier = 10.0
 pickup_list = Array[PackedScene]([ExtResource("6_h8vvy"), ExtResource("9_tblqw"), ExtResource("11_oynry"), ExtResource("12_gm13v")])
 
 [node name="HitNumberSpawner" type="Node" parent="."]

@@ -3,13 +3,14 @@ extends PlayerAbility
 
 ## Time before ability can be used again in seconds.
 @export var cooldown:float
-var last_used_tick:int
+var cooldown_timer:CountdownTimer = CountdownTimer.new()
 
-func _activate()->void:
+func _trigger()->void:
 	pass
 
 func _unhandled_input(event: InputEvent) -> void:
-	var now:int = Time.get_ticks_usec()
-	if(event.is_action_pressed(mod_name) && now-last_used_tick > cooldown*1_000_000):
-		_activate()
-		last_used_tick = now
+	if(!is_active):
+		return
+	if(event.is_action_pressed(mod_name) && cooldown_timer.time<=0):
+		_trigger()
+		cooldown_timer.time = cooldown

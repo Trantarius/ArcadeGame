@@ -10,7 +10,7 @@ var ability:CooldownAbility
 
 func _process(_delta: float) -> void:
 	$ProgressBar.max_value = ability.cooldown
-	$ProgressBar.value = float(Time.get_ticks_usec()-ability.last_used_tick)/1_000_000
+	$ProgressBar.value = ability.cooldown - ability.cooldown_timer.time
 	if($ProgressBar.value>=$ProgressBar.max_value):
 		$Panel.show()
 	else:

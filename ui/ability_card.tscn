@@ -1,0 +1,88 @@
+[gd_scene load_steps=5 format=3 uid="uid://bphxkifsy51tq"]
+
+[ext_resource type="Texture2D" uid="uid://bude4na0hnosm" path="res://icon.svg" id="1_5ab10"]
+[ext_resource type="Script" path="res://ui/ability_card.gd" id="1_mtnm2"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8bgms"]
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
+bg_color = Color(0.239216, 0.239216, 0.239216, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yi7yr"]
+draw_center = false
+border_width_left = 8
+border_width_top = 8
+border_width_right = 8
+border_width_bottom = 8
+border_color = Color(0.819608, 0.647059, 0.301961, 1)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+expand_margin_left = 20.0
+expand_margin_top = 20.0
+expand_margin_right = 20.0
+expand_margin_bottom = 20.0
+
+[node name="AbilityCard" type="PanelContainer"]
+offset_right = 411.0
+offset_bottom = 730.0
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxFlat_8bgms")
+script = ExtResource("1_mtnm2")
+title = "Ability Name"
+texture = ExtResource("1_5ab10")
+type = "Passive / Active"
+description = "Description Here [code]abcdef[/code]
+This is a super weird way of writing"
+state = "Equipped or not"
+
+[node name="Highlight" type="Panel" parent="."]
+visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_yi7yr")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 16
+
+[node name="Title" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Ability Name"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TextureRect" type="TextureRect" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+texture = ExtResource("1_5ab10")
+stretch_mode = 5
+
+[node name="Type" type="RichTextLabel" parent="VBoxContainer"]
+layout_mode = 2
+theme_override_colors/default_color = Color(0.596078, 0.596078, 0.596078, 1)
+bbcode_enabled = true
+text = "[center][i]Passive / Active[/i][/center]"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="Description" type="RichTextLabel" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "Description Here [code]abcdef[/code]
+This is a super weird way of writing"
+
+[node name="State" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Equipped or not"
+horizontal_alignment = 1

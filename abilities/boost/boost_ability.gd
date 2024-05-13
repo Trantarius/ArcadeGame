@@ -2,7 +2,7 @@ extends CooldownAbility
 
 const strength:float = 500
 
-func _activate() -> void:
+func _trigger() -> void:
 	var player:Player = get_parent()
 	var dir:Vector2 = Vector2.UP.rotated(player.global_rotation)
 	var impulse:Vector2 = dir*strength

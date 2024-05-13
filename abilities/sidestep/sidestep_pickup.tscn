@@ -10,9 +10,10 @@ size = Vector2(32, 32)
 
 [node name="SidestepPickup" type="Area2D"]
 collision_layer = 8
-collision_mask = 2
+collision_mask = 3
 script = ExtResource("1_rajli")
 ability_scene = ExtResource("2_mxy85")
+value = 10.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_nooa2")
