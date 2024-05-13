@@ -1,9 +1,17 @@
-[gd_scene load_steps=2 format=3 uid="uid://j7ojgjiy4k3i"]
+[gd_scene load_steps=3 format=3 uid="uid://j7ojgjiy4k3i"]
 
 [ext_resource type="Script" path="res://abilities/sidestep/sidestep_ability.gd" id="1_gtb6l"]
+[ext_resource type="Texture2D" uid="uid://idsavjhcaaub" path="res://abilities/sidestep/sidestep_icon.png" id="2_lx4xg"]
 
 [node name="SidestepAbility" type="Node"]
 script = ExtResource("1_gtb6l")
 cooldown = 5.0
 ability_name = &"Sidestep"
+texture = ExtResource("2_lx4xg")
+type = "Movement"
+description = "Press {action movement_ability} to jump sideways a short distance. Press {action left} or {action right} at the same time to control the direction.
+
+Cooldown: {property cooldown}s"
 mod_name = &"movement_ability"
+
+[connection signal="triggered" from="." to="." method="_on_triggered"]

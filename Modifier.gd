@@ -14,19 +14,12 @@ var is_active:bool = false:
 		if(is_active!=to):
 			is_active=to
 			if(is_active):
-				_activate()
 				activated.emit()
 			else:
-				_deactivate()
 				deactivated.emit()
 
 signal activated
-func _activate()->void:
-	pass
-
 signal deactivated
-func _deactivate()->void:
-	pass
 
 func _enter_tree()->void:
 	is_active = get_parent() is Actor

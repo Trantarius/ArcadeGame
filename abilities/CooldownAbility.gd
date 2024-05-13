@@ -5,12 +5,12 @@ extends PlayerAbility
 @export var cooldown:float
 var cooldown_timer:CountdownTimer = CountdownTimer.new()
 
-func _trigger()->void:
-	pass
+## Sent when the relevent key is pressed
+signal triggered
 
 func _unhandled_input(event: InputEvent) -> void:
 	if(!is_active):
 		return
 	if(event.is_action_pressed(mod_name) && cooldown_timer.time<=0):
-		_trigger()
+		triggered.emit()
 		cooldown_timer.time = cooldown

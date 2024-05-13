@@ -59,7 +59,7 @@ shader_parameter/width = 1024.0
 shader_parameter/height = 1024.0
 shader_parameter/drift_speed = 4.0
 shader_parameter/fade_time = 5.0
-shader_parameter/parallax = 0.0
+shader_parameter/parallax = 0.5
 
 [node name="Player" type="RigidBody2D" groups=["Players"]]
 collision_layer = 2

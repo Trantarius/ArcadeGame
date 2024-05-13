@@ -1,6 +1,5 @@
 [gd_scene load_steps=5 format=3 uid="uid://bphxkifsy51tq"]
 
-[ext_resource type="Texture2D" uid="uid://bude4na0hnosm" path="res://icon.svg" id="1_5ab10"]
 [ext_resource type="Script" path="res://ui/ability_card.gd" id="1_mtnm2"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8bgms"]
@@ -30,6 +29,10 @@ expand_margin_top = 20.0
 expand_margin_right = 20.0
 expand_margin_bottom = 20.0
 
+[sub_resource type="SystemFont" id="SystemFont_iecmm"]
+font_names = PackedStringArray("Monospace")
+font_weight = 650
+
 [node name="AbilityCard" type="PanelContainer"]
 offset_right = 411.0
 offset_bottom = 730.0
@@ -37,7 +40,6 @@ size_flags_horizontal = 3
 theme_override_styles/panel = SubResource("StyleBoxFlat_8bgms")
 script = ExtResource("1_mtnm2")
 title = "Ability Name"
-texture = ExtResource("1_5ab10")
 type = "Passive / Active"
 description = "Description Here [code]abcdef[/code]
 This is a super weird way of writing"
@@ -63,7 +65,6 @@ vertical_alignment = 1
 [node name="TextureRect" type="TextureRect" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-texture = ExtResource("1_5ab10")
 stretch_mode = 5
 
 [node name="Type" type="RichTextLabel" parent="VBoxContainer"]
@@ -78,6 +79,7 @@ autowrap_mode = 0
 [node name="Description" type="RichTextLabel" parent="VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+theme_override_fonts/mono_font = SubResource("SystemFont_iecmm")
 bbcode_enabled = true
 text = "Description Here [code]abcdef[/code]
 This is a super weird way of writing"
