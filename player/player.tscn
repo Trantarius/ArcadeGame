@@ -1,10 +1,13 @@
-[gd_scene load_steps=15 format=3 uid="uid://ccgupredk0a3f"]
+[gd_scene load_steps=16 format=3 uid="uid://ccgupredk0a3f"]
 
 [ext_resource type="Script" path="res://player/Player.gd" id="1_n287t"]
 [ext_resource type="Script" path="res://player/camera.gd" id="2_ccbte"]
 [ext_resource type="Shader" path="res://rocket_particles.gdshader" id="2_cdxa1"]
 [ext_resource type="Script" path="res://Interpolator.gd" id="2_kqvhg"]
 [ext_resource type="Shader" path="res://ambientparticles.gdshader" id="3_khmqt"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_tuyrf"]
+bounce = 0.5
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_3i2nj"]
 blend_mode = 1
@@ -60,7 +63,7 @@ shader_parameter/parallax = 0.0
 
 [node name="Player" type="RigidBody2D" groups=["Players"]]
 collision_layer = 2
-collision_mask = 9
+physics_material_override = SubResource("PhysicsMaterial_tuyrf")
 script = ExtResource("1_n287t")
 fire_rate = 5.0
 auto_fire = true

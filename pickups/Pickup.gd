@@ -1,37 +1,40 @@
 class_name Pickup
-extends Area2D
+extends RigidBody2D
 
-## Time until deletion.
+## How long to wait before deleting the pickup after spawning.
 @export var lifetime:float = 10
 ## How valuable this pickup is, effects drop rate (same unit as [member Enemy.point_value]).
 @export var value:float = 1
 
-var linear_velocity:Vector2
-var angular_velocity:float
+var lifetime_timer:CountdownTimer = CountdownTimer.new()
 
 signal picked_up(player:Player)
 
 func _init()->void:
-	body_entered.connect(_pickup_on_body_entered)
+	contact_monitor=true
+	max_contacts_reported=3
+	physics_material_override = preload("res://pickups/pickup_physics_material.tres")
+	lock_rotation = true
 
-func _physics_process(delta: float) -> void:
+func _ready()->void:
+	lifetime_timer.time = lifetime
+
+func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 	var target:Player = Player.find_nearest_player(position)
-	if(!is_instance_valid(target)):
-		return
-	position += linear_velocity * delta
-	rotation += angular_velocity * delta
 	if(is_instance_valid(target)):
-		var currvel:Vector2 = linear_velocity - target.linear_velocity
-		var wantvel:Vector2 = (target.position-position).normalized() * min(currvel.length()*1.5,(target.position-position).length()/delta)
+		var currvel:Vector2 = state.linear_velocity - target.linear_velocity
+		var wantvel:Vector2 = (target.position-position).normalized() * min(currvel.length()*1.5,(target.position-position).length()/state.step)
 		var dweight:float = (target.position-position).length()/target.pickup_magnet
 		dweight = 1/(exp(dweight**2)-1)
-		linear_velocity += (wantvel-currvel) * min(1,dweight*delta)
-	lifetime -= delta
-	modulate.a = min(1,lifetime)
-	if(lifetime<0):
-		queue_free()
-
-func _pickup_on_body_entered(body:Node2D)->void:
-	if(body is Player):
-		picked_up.emit(body)
+		state.linear_velocity += (wantvel-currvel) * min(1,dweight*state.step)
+	
+	#position += linear_velocity * delta
+	
+	for c:int in state.get_contact_count():
+		if(state.get_contact_collider_object(c) is Player):
+			picked_up.emit(state.get_contact_collider_object(c))
+			queue_free()
+	
+	modulate.a = min(1,lifetime_timer.time)
+	if(lifetime_timer.time<0):
 		queue_free()

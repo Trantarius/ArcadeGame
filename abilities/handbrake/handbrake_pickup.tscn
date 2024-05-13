@@ -8,7 +8,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_huemy"]
 size = Vector2(32, 32)
 
-[node name="HandbrakePickup" type="Area2D"]
+[node name="HandbrakePickup" type="RigidBody2D"]
 collision_layer = 8
 collision_mask = 3
 script = ExtResource("1_210fq")
