@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://b72dt15h7x3d3"]
+[gd_scene load_steps=5 format=3 uid="uid://b72dt15h7x3d3"]
 
 [ext_resource type="Theme" uid="uid://d0ifc4kse0sbj" path="res://ui/theme/theme.tres" id="1_4k8iq"]
 [ext_resource type="Script" path="res://ui/ability_choice_screen.gd" id="1_g7nl0"]
 [ext_resource type="PackedScene" uid="uid://bphxkifsy51tq" path="res://ui/ability_card.tscn" id="2_jkpbh"]
+[ext_resource type="StyleBox" uid="uid://buipdekyx2hg1" path="res://ui/theme/focus_fat.tres" id="5_or3qb"]
 
 [node name="AbilityChoiceScreen" type="CenterContainer"]
 process_mode = 3
@@ -11,7 +12,12 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+focus_neighbor_left = NodePath("PanelContainer/PanelContainer/HBoxContainer/MarginContainer/LeftCardButton")
+focus_neighbor_right = NodePath("PanelContainer/PanelContainer/HBoxContainer/MarginContainer2/RightCardButton")
+focus_next = NodePath("PanelContainer/PanelContainer/HBoxContainer/MarginContainer/LeftCardButton")
+focus_previous = NodePath("PanelContainer/PanelContainer/HBoxContainer/MarginContainer2/RightCardButton")
 focus_mode = 2
+mouse_filter = 0
 theme = ExtResource("1_4k8iq")
 script = ExtResource("1_g7nl0")
 
@@ -27,8 +33,35 @@ theme_type_variation = &"DarkFatPanel"
 layout_mode = 2
 theme_override_constants/separation = 8
 
-[node name="AbilityCard" parent="PanelContainer/PanelContainer/HBoxContainer" instance=ExtResource("2_jkpbh")]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="AbilityCard2" parent="PanelContainer/PanelContainer/HBoxContainer" instance=ExtResource("2_jkpbh")]
+[node name="AbilityCard" parent="PanelContainer/PanelContainer/HBoxContainer/MarginContainer" instance=ExtResource("2_jkpbh")]
 layout_mode = 2
+
+[node name="LeftCardButton" type="Button" parent="PanelContainer/PanelContainer/HBoxContainer/MarginContainer"]
+layout_mode = 2
+focus_neighbor_left = NodePath(".")
+focus_neighbor_right = NodePath("../../MarginContainer2/RightCardButton")
+focus_next = NodePath("../../MarginContainer2/RightCardButton")
+focus_previous = NodePath("../../MarginContainer2/RightCardButton")
+theme_override_styles/focus = ExtResource("5_or3qb")
+flat = true
+
+[node name="MarginContainer2" type="MarginContainer" parent="PanelContainer/PanelContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="AbilityCard" parent="PanelContainer/PanelContainer/HBoxContainer/MarginContainer2" instance=ExtResource("2_jkpbh")]
+layout_mode = 2
+
+[node name="RightCardButton" type="Button" parent="PanelContainer/PanelContainer/HBoxContainer/MarginContainer2"]
+layout_mode = 2
+focus_neighbor_left = NodePath("../../MarginContainer/LeftCardButton")
+focus_neighbor_right = NodePath(".")
+focus_next = NodePath("../../MarginContainer/LeftCardButton")
+focus_previous = NodePath("../../MarginContainer/LeftCardButton")
+theme_override_styles/focus = ExtResource("5_or3qb")
+flat = true
+
+[connection signal="pressed" from="PanelContainer/PanelContainer/HBoxContainer/MarginContainer/LeftCardButton" to="." method="_on_left_card_button_pressed"]
+[connection signal="pressed" from="PanelContainer/PanelContainer/HBoxContainer/MarginContainer2/RightCardButton" to="." method="_on_right_card_button_pressed"]

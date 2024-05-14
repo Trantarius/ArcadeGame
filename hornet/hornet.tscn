@@ -12,6 +12,15 @@ point_value = 5.0
 max_health = 3.0
 radius = 24.0
 
+[node name="Interpolator" type="Node2D" parent="."]
+script = ExtResource("3_k1hes")
+
+[node name="Polygon2D" type="Polygon2D" parent="Interpolator"]
+position = Vector2(8, 0)
+rotation = 1.5708
+color = Color(0.752941, 0.345098, 0.32549, 1)
+polygon = PackedVector2Array(-16, 4, -12, -8, -8, 0, 8, 0, 12, -8, 16, 4, 8, 12, 0, 32, -8, 12)
+
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
 position = Vector2(8, 0)
 rotation = 1.5708
@@ -23,12 +32,3 @@ momentum = 1.0
 
 [node name="Marker2D" type="Marker2D" parent="."]
 position = Vector2(16, 0)
-
-[node name="Interpolator" type="Node2D" parent="."]
-script = ExtResource("3_k1hes")
-
-[node name="Polygon2D" type="Polygon2D" parent="Interpolator"]
-position = Vector2(8, 0)
-rotation = 1.5708
-color = Color(0.752941, 0.345098, 0.32549, 1)
-polygon = PackedVector2Array(-16, 4, -12, -8, -8, 0, 8, 0, 12, -8, 16, 4, 8, 12, 0, 32, -8, 12)

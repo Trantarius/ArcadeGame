@@ -2,70 +2,59 @@
 class_name AbilityCard
 extends Control
 
-@export var highlighted:bool:
-	set(to):
-		if(has_node(^'PanelContainer/Highlight')):
-			$PanelContainer/Highlight.visible = to
-	get:
-		if(has_node(^'PanelContainer/Highlight')):
-			return $PanelContainer/Highlight.visible
-		else:
-			return false
-
 @export var title:String:
 	set(to):
-		if(has_node(^'PanelContainer/MarginContainer/VBoxContainer/Title')):
-			$PanelContainer/MarginContainer/VBoxContainer/Title.text = to
+		if(has_node(^'MarginContainer/VBoxContainer/Title')):
+			$MarginContainer/VBoxContainer/Title.text = to
 	get:
-		if(has_node(^'PanelContainer/MarginContainer/VBoxContainer/Title')):
-			return $PanelContainer/MarginContainer/VBoxContainer/Title.text
+		if(has_node(^'MarginContainer/VBoxContainer/Title')):
+			return $MarginContainer/VBoxContainer/Title.text
 		else:
 			return ''
 
 @export var texture:Texture2D:
 	set(to):
-		if(has_node(^'PanelContainer/MarginContainer/VBoxContainer/TextureRect')):
-			$PanelContainer/MarginContainer/VBoxContainer/TextureRect.texture = to
+		if(has_node(^'MarginContainer/VBoxContainer/TextureRect')):
+			$MarginContainer/VBoxContainer/TextureRect.texture = to
 	get:
-		if(has_node(^'PanelContainer/MarginContainer/VBoxContainer/TextureRect')):
-			return $PanelContainer/MarginContainer/VBoxContainer/TextureRect.texture
+		if(has_node(^'MarginContainer/VBoxContainer/TextureRect')):
+			return $MarginContainer/VBoxContainer/TextureRect.texture
 		else:
 			return null
 
-const type_prefix:String='[center][i]'
-const type_suffix:String='[/i][/center]'
+const _type_prefix:String='[center][i]'
+const _type_suffix:String='[/i][/center]'
 @export var type:String:
 	set(to):
-		if(has_node(^'PanelContainer/MarginContainer/VBoxContainer/Type')):
-			$PanelContainer/MarginContainer/VBoxContainer/Type.text = type_prefix + to + type_suffix
+		if(has_node(^'MarginContainer/VBoxContainer/Type')):
+			$MarginContainer/VBoxContainer/Type.text = _type_prefix + to + _type_suffix
 	get:
-		if(has_node(^'PanelContainer/MarginContainer/VBoxContainer/Type')):
-			return $PanelContainer/MarginContainer/VBoxContainer/Type.text.trim_prefix(type_prefix).trim_suffix(type_suffix)
+		if(has_node(^'MarginContainer/VBoxContainer/Type')):
+			return $MarginContainer/VBoxContainer/Type.text.trim_prefix(_type_prefix).trim_suffix(_type_suffix)
 		return ''
 
 @export_multiline var description:String:
 	set(to):
-		if(has_node(^'PanelContainer/MarginContainer/VBoxContainer/Description')):
-			$PanelContainer/MarginContainer/VBoxContainer/Description.text = to
+		if(has_node(^'MarginContainer/VBoxContainer/Description')):
+			$MarginContainer/VBoxContainer/Description.text = to
 	get:
-		if(has_node(^'PanelContainer/MarginContainer/VBoxContainer/Description')):
-			return $PanelContainer/MarginContainer/VBoxContainer/Description.text
+		if(has_node(^'MarginContainer/VBoxContainer/Description')):
+			return $MarginContainer/VBoxContainer/Description.text
 		else:
 			return ''
 
 @export var state:String:
 	set(to):
-		if(has_node(^'PanelContainer/MarginContainer/VBoxContainer/State')):
-			$PanelContainer/MarginContainer/VBoxContainer/State.text = to
+		if(has_node(^'MarginContainer/VBoxContainer/State')):
+			$MarginContainer/VBoxContainer/State.text = to
 	get:
-		if(has_node(^'PanelContainer/MarginContainer/VBoxContainer/State')):
-			return $PanelContainer/MarginContainer/VBoxContainer/State.text
+		if(has_node(^'MarginContainer/VBoxContainer/State')):
+			return $MarginContainer/VBoxContainer/State.text
 		else:
 			return ''
 
 func build_from(ability:PlayerAbility)->void:
 	title = ability.ability_name
-	#if(is_instance_valid(ability.texture)):
 	texture = ability.texture
 	type = ability.type
 	description = AbilityCard.format_description(ability)
@@ -74,7 +63,9 @@ func build_from(ability:PlayerAbility)->void:
 	else:
 		state = 'New'
 
-## Handles some special escapes and turns them into BBCode
+## Handles some special escapes and turns them into BBCode. [br]
+## [code]{action <actionname>}[/code] will insert the current keybind for the input action with name [code]actionname[/code].[br]
+## [code]{property <propname>}[/code] will retrieve a property named [code]propname[/code] from the ability node.
 static func format_description(ability:PlayerAbility)->String:
 	var input:String = ability.description
 	var escape_rex:RegEx = RegEx.create_from_string("\\{\\s*(\\w+)\\s*(\\S+)?\\s*\\}")

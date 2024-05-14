@@ -2,6 +2,8 @@ extends Enemy
 
 ## Time between shots (seconds).
 const fire_delay:float = 4
+## How long shots take to charge (must be less than fire_delay)
+const charge_delay:float = 3
 var fire_timer:CountdownTimer = CountdownTimer.new()
 var charging_shot:Projectile
 
@@ -11,12 +13,6 @@ const base_distance:float = 512
 func _ready()->void:
 	fire_timer.max_time = fire_delay
 	fire_timer.min_time = 0
-	make_new_shot()
-
-func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
-	super(state)
-	if(is_instance_valid(charging_shot)):
-		charging_shot.linear_velocity = state.get_velocity_at_local_position($Marker2D.position)
 
 func _physics_process(delta: float) -> void:
 	
@@ -41,14 +37,21 @@ func _physics_process(delta: float) -> void:
 		var tdist:float = (target.position-position).length()
 		fire_timer.reverse = tdist>3*base_distance/2
 		
-	if(!is_instance_valid(charging_shot)):
-		make_new_shot()
 	
-	charging_shot.scale = Vector2.ONE * (fire_delay-fire_timer.time)/fire_delay
-	charging_shot.damage_amount = (fire_delay-fire_timer.time)/fire_delay
-	if(fire_timer.time<=0):
-		fire()
-		fire_timer.time += fire_delay
+	if(is_instance_valid(charging_shot)):
+		if(fire_timer.time > charge_delay):
+			charging_shot.queue_free()
+			charging_shot=null
+		else:
+			charging_shot.scale = Vector2.ONE * (fire_delay-fire_timer.time)/fire_delay
+			var interp:Interpolator = charging_shot.get_node(^'Interpolator')
+			interp.linear_velocity_override = linear_velocity + angular_velocity * $Marker2D.position.orthogonal()
+			interp.angular_velocity_override = angular_velocity
+			if(fire_timer.time<=0):
+				fire()
+				fire_timer.time += fire_delay
+	elif(fire_timer.time<=charge_delay):
+		make_new_shot()
 
 func make_new_shot()->void:
 	if(is_instance_valid(charging_shot)):
@@ -57,17 +60,16 @@ func make_new_shot()->void:
 	add_child(charging_shot)
 	charging_shot.position=$Marker2D.position
 	charging_shot.source=self
-	charging_shot.process_mode = Node.PROCESS_MODE_DISABLED
 	charging_shot.hit.connect(on_charging_shot_hit)
 
 func on_charging_shot_hit(_collision:KinematicCollision2D)->void:
-	fire_timer.time = 0
-	make_new_shot()
+	fire_timer.time = fire_delay
 
 func fire()->void:
 	charging_shot.reparent(get_parent())
 	charging_shot.linear_velocity = 200 * global_transform.basis_xform(Vector2.RIGHT).normalized() + linear_velocity
 	charging_shot.hit.disconnect(on_charging_shot_hit)
-	charging_shot.process_mode = Node.PROCESS_MODE_INHERIT
+	var interp:Interpolator = charging_shot.get_node(^'Interpolator')
+	interp.linear_velocity_override = null
+	interp.angular_velocity_override = null
 	charging_shot=null
-	make_new_shot()

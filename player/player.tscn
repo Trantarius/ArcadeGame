@@ -71,12 +71,6 @@ max_angular_thrust = 256.0
 max_angular_speed = 16.0
 angular_control_mode = 2
 
-[node name="Muzzle" type="Marker2D" parent="."]
-position = Vector2(0, -12)
-
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
-polygon = PackedVector2Array(-8, 8, 0, -12, 8, 8, 0, 4)
-
 [node name="Interpolator" type="Node2D" parent="."]
 script = ExtResource("2_kqvhg")
 
@@ -90,6 +84,12 @@ emitting = false
 amount = 64
 process_material = SubResource("ShaderMaterial_61lre")
 texture = SubResource("GradientTexture2D_v4qv1")
+
+[node name="Muzzle" type="Marker2D" parent="."]
+position = Vector2(0, -12)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(-8, 8, 0, -12, 8, 8, 0, 4)
 
 [node name="Camera2D" type="Camera2D" parent="."]
 top_level = true
