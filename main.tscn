@@ -1,6 +1,7 @@
-[gd_scene load_steps=16 format=3 uid="uid://gvye6ccvjd55"]
+[gd_scene load_steps=17 format=3 uid="uid://gvye6ccvjd55"]
 
 [ext_resource type="PackedScene" uid="uid://crylwoyahw6go" path="res://ui/info_panel.tscn" id="2_8k6rt"]
+[ext_resource type="PackedScene" uid="uid://b4v2b4cphju7v" path="res://ui/debug_menu.tscn" id="3_bx4mw"]
 [ext_resource type="PackedScene" uid="uid://ccgupredk0a3f" path="res://player/player.tscn" id="3_d6lla"]
 [ext_resource type="PackedScene" uid="uid://cb3satgchcg1i" path="res://spiky/spiky.tscn" id="5_cgv82"]
 [ext_resource type="Script" path="res://asteroid/AsteroidSpawner.gd" id="5_hea7j"]
@@ -25,6 +26,16 @@ layer = 2
 
 [node name="InfoPanel" parent="UILayer" instance=ExtResource("2_8k6rt")]
 
+[node name="DebugMenu" parent="UILayer" instance=ExtResource("3_bx4mw")]
+visible = false
+anchors_preset = -1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_top = 32.0
+offset_right = -32.0
+offset_bottom = 0.0
+grow_horizontal = 0
+
 [node name="EnemySpawner" type="Node" parent="."]
 script = ExtResource("6_xg0x2")
 target_points = 100.0
@@ -37,7 +48,6 @@ max_linear_momentum = 20.0
 
 [node name="PickupSpawner" type="Node" parent="."]
 script = ExtResource("6_0lnqi")
-global_drop_rate_multiplier = 2.0
 pickup_list = Array[PackedScene]([ExtResource("6_h8vvy"), ExtResource("9_tblqw"), ExtResource("11_oynry"), ExtResource("12_gm13v"), ExtResource("13_nrt7w")])
 
 [node name="HitNumberSpawner" type="Node" parent="."]

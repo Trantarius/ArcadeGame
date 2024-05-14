@@ -53,15 +53,21 @@ func update_abilities()->void:
 	
 	if(include_basic_controls_in_abilities && include_controls_in_abilities):
 		if(!abilities.has(&'Rotate')):
-			var lbl:Label = Label.new()
+			var lbl:RichTextLabel = RichTextLabel.new()
+			lbl.bbcode_enabled = true
+			lbl.autowrap_mode = TextServer.AUTOWRAP_OFF
+			lbl.fit_content = true
 			ability_list.add_child(lbl)
 			abilities[&'Rotate']=lbl
 		if(!abilities.has(&'Thrust')):
-			var lbl:Label = Label.new()
+			var lbl:RichTextLabel = RichTextLabel.new()
+			lbl.bbcode_enabled = true
+			lbl.autowrap_mode = TextServer.AUTOWRAP_OFF
+			lbl.fit_content = true
 			ability_list.add_child(lbl)
 			abilities[&'Thrust']=lbl
-		abilities[&'Rotate'].text = UIUtil.get_controls_string(&'left')+' '+UIUtil.get_controls_string(&'right')+' Rotate'
-		abilities[&'Thrust'].text = UIUtil.get_controls_string(&'forward')+' Thrust'
+		abilities[&'Rotate'].text = get_controls_string(&'left')+' '+get_controls_string(&'right')+' Rotate'
+		abilities[&'Thrust'].text = get_controls_string(&'forward')+' Thrust'
 		
 	else:
 		if(abilities.has(&'Rotate')):
@@ -87,16 +93,17 @@ func make_ability_entry(ability:PlayerAbility)->Control:
 		ability_list.add_child(cdm)
 		cdm.ability = ability
 		if(include_controls_in_abilities):
-			cdm.text = UIUtil.get_controls_string(ability.mod_name)
+			cdm.text = get_controls_string(ability.mod_name)
 			cdm.text += ' ' + ability.ability_name
 		else:
 			cdm.text = ability.ability_name
 		
 		return cdm
 	else:
-		var lbl:Label = Label.new()
+		var lbl:RichTextLabel = RichTextLabel.new()
+		lbl.bbcode_enabled=true
 		if(include_controls_in_abilities):
-			lbl.text =  '[Passive] ' + ability.ability_name
+			lbl.text =  '[lb]Passive[rb] ' + ability.ability_name
 		else:
 			lbl.text = ability.ability_name
 		ability_list.add_child(lbl)
@@ -135,3 +142,17 @@ func _on_player_child_removed(child:Node)->void:
 func _on_player_health_changed(current:float, maximum:float)->void:
 	max_health = maximum
 	health = current
+
+## Gets a string describing the controls bound to an InputAction.
+func get_controls_string(action:StringName)->String:
+	var ret:String
+	var events:Array[InputEvent] = InputMap.action_get_events(action)
+	if(events.is_empty()):
+		ret = '[lb][rb]'
+	else:
+		ret = '[lb]'
+		ret += events[0].as_text().trim_suffix(' (Physical)')
+		for i:int in range(1,events.size()):
+			ret += '|' + events[i].as_text().trim_suffix(' (Physical)')
+		ret += '[rb]'
+	return '[code]'+ret+'[/code]'

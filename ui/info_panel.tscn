@@ -1,47 +1,13 @@
-[gd_scene load_steps=6 format=3 uid="uid://crylwoyahw6go"]
+[gd_scene load_steps=3 format=3 uid="uid://crylwoyahw6go"]
 
 [ext_resource type="Script" path="res://ui/info_panel.gd" id="1_40lju"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mww2x"]
-content_margin_left = 8.0
-content_margin_top = 8.0
-content_margin_right = 8.0
-content_margin_bottom = 8.0
-bg_color = Color(0.0823529, 0.0823529, 0.0823529, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5k0ol"]
-bg_color = Color(0.705882, 0, 0, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_n7qql"]
-bg_color = Color(0, 0.705882, 0, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_7nde7"]
-content_margin_left = 8.0
-content_margin_top = 8.0
-content_margin_right = 8.0
-content_margin_bottom = 8.0
-bg_color = Color(0.152941, 0.152941, 0.152941, 1)
-corner_radius_top_left = 4
-corner_radius_top_right = 4
-corner_radius_bottom_right = 4
-corner_radius_bottom_left = 4
+[ext_resource type="Theme" uid="uid://d0ifc4kse0sbj" path="res://ui/theme/theme.tres" id="1_rornq"]
 
 [node name="InfoPanel" type="PanelContainer"]
 offset_left = 32.0
 offset_top = 32.0
-theme_override_styles/panel = SubResource("StyleBoxFlat_mww2x")
+theme = ExtResource("1_rornq")
+theme_type_variation = &"FatPanel"
 script = ExtResource("1_40lju")
 score = 26.155
 health = 10.57
@@ -59,8 +25,7 @@ text = "Score: 26"
 [node name="HealthBar" type="ProgressBar" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 29.205)
 layout_mode = 2
-theme_override_styles/background = SubResource("StyleBoxFlat_5k0ol")
-theme_override_styles/fill = SubResource("StyleBoxFlat_n7qql")
+theme_type_variation = &"HealthBar"
 max_value = 13.025
 value = 10.57
 show_percentage = false
@@ -80,7 +45,7 @@ vertical_alignment = 1
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_7nde7")
+theme_type_variation = &"DarkPanel"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/PanelContainer"]
 layout_mode = 2

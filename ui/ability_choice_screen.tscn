@@ -1,20 +1,10 @@
 [gd_scene load_steps=4 format=3 uid="uid://b72dt15h7x3d3"]
 
+[ext_resource type="Theme" uid="uid://d0ifc4kse0sbj" path="res://ui/theme/theme.tres" id="1_4k8iq"]
 [ext_resource type="Script" path="res://ui/ability_choice_screen.gd" id="1_g7nl0"]
 [ext_resource type="PackedScene" uid="uid://bphxkifsy51tq" path="res://ui/ability_card.tscn" id="2_jkpbh"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_so0bj"]
-content_margin_left = 16.0
-content_margin_top = 16.0
-content_margin_right = 16.0
-content_margin_bottom = 16.0
-bg_color = Color(0.133333, 0.133333, 0.133333, 1)
-corner_radius_top_left = 8
-corner_radius_top_right = 8
-corner_radius_bottom_right = 8
-corner_radius_bottom_left = 8
-
-[node name="AbilityChoiceScreen" type="MarginContainer"]
+[node name="AbilityChoiceScreen" type="CenterContainer"]
 process_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -22,25 +12,23 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 focus_mode = 2
-theme_override_constants/margin_left = 64
-theme_override_constants/margin_top = 64
-theme_override_constants/margin_right = 64
-theme_override_constants/margin_bottom = 64
+theme = ExtResource("1_4k8iq")
 script = ExtResource("1_g7nl0")
 
-[node name="AspectRatioContainer" type="AspectRatioContainer" parent="."]
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 2
+theme_type_variation = &"FatPanel"
+
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer"]
+layout_mode = 2
+theme_type_variation = &"DarkFatPanel"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="AbilityCard" parent="PanelContainer/PanelContainer/HBoxContainer" instance=ExtResource("2_jkpbh")]
 layout_mode = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="AspectRatioContainer"]
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_so0bj")
-
-[node name="HBoxContainer" type="HBoxContainer" parent="AspectRatioContainer/PanelContainer"]
-layout_mode = 2
-theme_override_constants/separation = 16
-
-[node name="AbilityCard" parent="AspectRatioContainer/PanelContainer/HBoxContainer" instance=ExtResource("2_jkpbh")]
-layout_mode = 2
-
-[node name="AbilityCard2" parent="AspectRatioContainer/PanelContainer/HBoxContainer" instance=ExtResource("2_jkpbh")]
+[node name="AbilityCard2" parent="PanelContainer/PanelContainer/HBoxContainer" instance=ExtResource("2_jkpbh")]
 layout_mode = 2

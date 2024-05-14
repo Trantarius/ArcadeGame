@@ -2,9 +2,9 @@ extends Control
 
 var text:String:
 	set(to):
-		$Label.text=to
+		$CenterContainer/Label.text=to
 	get:
-		return $Label.text
+		return $CenterContainer/Label.text
 
 var ability:CooldownAbility
 

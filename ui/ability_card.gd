@@ -1,34 +1,34 @@
 @tool
 class_name AbilityCard
-extends PanelContainer
+extends Control
 
 @export var highlighted:bool:
 	set(to):
-		if(has_node(^'Highlight')):
-			$Highlight.visible = to
+		if(has_node(^'PanelContainer/Highlight')):
+			$PanelContainer/Highlight.visible = to
 	get:
-		if(has_node(^'Highlight')):
-			return $Highlight.visible
+		if(has_node(^'PanelContainer/Highlight')):
+			return $PanelContainer/Highlight.visible
 		else:
 			return false
 
 @export var title:String:
 	set(to):
-		if(has_node(^'VBoxContainer/Title')):
-			$VBoxContainer/Title.text = to
+		if(has_node(^'PanelContainer/MarginContainer/VBoxContainer/Title')):
+			$PanelContainer/MarginContainer/VBoxContainer/Title.text = to
 	get:
-		if(has_node(^'VBoxContainer/Title')):
-			return $VBoxContainer/Title.text
+		if(has_node(^'PanelContainer/MarginContainer/VBoxContainer/Title')):
+			return $PanelContainer/MarginContainer/VBoxContainer/Title.text
 		else:
 			return ''
 
 @export var texture:Texture2D:
 	set(to):
-		if(has_node(^'VBoxContainer/TextureRect')):
-			$VBoxContainer/TextureRect.texture = to
+		if(has_node(^'PanelContainer/MarginContainer/VBoxContainer/TextureRect')):
+			$PanelContainer/MarginContainer/VBoxContainer/TextureRect.texture = to
 	get:
-		if(has_node(^'VBoxContainer/TextureRect')):
-			return $VBoxContainer/TextureRect.texture
+		if(has_node(^'PanelContainer/MarginContainer/VBoxContainer/TextureRect')):
+			return $PanelContainer/MarginContainer/VBoxContainer/TextureRect.texture
 		else:
 			return null
 
@@ -36,30 +36,30 @@ const type_prefix:String='[center][i]'
 const type_suffix:String='[/i][/center]'
 @export var type:String:
 	set(to):
-		if(has_node(^'VBoxContainer/Type')):
-			$VBoxContainer/Type.text = type_prefix + to + type_suffix
+		if(has_node(^'PanelContainer/MarginContainer/VBoxContainer/Type')):
+			$PanelContainer/MarginContainer/VBoxContainer/Type.text = type_prefix + to + type_suffix
 	get:
-		if(has_node(^'VBoxContainer/Type')):
-			return $VBoxContainer/Type.text.trim_prefix(type_prefix).trim_suffix(type_suffix)
+		if(has_node(^'PanelContainer/MarginContainer/VBoxContainer/Type')):
+			return $PanelContainer/MarginContainer/VBoxContainer/Type.text.trim_prefix(type_prefix).trim_suffix(type_suffix)
 		return ''
 
 @export_multiline var description:String:
 	set(to):
-		if(has_node(^'VBoxContainer/Description')):
-			$VBoxContainer/Description.text = to
+		if(has_node(^'PanelContainer/MarginContainer/VBoxContainer/Description')):
+			$PanelContainer/MarginContainer/VBoxContainer/Description.text = to
 	get:
-		if(has_node(^'VBoxContainer/Description')):
-			return $VBoxContainer/Description.text
+		if(has_node(^'PanelContainer/MarginContainer/VBoxContainer/Description')):
+			return $PanelContainer/MarginContainer/VBoxContainer/Description.text
 		else:
 			return ''
 
 @export var state:String:
 	set(to):
-		if(has_node(^'VBoxContainer/State')):
-			$VBoxContainer/State.text = to
+		if(has_node(^'PanelContainer/MarginContainer/VBoxContainer/State')):
+			$PanelContainer/MarginContainer/VBoxContainer/State.text = to
 	get:
-		if(has_node(^'VBoxContainer/State')):
-			return $VBoxContainer/State.text
+		if(has_node(^'PanelContainer/MarginContainer/VBoxContainer/State')):
+			return $PanelContainer/MarginContainer/VBoxContainer/State.text
 		else:
 			return ''
 

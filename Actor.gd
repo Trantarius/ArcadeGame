@@ -81,6 +81,9 @@ signal damage_taken(damage:Damage)
 signal damage_dealt(damage:Damage)
 signal health_changed(health:float, max_health:float)
 
+signal mod_added(mod:Modifier)
+signal mod_removed(mod:Modifier)
+
 static var something_spawned:Signal
 static var something_died:Signal
 static var something_took_damage:Signal
@@ -124,16 +127,18 @@ func take_damage(damage:Damage)->void:
 
 func add_modifier(mod:Modifier)->void:
 	if(modifiers.has(mod.mod_name)):
-		remove_child(modifiers[mod.mod_name])
-		modifiers[mod.mod_name].queue_free()
+		remove_modifier(mod.mod_name)
 	modifiers[mod.mod_name]=mod
 	add_child(mod)
+	mod_added.emit(mod)
 
 func remove_modifier(mod_name:StringName)->void:
 	if(modifiers.has(mod_name)):
-		remove_child(modifiers[mod_name])
-		modifiers[mod_name].queue_free()
-	modifiers.erase(mod_name)
+		var oldmod:Modifier = modifiers[mod_name]
+		remove_child(oldmod)
+		modifiers.erase(mod_name)
+		mod_removed.emit(oldmod)
+		oldmod.queue_free()
 
 
 var _actor_warp_queue:Array[Dictionary]

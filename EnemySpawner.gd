@@ -55,7 +55,15 @@ func spawn_an_enemy()->void:
 		if(choice<=0):
 			chosen_scene=scene
 			break
-	var enemy:Enemy = chosen_scene.instantiate()
+	
+	spawn(chosen_scene)
+
+func spawn(scene:PackedScene)->void:
+	
+	var players:Array = get_tree().get_nodes_in_group('Players')
+	if(players.is_empty()):
+		return
+	var enemy:Enemy = scene.instantiate()
 	# it might somehow trigger a collision if it's at 0,0, so start it off really far away
 	enemy.position = Vector2(1000000,1000000)
 	add_child(enemy)
@@ -95,12 +103,12 @@ func spawn_an_enemy()->void:
 				"\tTook {attempts} attempts\n"+
 				"\tChance was {weight}/{tot_weight} ({pct}%)\n").format({
 			'time':Time.get_time_string_from_system(),
-			'name':chosen_scene.get_state().get_node_name(0),
+			'name':scene.get_state().get_node_name(0),
 			'loc':'%.v'%enemy.position,
 			'attempts':attempts,
-			'weight':'%.2f'%(spawn_list[chosen_scene]),
+			'weight':'%.2f'%(spawn_list[scene] if spawn_list.has(scene) else 0),
 			'tot_weight':'%.2f'%(total_weight_in_list),
-			'pct':'%.2f'%(100*spawn_list[chosen_scene]/total_weight_in_list)}))
+			'pct':'%.2f'%(100*(spawn_list[scene] if spawn_list.has(scene) else 0)/total_weight_in_list)}))
 
 func get_total_enemy_points()->float:
 	var enemies:Array = get_tree().get_nodes_in_group('Enemies')

@@ -1,4 +1,4 @@
-extends MarginContainer
+extends Control
 
 var left_ability:PlayerAbility:
 	set(to):
@@ -11,8 +11,8 @@ var right_ability:PlayerAbility:
 		if(is_inside_tree()):
 			right_card.build_from(right_ability)
 
-@onready var left_card:Control = $AspectRatioContainer/PanelContainer/HBoxContainer/AbilityCard
-@onready var right_card:Control = $AspectRatioContainer/PanelContainer/HBoxContainer/AbilityCard2
+@onready var left_card:Control = $PanelContainer/PanelContainer/HBoxContainer/AbilityCard
+@onready var right_card:Control = $PanelContainer/PanelContainer/HBoxContainer/AbilityCard2
 
 signal select_finished(ability:PlayerAbility)
 

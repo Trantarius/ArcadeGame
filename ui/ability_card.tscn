@@ -1,73 +1,73 @@
 [gd_scene load_steps=5 format=3 uid="uid://bphxkifsy51tq"]
 
+[ext_resource type="Theme" uid="uid://d0ifc4kse0sbj" path="res://ui/theme/theme.tres" id="1_7joci"]
 [ext_resource type="Script" path="res://ui/ability_card.gd" id="1_mtnm2"]
+[ext_resource type="Texture2D" uid="uid://bude4na0hnosm" path="res://icon.svg" id="2_xth7e"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8bgms"]
-content_margin_left = 16.0
-content_margin_top = 16.0
-content_margin_right = 16.0
-content_margin_bottom = 16.0
-bg_color = Color(0.239216, 0.239216, 0.239216, 1)
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yi7yr"]
+draw_center = false
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.819608, 0.647059, 0.301961, 1)
 corner_radius_top_left = 8
 corner_radius_top_right = 8
 corner_radius_bottom_right = 8
 corner_radius_bottom_left = 8
+expand_margin_left = 10.0
+expand_margin_top = 10.0
+expand_margin_right = 10.0
+expand_margin_bottom = 10.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yi7yr"]
-draw_center = false
-border_width_left = 8
-border_width_top = 8
-border_width_right = 8
-border_width_bottom = 8
-border_color = Color(0.819608, 0.647059, 0.301961, 1)
-corner_radius_top_left = 12
-corner_radius_top_right = 12
-corner_radius_bottom_right = 12
-corner_radius_bottom_left = 12
-expand_margin_left = 20.0
-expand_margin_top = 20.0
-expand_margin_right = 20.0
-expand_margin_bottom = 20.0
-
-[sub_resource type="SystemFont" id="SystemFont_iecmm"]
-font_names = PackedStringArray("Monospace")
-font_weight = 650
-
-[node name="AbilityCard" type="PanelContainer"]
-offset_right = 411.0
-offset_bottom = 730.0
-size_flags_horizontal = 3
-theme_override_styles/panel = SubResource("StyleBoxFlat_8bgms")
+[node name="AbilityCard" type="AspectRatioContainer"]
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 623.0
+offset_bottom = 906.0
+ratio = 0.5
 script = ExtResource("1_mtnm2")
 title = "Ability Name"
+texture = ExtResource("2_xth7e")
 type = "Passive / Active"
 description = "Description Here [code]abcdef[/code]
 This is a super weird way of writing"
 state = "Equipped or not"
 
-[node name="Highlight" type="Panel" parent="."]
-visible = false
+[node name="PanelContainer" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(360, 720)
 layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_yi7yr")
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme = ExtResource("1_7joci")
+theme_type_variation = &"FatPanel"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-theme_override_constants/separation = 16
+theme_override_constants/separation = 12
 
-[node name="Title" type="Label" parent="VBoxContainer"]
+[node name="Title" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
 text = "Ability Name"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="TextureRect" type="TextureRect" parent="VBoxContainer"]
+[node name="TextureRect" type="TextureRect" parent="PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
+texture = ExtResource("2_xth7e")
 stretch_mode = 5
 
-[node name="Type" type="RichTextLabel" parent="VBoxContainer"]
+[node name="Type" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_colors/default_color = Color(0.596078, 0.596078, 0.596078, 1)
 bbcode_enabled = true
@@ -76,15 +76,19 @@ fit_content = true
 scroll_active = false
 autowrap_mode = 0
 
-[node name="Description" type="RichTextLabel" parent="VBoxContainer"]
+[node name="Description" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
-theme_override_fonts/mono_font = SubResource("SystemFont_iecmm")
 bbcode_enabled = true
 text = "Description Here [code]abcdef[/code]
 This is a super weird way of writing"
 
-[node name="State" type="Label" parent="VBoxContainer"]
+[node name="State" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer"]
 layout_mode = 2
 text = "Equipped or not"
 horizontal_alignment = 1
+
+[node name="Highlight" type="Panel" parent="PanelContainer"]
+visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_yi7yr")

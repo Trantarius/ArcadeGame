@@ -24,3 +24,5 @@ script = ExtResource("3_okjrc")
 [node name="Sprite2D" type="Sprite2D" parent="Interpolator"]
 scale = Vector2(0.125, 0.125)
 texture = ExtResource("4_0nbbi")
+
+[connection signal="picked_up" from="." to="." method="_on_picked_up"]

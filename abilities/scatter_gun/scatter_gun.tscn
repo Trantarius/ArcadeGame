@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://dqs0njvcsrun8"]
+
+[ext_resource type="Script" path="res://abilities/light_cannon/light_cannon.gd" id="1_e148m"]
+
+[node name="ScatterGun" type="Node"]
+script = ExtResource("1_e148m")
+spread_per_projectile = 5.0
+fire_rate = 1.0
+projectile_count = 8.0
+ability_name = &"Scatter Gun"
+type = "Weapon"
