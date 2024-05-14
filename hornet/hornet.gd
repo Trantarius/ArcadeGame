@@ -34,8 +34,10 @@ func _physics_process(delta: float) -> void:
 		reference_velocity = target.linear_velocity
 		reference_acceleration = target.linear_acceleration
 		
+		# reverse the charging if too far or facing the wrong direction
 		var tdist:float = (target.position-position).length()
-		fire_timer.reverse = tdist>3*base_distance/2
+		fire_timer.reverse = ((tdist>3*base_distance/2 || abs(angle_difference(rotation,angular_target))>1)
+							 && fire_timer.time<charge_delay)
 		
 	
 	if(is_instance_valid(charging_shot)):
@@ -43,13 +45,13 @@ func _physics_process(delta: float) -> void:
 			charging_shot.queue_free()
 			charging_shot=null
 		else:
-			charging_shot.scale = Vector2.ONE * (fire_delay-fire_timer.time)/fire_delay
+			charging_shot.scale = Vector2.ONE * (charge_delay-fire_timer.time)/charge_delay
 			var interp:Interpolator = charging_shot.get_node(^'Interpolator')
 			interp.linear_velocity_override = linear_velocity + angular_velocity * $Marker2D.position.orthogonal()
 			interp.angular_velocity_override = angular_velocity
-			if(fire_timer.time<=0):
+			if(fire_timer.time<=0 && abs(angle_difference(rotation,angular_target))<0.1):
 				fire()
-				fire_timer.time += fire_delay
+				fire_timer.time = fire_delay
 	elif(fire_timer.time<=charge_delay):
 		make_new_shot()
 
@@ -61,13 +63,14 @@ func make_new_shot()->void:
 	charging_shot.position=$Marker2D.position
 	charging_shot.source=self
 	charging_shot.hit.connect(on_charging_shot_hit)
+	charging_shot.scale = Vector2.ZERO
 
 func on_charging_shot_hit(_collision:KinematicCollision2D)->void:
 	fire_timer.time = fire_delay
 
 func fire()->void:
 	charging_shot.reparent(get_parent())
-	charging_shot.linear_velocity = 200 * global_transform.basis_xform(Vector2.RIGHT).normalized() + linear_velocity
+	charging_shot.linear_velocity = 200 * global_transform.basis_xform(Vector2.RIGHT).normalized() + reference_velocity
 	charging_shot.hit.disconnect(on_charging_shot_hit)
 	var interp:Interpolator = charging_shot.get_node(^'Interpolator')
 	interp.linear_velocity_override = null

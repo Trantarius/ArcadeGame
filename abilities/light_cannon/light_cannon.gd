@@ -2,6 +2,7 @@ extends WeaponAbility
 
 ## Angle (in degrees) between simultaneous projectiles (if there are multiple)
 @export var spread_per_projectile:float = 15
+@export var projectile_lifetime:float = 3
 
 func _on_fire() -> void:
 	var bullet_count:int = max(1,floori(projectile_count))
@@ -17,4 +18,5 @@ func _on_fire() -> void:
 		bullet.source = get_parent()
 		bullet.damage_amount = damage_amount
 		bullet.scale = Vector2.ONE * projectile_size/8
+		bullet.lifetime = projectile_lifetime
 		get_parent().get_parent().add_child(bullet)

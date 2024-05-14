@@ -10,6 +10,7 @@ max_contacts_reported = 1
 contact_monitor = true
 script = ExtResource("1_8hxwo")
 point_value = 10.0
+max_health = 100.0
 radius = 64.0
 linear_control_mode = 2
 angular_control_mode = 2

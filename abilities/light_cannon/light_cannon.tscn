@@ -5,6 +5,7 @@
 
 [node name="LightCannon" type="Node"]
 script = ExtResource("1_i0mqr")
+damage_amount = 10.0
 projectile_speed = 1000.0
 projectile_size = 8.0
 ability_name = &"Light Cannon"

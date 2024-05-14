@@ -24,6 +24,7 @@ collision_layer = 0
 collision_mask = 3
 sync_to_physics = false
 script = ExtResource("1_1d245")
+damage_amount = 10.0
 
 [node name="Interpolator" type="Node2D" parent="."]
 script = ExtResource("2_v0427")

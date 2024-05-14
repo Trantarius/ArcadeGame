@@ -1,8 +1,9 @@
 class_name Projectile
 extends AnimatableBody2D
 
-## Time left until deletion
+## How long after firing the projectile is destroyed
 @export var lifetime:float = 10
+var lifetime_timer:CountdownTimer = CountdownTimer.new()
 
 @export_group('Damage','damage_')
 @export var damage_amount:float = 1
@@ -23,10 +24,13 @@ var angular_velocity:float:
 signal hit(collision:KinematicCollision2D)
 signal damage_dealt(damage:Damage)
 
+func _ready()->void:
+	lifetime_timer.time = lifetime
+
 func _physics_process(delta: float) -> void:
-		
-	lifetime-=delta
-	if(lifetime<0):
+	
+	modulate.a = clamp(lifetime_timer.time,0,1)
+	if(lifetime_timer.time <= 0):
 		queue_free()
 	
 	var collision:KinematicCollision2D = move_and_collide(linear_velocity*delta)

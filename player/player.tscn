@@ -65,6 +65,7 @@ shader_parameter/parallax = 0.5
 collision_layer = 2
 physics_material_override = SubResource("PhysicsMaterial_tuyrf")
 script = ExtResource("1_n287t")
+max_health = 100.0
 max_linear_thrust = 256.0
 max_linear_speed = 800.0
 max_angular_thrust = 256.0

@@ -5,6 +5,7 @@ enum{IGNORE=0,TRACK=1,INTERPOLATE=2}
 @export_enum('Ignore:0','Track:1','Interpolate:2') var position_behavior:int = INTERPOLATE
 @export_enum('Ignore:0','Track:1','Interpolate:2') var rotation_behavior:int = INTERPOLATE
 @export_enum('Ignore:0','Track:1') var scale_behavior:int = TRACK
+@export_enum('Ignore:0','Track:1') var modulate_behavior:int = TRACK
 
 ## If non-null, the parent's linear velocity is ignored and this is used instead. Must be either null or a Vector2.
 var linear_velocity_override:Variant = null
@@ -31,3 +32,6 @@ func _process(_delta:float) -> void:
 	match scale_behavior:
 		TRACK:
 			global_scale = get_parent().global_scale
+	match modulate_behavior:
+		TRACK:
+			modulate = get_parent().modulate
