@@ -16,7 +16,7 @@ func _exit_tree() -> void:
 	RenderingServer.frame_pre_draw.disconnect(update)
 
 func update() -> void:
-	var dt:float = Engine.get_physics_interpolation_fraction()/Engine.physics_ticks_per_second
+	var dt:float = Engine.get_physics_interpolation_fraction()*Engine.time_scale/Engine.physics_ticks_per_second
 	match position_behavior:
 		TRACK:
 			global_position = get_parent().global_position

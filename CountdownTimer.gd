@@ -50,9 +50,9 @@ func _init()->void:
 func _process()->void:
 	if(!(Engine.get_main_loop() as SceneTree).paused && !paused):
 		if(reverse):
-			ticks += process_tick_delta
+			ticks += process_tick_delta * Engine.time_scale
 		else:
-			ticks -= process_tick_delta
+			ticks -= process_tick_delta * Engine.time_scale
 
 ## The tick (as reported by [method Time.get_ticks_usec]) the last process frame started.
 static var last_process_tick:int
