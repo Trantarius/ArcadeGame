@@ -65,13 +65,14 @@ shader_parameter/parallax = 0.5
 collision_layer = 2
 physics_material_override = SubResource("PhysicsMaterial_tuyrf")
 script = ExtResource("1_n287t")
-fire_rate = 5.0
-auto_fire = true
 max_linear_thrust = 256.0
 max_linear_speed = 800.0
 max_angular_thrust = 256.0
 max_angular_speed = 16.0
 angular_control_mode = 2
+
+[node name="Muzzle" type="Marker2D" parent="."]
+position = Vector2(0, -12)
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
 polygon = PackedVector2Array(-8, 8, 0, -12, 8, 8, 0, 4)
@@ -100,12 +101,6 @@ amount = 256
 process_material = SubResource("ShaderMaterial_v1xyb")
 lifetime = 10.0
 preprocess = 10.0
-
-[node name="MovementAbilityTimer" type="Timer" parent="."]
-
-[node name="AttackAbilityTimer" type="Timer" parent="."]
-
-[node name="ShotTimer" type="Timer" parent="."]
 
 [connection signal="death" from="." to="." method="_on_death"]
 [connection signal="kill" from="." to="." method="_on_kill"]

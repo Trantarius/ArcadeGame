@@ -8,13 +8,6 @@ extends AnimatableBody2D
 @export var damage_amount:float = 1
 @export var damage_silent:bool = false
 
-enum{
-	VELOCITY,
-	NORMAL
-}
-
-@export_enum("Velocity:0","Normal") var damage_direction:int
-
 var source:Actor
 var linear_velocity:Vector2:
 	set(to):
@@ -47,6 +40,7 @@ func _physics_process(delta: float) -> void:
 			damage.position = collision.get_position()
 			damage.direction = linear_velocity.normalized()
 			damage.velocity = (damage.target.linear_velocity + linear_velocity)/2
+			damage.silent = damage_silent
 			damage_dealt.emit(damage)
 			damage.target.take_damage(damage)
 		hit.emit(collision)

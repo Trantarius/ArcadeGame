@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://gvye6ccvjd55"]
+[gd_scene load_steps=16 format=3 uid="uid://gvye6ccvjd55"]
 
 [ext_resource type="PackedScene" uid="uid://crylwoyahw6go" path="res://ui/info_panel.tscn" id="2_8k6rt"]
 [ext_resource type="PackedScene" uid="uid://ccgupredk0a3f" path="res://player/player.tscn" id="3_d6lla"]
@@ -14,6 +14,7 @@
 [ext_resource type="Script" path="res://HealthBarSpawner.gd" id="11_bnywn"]
 [ext_resource type="PackedScene" uid="uid://7fxmn5qcukpx" path="res://abilities/handbrake/handbrake_pickup.tscn" id="11_oynry"]
 [ext_resource type="PackedScene" uid="uid://dj3sihx7v1ip0" path="res://abilities/sidestep/sidestep_pickup.tscn" id="12_gm13v"]
+[ext_resource type="PackedScene" uid="uid://cfy8pkp2n4b8d" path="res://abilities/light_cannon/light_cannon_pickup.tscn" id="13_nrt7w"]
 
 [node name="Main" type="Node"]
 
@@ -37,7 +38,7 @@ max_linear_momentum = 20.0
 [node name="PickupSpawner" type="Node" parent="."]
 script = ExtResource("6_0lnqi")
 global_drop_rate_multiplier = 2.0
-pickup_list = Array[PackedScene]([ExtResource("6_h8vvy"), ExtResource("9_tblqw"), ExtResource("11_oynry"), ExtResource("12_gm13v")])
+pickup_list = Array[PackedScene]([ExtResource("6_h8vvy"), ExtResource("9_tblqw"), ExtResource("11_oynry"), ExtResource("12_gm13v"), ExtResource("13_nrt7w")])
 
 [node name="HitNumberSpawner" type="Node" parent="."]
 script = ExtResource("10_mwqnm")

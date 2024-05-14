@@ -1,10 +1,6 @@
 class_name Player
 extends Actor
 
-## Bullets shot per second while holding the 'shoot' button
-@export var fire_rate:float
-## Allows for continuous shooting without holding the 'shoot' button
-@export var auto_fire:bool
 ## Approximate radius at which to collect pickups
 @export var pickup_magnet:float = 256
 ## Total value of all enemies this player has killed
@@ -13,9 +9,15 @@ var score:float:
 		score=to
 		score_changed.emit(score)
 
-var shot_timer:CountdownTimer=CountdownTimer.new()
-
 signal score_changed(to:float)
+
+func _ready()->void:
+	add_ability(load("res://abilities/light_cannon/light_cannon.tscn").instantiate())
+
+func get_muzzle_position()->Vector2:
+	return $Muzzle.global_position
+func get_muzzle_direction()->Vector2:
+	return Vector2.UP.rotated($Muzzle.global_rotation)
 
 var _add_ability_queue:Array[PlayerAbility]
 var _is_adding_ability:bool = false
@@ -77,17 +79,6 @@ func _physics_process(delta: float) -> void:
 	else:
 		linear_target = Vector2.ZERO
 		$Interpolator/RocketParticles.emitting=false
-	
-	if((Input.is_action_pressed('shoot')!=auto_fire) && shot_timer.time<=0):
-		fire_bullet()
-		shot_timer.time = 1.0/fire_rate
-
-func fire_bullet()->void:
-	var bullet:Projectile = preload("res://player/bullet.tscn").instantiate()
-	bullet.position = position
-	bullet.linear_velocity = 800 * global_transform.basis_xform(Vector2.UP).normalized() + linear_velocity
-	bullet.source=self
-	get_parent().add_child(bullet)
 
 static func find_nearest_player(location:Vector2, max_dist:float=-1)->Player:
 	var players:Array[Node] = Engine.get_main_loop().get_nodes_in_group('Players')
