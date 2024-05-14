@@ -5,9 +5,9 @@ var hide_when_full:bool = false
 
 func _process(_delta: float) -> void:
 	super(_delta)
-	$ProgressBar.offset_left = -get_parent().radius * 0.666
-	$ProgressBar.offset_right = get_parent().radius * 0.666
-	$ProgressBar.offset_top = get_parent().radius
+	$ProgressBar.offset_left = -get_parent().radius*1.5
+	$ProgressBar.offset_right = get_parent().radius*1.5
+	$ProgressBar.offset_top = get_parent().radius*1.5
 	$ProgressBar.offset_bottom = 0
 	$ProgressBar.max_value = get_parent().max_health
 	$ProgressBar.value = get_parent().health

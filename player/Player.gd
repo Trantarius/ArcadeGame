@@ -15,9 +15,9 @@ func _ready()->void:
 	add_ability(load("res://abilities/light_cannon/light_cannon.tscn").instantiate())
 
 func get_muzzle_position()->Vector2:
-	return $Muzzle.global_position
+	return $Interpolator/Muzzle.global_position
 func get_muzzle_direction()->Vector2:
-	return Vector2.UP.rotated($Muzzle.global_rotation)
+	return Vector2.UP.rotated($Interpolator/Muzzle.global_rotation)
 
 var _add_ability_queue:Array[PlayerAbility]
 var _is_adding_ability:bool = false

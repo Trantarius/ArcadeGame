@@ -12,6 +12,7 @@ script = ExtResource("1_185kc")
 contact_damage = 30.0
 contact_suicide = true
 max_health = 1.0
+radius = 10.0
 linear_control_mode = 3
 linear_brake = 0.0
 

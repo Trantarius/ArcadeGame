@@ -14,6 +14,7 @@ var angular_velocity_override:Variant = null
 
 func _ready()->void:
 	top_level = true
+	global_transform = get_parent().global_transform
 
 func _process(_delta:float) -> void:
 	var dt:float = Engine.get_physics_interpolation_fraction()*Engine.time_scale/Engine.physics_ticks_per_second

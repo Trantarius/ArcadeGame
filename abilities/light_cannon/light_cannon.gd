@@ -10,7 +10,7 @@ func _on_fire() -> void:
 	
 	for n:int in range(floori(projectile_count)):
 		var bullet:Projectile = preload("res://abilities/light_cannon/light_cannon_projectile.tscn").instantiate()
-		bullet.position = get_parent().get_muzzle_position()
+		bullet.global_position = get_parent().get_muzzle_position()
 		
 		var fire_dir:Vector2 = get_parent().get_muzzle_direction().rotated(spread/2 - n*spread/max(1,bullet_count-1))
 		

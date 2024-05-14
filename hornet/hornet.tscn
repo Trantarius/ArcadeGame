@@ -11,7 +11,7 @@ script = ExtResource("1_ghiqj")
 contact_damage = 10.0
 point_value = 5.0
 max_health = 30.0
-radius = 24.0
+radius = 18.0
 
 [node name="Interpolator" type="Node2D" parent="."]
 script = ExtResource("3_k1hes")

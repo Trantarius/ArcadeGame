@@ -11,9 +11,11 @@ extends PlayerAbility
 @export var projectile_count:float = 1
 
 ## Initial speed of projectiles (interpretation is up to subclass).
+## For hitscan lasers, this is the max range.
 @export var projectile_speed:float = 600
 
 ## Radius of projectiles (interpretation is up to subclass).
+## For auto-aim lasers, this is the max aim assist angle.
 @export var projectile_size:float = 16
 
 var fire_timer:CountdownTimer = CountdownTimer.new()
