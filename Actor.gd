@@ -157,7 +157,7 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 		if(warp.type==&'slide'):
 			move_and_collide(warp.motion)
 		else:
-			var dest:Transform2D = global_transform.translated(warp.motion)
+			var dest:Transform2D = state.transform.translated(warp.motion)
 			if(!test_move(dest,Vector2.ZERO)):
 				state.transform = dest
 	_actor_warp_queue.clear()

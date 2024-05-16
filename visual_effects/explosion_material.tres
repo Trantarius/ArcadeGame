@@ -1,0 +1,33 @@
+[gd_resource type="ShaderMaterial" load_steps=6 format=3 uid="uid://dp1ilhd2sj6hi"]
+
+[ext_resource type="Shader" path="res://visual_effects/pulse.gdshader" id="1_twao6"]
+
+[sub_resource type="Gradient" id="Gradient_q2l01"]
+interpolation_mode = 2
+interpolation_color_space = 2
+colors = PackedColorArray(1, 0.635294, 0, 1, 0.446777, 0.446777, 0.446777, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_8ph8g"]
+gradient = SubResource("Gradient_q2l01")
+fill_to = Vector2(0.405983, 0.0769231)
+
+[sub_resource type="Curve" id="Curve_5hpxg"]
+_data = [Vector2(0, 1), 0.0, 1.0187e-06, 0, 0, Vector2(1, 0), -3.36783, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_ubwy0"]
+texture_mode = 1
+curve = SubResource("Curve_5hpxg")
+
+[resource]
+resource_local_to_scene = true
+shader = ExtResource("1_twao6")
+shader_parameter/diffusion_time = 0.5
+shader_parameter/diffusion_power = 6.0
+shader_parameter/diffusion_noise_strength = 0.1
+shader_parameter/activation_time = 0.25
+shader_parameter/activation_power = 0.0
+shader_parameter/activation_noise_strength = 0.1
+shader_parameter/current_time = -1.0
+shader_parameter/diffusion_alpha = SubResource("CurveTexture_ubwy0")
+shader_parameter/color_plane = SubResource("GradientTexture2D_8ph8g")

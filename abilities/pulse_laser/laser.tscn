@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://lasc2mwa8371"]
 
-[ext_resource type="Script" path="res://laser.gd" id="1_uk2lr"]
+[ext_resource type="Script" path="res://Laser.gd" id="1_uk2lr"]
 
 [sub_resource type="Gradient" id="Gradient_7bv15"]
 interpolation_color_space = 2

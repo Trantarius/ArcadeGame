@@ -30,6 +30,7 @@ func _on_fire() -> void:
 			laser.global_position = muzzle_pos
 			laser.global_rotation = muzzle_dir.angle() + randfn(0,innaccuracy)
 			laser.length = projectile_speed
+			laser.source = get_parent()
 			laser.fire()
 	
 	else:

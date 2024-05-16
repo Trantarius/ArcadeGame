@@ -70,7 +70,6 @@ func fire()->void:
 			damage.target = collider
 			damage.position = result.position
 			damage.direction = (query.to-query.from).normalized()
-			damage.velocity = damage.target.linear_velocity
 			damage.silent = damage_silent
 			damage_dealt.emit(damage)
 			damage.target.take_damage(damage)

@@ -24,7 +24,6 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 			var damage:Damage = Damage.new()
 			damage.amount = contact_damage
 			damage.position = state.get_contact_collider_position(coll_idx)
-			damage.velocity = (state.get_contact_collider_velocity_at_position(coll_idx) + state.get_contact_local_velocity_at_position(coll_idx))/2
 			damage.direction = state.transform.basis_xform(state.get_contact_local_normal(coll_idx))
 			damage.source = self
 			damage.attacker = self
@@ -34,7 +33,6 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 				var self_damage:Damage = Damage.new()
 				self_damage.amount = max_health
 				self_damage.position = position
-				self_damage.velocity = linear_velocity
 				self_damage.source = self
 				self_damage.attacker = self
 				self_damage.silent = true

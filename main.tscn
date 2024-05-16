@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://gvye6ccvjd55"]
+[gd_scene load_steps=19 format=3 uid="uid://gvye6ccvjd55"]
 
 [ext_resource type="PackedScene" uid="uid://crylwoyahw6go" path="res://ui/info_panel.tscn" id="2_8k6rt"]
 [ext_resource type="PackedScene" uid="uid://b4v2b4cphju7v" path="res://ui/debug_menu.tscn" id="3_bx4mw"]
@@ -17,6 +17,7 @@
 [ext_resource type="PackedScene" uid="uid://cfy8pkp2n4b8d" path="res://abilities/light_cannon/light_cannon_pickup.tscn" id="13_nrt7w"]
 [ext_resource type="PackedScene" uid="uid://yidbh7wl3t3g" path="res://abilities/pulse_laser/pulse_laser_pickup.tscn" id="15_byc40"]
 [ext_resource type="PackedScene" uid="uid://cgy3if02alej2" path="res://abilities/scatter_gun/scatter_gun_pickup.tscn" id="15_c0lh3"]
+[ext_resource type="PackedScene" uid="uid://dhkxc6mxsom3a" path="res://abilities/proximity_mine/proximity_mine_pickup.tscn" id="16_w24yk"]
 
 [node name="Main" type="Node"]
 
@@ -49,7 +50,7 @@ max_linear_momentum = 20.0
 
 [node name="PickupSpawner" type="Node" parent="."]
 script = ExtResource("6_0lnqi")
-pickup_list = Array[PackedScene]([ExtResource("6_h8vvy"), ExtResource("9_tblqw"), ExtResource("11_oynry"), ExtResource("12_gm13v"), ExtResource("13_nrt7w"), ExtResource("15_c0lh3"), ExtResource("15_byc40")])
+pickup_list = Array[PackedScene]([ExtResource("6_h8vvy"), ExtResource("9_tblqw"), ExtResource("11_oynry"), ExtResource("12_gm13v"), ExtResource("13_nrt7w"), ExtResource("15_c0lh3"), ExtResource("15_byc40"), ExtResource("16_w24yk")])
 
 [node name="HitNumberSpawner" type="Node" parent="."]
 script = ExtResource("10_mwqnm")

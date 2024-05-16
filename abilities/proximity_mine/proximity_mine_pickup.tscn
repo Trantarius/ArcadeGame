@@ -1,0 +1,28 @@
+[gd_scene load_steps=6 format=3 uid="uid://dhkxc6mxsom3a"]
+
+[ext_resource type="Script" path="res://abilities/AbilityPickup.gd" id="1_fn8ja"]
+[ext_resource type="PackedScene" uid="uid://c1abqegxiegd0" path="res://abilities/proximity_mine/proximity_mine_ability.tscn" id="2_582sk"]
+[ext_resource type="Script" path="res://Interpolator.gd" id="3_c1j48"]
+[ext_resource type="Texture2D" uid="uid://ce5syo2jakiqr" path="res://abilities/proximity_mine/proximity_mine_icon.png" id="4_b76b3"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mo1ov"]
+size = Vector2(32, 32)
+
+[node name="ProximityMinePickup" type="RigidBody2D"]
+collision_layer = 8
+collision_mask = 3
+script = ExtResource("1_fn8ja")
+ability_scene = ExtResource("2_582sk")
+value = 10.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_mo1ov")
+
+[node name="Interpolator" type="Node2D" parent="."]
+script = ExtResource("3_c1j48")
+
+[node name="Sprite2D" type="Sprite2D" parent="Interpolator"]
+scale = Vector2(0.125, 0.125)
+texture = ExtResource("4_b76b3")
+
+[connection signal="picked_up" from="." to="." method="_on_picked_up"]

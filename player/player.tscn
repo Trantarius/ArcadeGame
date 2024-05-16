@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" path="res://player/Player.gd" id="1_n287t"]
 [ext_resource type="Script" path="res://player/camera.gd" id="2_ccbte"]
-[ext_resource type="Shader" path="res://rocket_particles.gdshader" id="2_cdxa1"]
+[ext_resource type="Shader" path="res://visual_effects/rocket_particles.gdshader" id="2_cdxa1"]
 [ext_resource type="Script" path="res://Interpolator.gd" id="2_kqvhg"]
-[ext_resource type="Shader" path="res://ambientparticles.gdshader" id="3_khmqt"]
+[ext_resource type="Shader" path="res://player/ambientparticles.gdshader" id="5_u0w6i"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_tuyrf"]
 bounce = 0.5
@@ -54,7 +54,7 @@ fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0.5, 0)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_v1xyb"]
-shader = ExtResource("3_khmqt")
+shader = ExtResource("5_u0w6i")
 shader_parameter/width = 1024.0
 shader_parameter/height = 1024.0
 shader_parameter/drift_speed = 4.0

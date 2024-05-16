@@ -12,8 +12,6 @@ var target:Actor
 
 ## Position of the contact point at which damage occurs.
 var position:Vector2
-## Velocity of the contact point.
-var velocity:Vector2
 ## Direction of damage, as would be appropriate for applying knockback.
 var direction:Vector2
 

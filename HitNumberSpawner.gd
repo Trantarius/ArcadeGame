@@ -31,7 +31,7 @@ func _on_something_took_damage(damage:Damage)->void:
 		var num:HitNumber = HitNumber.new()
 		num.position = damage.position
 		num.number = roundi(damage.amount)
-		num.velocity = damage.velocity
+		num.velocity = damage.target.linear_velocity + damage.direction * 64
 		num.velocity += Vector2(randfn(0,32),randfn(0,32))
 		num.modulate = color
 		add_child(num)

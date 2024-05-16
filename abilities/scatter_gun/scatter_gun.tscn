@@ -16,7 +16,7 @@ type = "Weapon"
 description = "Fires a wide spread of weak projectiles. Deals good damage at short range, and is easy to aim.
 
 Damage: {property damage_amount}
-Fire Rate: {property fire_rate}
+Fire Rate: {property fire_rate}/s
 Projectile Count: {property projectile_count}
 Projectile Speed: {property projectile_speed}
 Projectile Size: {property projectile_size}"

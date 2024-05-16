@@ -14,7 +14,7 @@ type = "Weapon"
 description = "Fires low damage, high velocity projectiles at a moderate rate. An all-around decent weapon, but could use an upgrade.
 
 Damage: {property damage_amount}
-Fire Rate: {property fire_rate}
+Fire Rate: {property fire_rate}/s
 Projectile Count: {property projectile_count}
 Projectile Speed: {property projectile_speed}
 Projectile Size: {property projectile_size}"

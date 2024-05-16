@@ -42,8 +42,7 @@ func _physics_process(delta: float) -> void:
 			damage.attacker = source
 			damage.target = collision.get_collider()
 			damage.position = collision.get_position()
-			damage.direction = linear_velocity.normalized()
-			damage.velocity = (damage.target.linear_velocity + linear_velocity)/2
+			damage.direction = (linear_velocity - collision.get_collider_velocity()).normalized()
 			damage.silent = damage_silent
 			damage_dealt.emit(damage)
 			damage.target.take_damage(damage)

@@ -14,10 +14,10 @@ type = "Weapon"
 description = "A repeating laser gun. Onboard AI is able track and hit targets in front of you. Mostly effective at long range.
 
 Damage: {property damage_amount}
-Fire Rate: {property fire_rate}
+Fire Rate: {property fire_rate}/s
 Laser Count: {property projectile_count}
 Range: {property projectile_speed}
-Auto Aim: {property projectile_size}"
+Auto Aim: {property projectile_size}°"
 mod_name = &"weapon"
 
 [connection signal="fire" from="." to="." method="_on_fire"]
