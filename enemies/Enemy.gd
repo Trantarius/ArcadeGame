@@ -19,6 +19,10 @@ extends Actor
 ## Distance at which to show up on radar (<0 to disable)
 @export var radar_distance:float = -1
 
+func _init() -> void:
+	super()
+	add_to_group(&'Enemies')
+
 func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 	super(state)
 	

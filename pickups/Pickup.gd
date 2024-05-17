@@ -15,6 +15,7 @@ func _init()->void:
 	max_contacts_reported=3
 	physics_material_override = preload("res://pickups/pickup_physics_material.tres")
 	lock_rotation = true
+	add_to_group('Pickups')
 
 func _ready()->void:
 	lifetime_timer.time = lifetime
@@ -28,12 +29,11 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 		dweight = 1/(exp(dweight**2)-1)
 		state.linear_velocity += (wantvel-currvel) * min(1,dweight*state.step)
 	
-	#position += linear_velocity * delta
-	
 	for c:int in state.get_contact_count():
 		if(state.get_contact_collider_object(c) is Player):
 			picked_up.emit(state.get_contact_collider_object(c))
 			queue_free()
+			break
 	
 	modulate.a = min(1,lifetime_timer.time)
 	if(lifetime_timer.time<0):

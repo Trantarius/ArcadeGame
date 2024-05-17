@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://b4v2b4cphju7v"]
+[gd_scene load_steps=13 format=3 uid="uid://b4v2b4cphju7v"]
 
 [ext_resource type="Theme" uid="uid://d0ifc4kse0sbj" path="res://ui/theme/theme.tres" id="1_8pghh"]
 
@@ -10,21 +10,17 @@ func _input(event: InputEvent) -> void:
 		visible = !visible
 "
 
-[sub_resource type="GDScript" id="GDScript_6krc4"]
-script/source = "extends CheckButton
-
-func _on_toggled(toggled_on: bool) -> void:
-	var player:Player = get_tree().get_first_node_in_group('Players')
-	if(is_instance_valid(player)):
-		player.immortal = toggled_on
-"
-
 [sub_resource type="GDScript" id="GDScript_msjy0"]
 script/source = "extends PanelContainer
 
 func _on_h_slider_value_changed(value: float) -> void:
 	Engine.time_scale = 2**value
-	$HBoxContainer/HBoxContainer/Label2.text = str(2**value)+\"x\"
+	$HBoxContainer/HBoxContainer/Label2.text = \"%.2fx\"%(2**value)
+	$HBoxContainer/Reset.disabled = (value==0)
+
+
+func _on_reset_pressed() -> void:
+	$HBoxContainer/HSlider.value = 0
 "
 
 [sub_resource type="GDScript" id="GDScript_vxf4s"]
@@ -37,8 +33,30 @@ func _on_spin_box_value_changed(value: float) -> void:
 
 func _on_h_slider_value_changed(value: float) -> void:
 	var cam:Camera2D = get_viewport().get_camera_2d()
-	cam.zoom=Vector2(2**value,2**value);
-	$HBoxContainer/HBoxContainer/Label2.text = str(2**value)+\"x\"
+	if(is_instance_valid(cam)):
+		cam.zoom=Vector2(2**value,2**value);
+		$HBoxContainer/HBoxContainer/Label2.text = \"%.2fx\"%(2**value)
+		$HBoxContainer/Reset.disabled = (value==0)
+
+
+func _on_reset_pressed() -> void:
+	$HBoxContainer/HSlider.value = 0
+"
+
+[sub_resource type="GDScript" id="GDScript_k1et7"]
+script/source = "extends PanelContainer
+
+func _on_button_pressed() -> void:
+	$VBoxContainer/PanelContainer.visible = ! $VBoxContainer/PanelContainer.visible
+"
+
+[sub_resource type="GDScript" id="GDScript_6krc4"]
+script/source = "extends CheckButton
+
+func _on_toggled(toggled_on: bool) -> void:
+	var player:Player = get_tree().get_first_node_in_group('Players')
+	if(is_instance_valid(player)):
+		player.immortal = toggled_on
 "
 
 [sub_resource type="GDScript" id="GDScript_7qte2"]
@@ -109,24 +127,111 @@ func _on_button_pressed() -> void:
 [sub_resource type="GDScript" id="GDScript_okadf"]
 script/source = "extends PanelContainer
 
+func _on_button_pressed() -> void:
+	$VBoxContainer/PanelContainer.visible = ! $VBoxContainer/PanelContainer.visible
+
+func _on_clear_pressed() -> void:
+	for child:Enemy in get_tree().get_nodes_in_group(&'Enemies'):
+		child.queue_free()
+
+func _on_check_button_toggled(toggled_on: bool) -> void:
+	var enemyspawner:Node = get_tree().root.find_child('EnemySpawner',true,false)
+	if(is_instance_valid(enemyspawner)):
+		enemyspawner.enabled = toggled_on
+"
+
+[sub_resource type="GDScript" id="GDScript_kwtx0"]
+script/source = "extends PanelContainer
+
+var nearby_enabled:bool = false
+
+func _ready() -> void:
+	var enemyspawner:Node = get_tree().root.find_child('EnemySpawner',true,false)
+	if(is_instance_valid(enemyspawner)):
+		for ename:StringName in enemyspawner.spawn_list:
+			var button:Button = Button.new()
+			button.text = ename
+			button.pressed.connect(_spawn.bind(ename))
+			$VBoxContainer/PanelContainer/VBoxContainer.add_child(button)
+
+func _spawn(ename:StringName)->void:
+	var enemyspawner:Node = get_tree().root.find_child('EnemySpawner',true,false)
+	if(is_instance_valid(enemyspawner)):
+		if(nearby_enabled):
+			var player:Player = get_tree().get_first_node_in_group(&'Players')
+			if(is_instance_valid(player)):
+				var enemy:Enemy = enemyspawner.spawn_list[ename].scene.instantiate()
+				var locator:Callable = func()->Transform2D: return Transform2D(randf()*TAU, 
+					player.global_position + Vector2.from_angle(randf()*TAU)*(512+enemy.radius))
+				if(!Util.attempt_place_body(enemy,enemyspawner,locator,5)):
+					push_error(\"Failed to place an enemy (nearby) after 5 attempts\")
+					enemy.queue_free()
+		else:
+			enemyspawner.spawn(ename)
+
+func _on_button_pressed() -> void:
+	$VBoxContainer/PanelContainer.visible = ! $VBoxContainer/PanelContainer.visible
+
+
+func _on_nearby_toggled(toggled_on: bool) -> void:
+	nearby_enabled=toggled_on
+"
+
+[sub_resource type="GDScript" id="GDScript_oqi4g"]
+script/source = "extends PanelContainer
 
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	var enemyspawner:Node = get_tree().root.find_child('EnemySpawner',true,false)
-	if(!is_instance_valid(enemyspawner)):
-		return
-	for scene:PackedScene in enemyspawner.enemy_list:
-		var button:Button = Button.new()
-		button.text = scene.get_state().get_node_name(0)
-		button.pressed.connect(_spawn.bind(scene))
-		$VBoxContainer/PanelContainer/VBoxContainer.add_child(button)
+	pass # Replace with function body.
 
 
-func _spawn(scene:PackedScene):
-	var enemyspawner:Node = get_tree().root.find_child('EnemySpawner',true,false)
-	if(is_instance_valid(enemyspawner)):
-		enemyspawner.spawn(scene)
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+
+
+func _on_button_pressed() -> void:
+	$VBoxContainer/PanelContainer.visible = ! $VBoxContainer/PanelContainer.visible
+
+
+func _on_allow_drops_toggled(toggled_on: bool) -> void:
+	var pickupspawner:Node = get_tree().root.find_child('PickupSpawner')
+	if(is_instance_valid(pickupspawner)):
+		pickupspawner.enabled = toggled_on
+
+
+func _on_clear_pressed() -> void:
+	for node:Node in get_tree().get_nodes_in_group(&'Pickups'):
+		node.queue_free()
+"
+
+[sub_resource type="GDScript" id="GDScript_gkksp"]
+script/source = "extends PanelContainer
+
+
+func _ready() -> void:
+	var pickupspawner:Node = get_tree().root.find_child('PickupSpawner',true,false)
+	if(is_instance_valid(pickupspawner)):
+		for scene:PackedScene in pickupspawner.pickup_list:
+			var button:Button = Button.new()
+			button.text = scene.get_state().get_node_name(0)
+			button.pressed.connect(_spawn.bind(scene))
+			$VBoxContainer/PanelContainer/VBoxContainer.add_child(button)
+
+func _spawn(scene:PackedScene)->void:
+	var pickupspawner:Node = get_tree().root.find_child('PickupSpawner',true,false)
+	if(is_instance_valid(pickupspawner)):
+		var player:Player = get_tree().get_first_node_in_group(&'Players')
+		if(is_instance_valid(player)):
+			var pickup:Pickup = scene.instantiate()
+			var locator:Callable = func()->Transform2D: return Transform2D(0,
+				player.global_position + Vector2.from_angle(randf()*TAU)*512)
+			if(!Util.attempt_place_body(pickup,pickupspawner,locator,5)):
+				push_error(\"Failed to spawn a pickup after 5 attempts\")
+				pickup.queue_free()
+			else:
+				pickup.linear_velocity = player.linear_velocity
 
 func _on_button_pressed() -> void:
 	$VBoxContainer/PanelContainer.visible = ! $VBoxContainer/PanelContainer.visible
@@ -147,11 +252,6 @@ theme_type_variation = &"DarkPanel"
 [node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-
-[node name="Immortal" type="CheckButton" parent="PanelContainer/VBoxContainer"]
-layout_mode = 2
-text = "Immortal"
-script = SubResource("GDScript_6krc4")
 
 [node name="GameSpeed" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
 layout_mode = 2
@@ -177,9 +277,15 @@ text = "1x"
 [node name="HSlider" type="HSlider" parent="PanelContainer/VBoxContainer/GameSpeed/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 4
 min_value = -3.0
 max_value = 3.0
-tick_count = 7
+step = 0.0
+
+[node name="Reset" type="Button" parent="PanelContainer/VBoxContainer/GameSpeed/HBoxContainer"]
+layout_mode = 2
+disabled = true
+text = "X"
 
 [node name="Zoom" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
 layout_mode = 2
@@ -205,79 +311,217 @@ text = "1x"
 [node name="HSlider" type="HSlider" parent="PanelContainer/VBoxContainer/Zoom/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
+size_flags_vertical = 4
 min_value = -4.0
-max_value = 3.0
-tick_count = 8
+max_value = 4.0
+step = 0.0
 
-[node name="Pickup" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
+[node name="Reset" type="Button" parent="PanelContainer/VBoxContainer/Zoom/HBoxContainer"]
 layout_mode = 2
-script = SubResource("GDScript_7qte2")
+disabled = true
+text = "X"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Pickup"]
+[node name="Player" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+script = SubResource("GDScript_k1et7")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Player"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="Button" type="Button" parent="PanelContainer/VBoxContainer/Pickup/VBoxContainer"]
+[node name="Button" type="Button" parent="PanelContainer/VBoxContainer/Player/VBoxContainer"]
 layout_mode = 2
 toggle_mode = true
-text = "Pickup"
+text = "Player"
 flat = true
 
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Pickup/VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Player/VBoxContainer"]
 visible = false
 layout_mode = 2
 theme_type_variation = &"DarkPanel"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Pickup/VBoxContainer/PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer"]
 layout_mode = 2
 
-[node name="Remove" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
-script = SubResource("GDScript_k4h56")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Remove"]
+[node name="Immortal" type="CheckButton" parent="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/PanelContainer"]
+layout_mode = 2
+text = "Immortal"
+script = SubResource("GDScript_6krc4")
+
+[node name="Add" type="PanelContainer" parent="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+script = SubResource("GDScript_7qte2")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Add"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="Button" type="Button" parent="PanelContainer/VBoxContainer/Remove/VBoxContainer"]
+[node name="Button" type="Button" parent="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Add/VBoxContainer"]
+layout_mode = 2
+toggle_mode = true
+text = "Add"
+flat = true
+
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Add/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_type_variation = &"DarkPanel"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Add/VBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="Remove" type="PanelContainer" parent="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+script = SubResource("GDScript_k4h56")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Remove"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Button" type="Button" parent="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Remove/VBoxContainer"]
 layout_mode = 2
 toggle_mode = true
 text = "Remove"
 flat = true
 
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Remove/VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Remove/VBoxContainer"]
 visible = false
 layout_mode = 2
 theme_type_variation = &"DarkPanel"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Remove/VBoxContainer/PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Remove/VBoxContainer/PanelContainer"]
 layout_mode = 2
 
-[node name="Spawn" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
+[node name="Enemies" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
 layout_mode = 2
 script = SubResource("GDScript_okadf")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Spawn"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Enemies"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="Button" type="Button" parent="PanelContainer/VBoxContainer/Spawn/VBoxContainer"]
+[node name="Button" type="Button" parent="PanelContainer/VBoxContainer/Enemies/VBoxContainer"]
 layout_mode = 2
 toggle_mode = true
+text = "Enemies"
+flat = true
+
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Enemies/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"DarkPanel"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="CheckButton" type="CheckButton" parent="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/PanelContainer"]
+layout_mode = 2
+button_pressed = true
+text = "Allow Spawning"
+
+[node name="Clear" type="Button" parent="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Clear All"
+
+[node name="Spawn" type="PanelContainer" parent="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+script = SubResource("GDScript_kwtx0")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Spawn"
 flat = true
 
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Spawn/VBoxContainer"]
+[node name="Nearby" type="CheckBox" parent="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Nearby"
+
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer"]
 visible = false
 layout_mode = 2
 theme_type_variation = &"DarkPanel"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Spawn/VBoxContainer/PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer/PanelContainer"]
 layout_mode = 2
 
-[connection signal="toggled" from="PanelContainer/VBoxContainer/Immortal" to="PanelContainer/VBoxContainer/Immortal" method="_on_toggled"]
+[node name="Pickups" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+script = SubResource("GDScript_oqi4g")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Pickups"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="PanelContainer/VBoxContainer/Pickups/VBoxContainer"]
+layout_mode = 2
+text = "Pickups"
+flat = true
+
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Pickups/VBoxContainer"]
+layout_mode = 2
+theme_type_variation = &"DarkPanel"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="AllowDrops" type="CheckButton" parent="PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/PanelContainer"]
+layout_mode = 2
+button_pressed = true
+text = "Allow Drops"
+
+[node name="Clear" type="Button" parent="PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Clear All"
+
+[node name="Spawn" type="PanelContainer" parent="PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+script = SubResource("GDScript_gkksp")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Spawn"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Spawn"
+flat = true
+
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_type_variation = &"DarkPanel"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer/PanelContainer"]
+layout_mode = 2
+
 [connection signal="value_changed" from="PanelContainer/VBoxContainer/GameSpeed/HBoxContainer/HSlider" to="PanelContainer/VBoxContainer/GameSpeed" method="_on_h_slider_value_changed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/GameSpeed/HBoxContainer/Reset" to="PanelContainer/VBoxContainer/GameSpeed" method="_on_reset_pressed"]
 [connection signal="value_changed" from="PanelContainer/VBoxContainer/Zoom/HBoxContainer/HSlider" to="PanelContainer/VBoxContainer/Zoom" method="_on_h_slider_value_changed"]
-[connection signal="pressed" from="PanelContainer/VBoxContainer/Pickup/VBoxContainer/Button" to="PanelContainer/VBoxContainer/Pickup" method="_on_button_pressed"]
-[connection signal="pressed" from="PanelContainer/VBoxContainer/Remove/VBoxContainer/Button" to="PanelContainer/VBoxContainer/Remove" method="_on_button_pressed"]
-[connection signal="pressed" from="PanelContainer/VBoxContainer/Spawn/VBoxContainer/Button" to="PanelContainer/VBoxContainer/Spawn" method="_on_button_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Zoom/HBoxContainer/Reset" to="PanelContainer/VBoxContainer/Zoom" method="_on_reset_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Player/VBoxContainer/Button" to="PanelContainer/VBoxContainer/Player" method="_on_button_pressed"]
+[connection signal="toggled" from="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/PanelContainer/Immortal" to="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/PanelContainer/Immortal" method="_on_toggled"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Add/VBoxContainer/Button" to="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Add" method="_on_button_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Remove/VBoxContainer/Button" to="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Remove" method="_on_button_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Enemies/VBoxContainer/Button" to="PanelContainer/VBoxContainer/Enemies" method="_on_button_pressed"]
+[connection signal="toggled" from="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/PanelContainer/CheckButton" to="PanelContainer/VBoxContainer/Enemies" method="_on_check_button_toggled"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Clear" to="PanelContainer/VBoxContainer/Enemies" method="_on_clear_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer/HBoxContainer/Button" to="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn" method="_on_button_pressed"]
+[connection signal="toggled" from="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer/HBoxContainer/Nearby" to="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn" method="_on_nearby_toggled"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Pickups/VBoxContainer/Button" to="PanelContainer/VBoxContainer/Pickups" method="_on_button_pressed"]
+[connection signal="toggled" from="PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/PanelContainer/AllowDrops" to="PanelContainer/VBoxContainer/Pickups" method="_on_allow_drops_toggled"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Clear" to="PanelContainer/VBoxContainer/Pickups" method="_on_clear_pressed"]
+[connection signal="pressed" from="PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer/Button" to="PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Spawn" method="_on_button_pressed"]
