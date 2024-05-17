@@ -12,7 +12,7 @@ var score:float:
 signal score_changed(to:float)
 
 func _ready()->void:
-	add_ability(load("res://abilities/light_cannon/light_cannon.tscn").instantiate())
+	add_ability(load("res://abilities/weapon/light_cannon/light_cannon.tscn").instantiate())
 
 func get_muzzle_position()->Vector2:
 	return $Interpolator/Muzzle.global_position

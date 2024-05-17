@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://b4v2b4cphju7v"]
+[gd_scene load_steps=9 format=3 uid="uid://b4v2b4cphju7v"]
 
 [ext_resource type="Theme" uid="uid://d0ifc4kse0sbj" path="res://ui/theme/theme.tres" id="1_8pghh"]
 
@@ -22,8 +22,23 @@ func _on_toggled(toggled_on: bool) -> void:
 [sub_resource type="GDScript" id="GDScript_msjy0"]
 script/source = "extends PanelContainer
 
+func _on_h_slider_value_changed(value: float) -> void:
+	Engine.time_scale = 2**value
+	$HBoxContainer/HBoxContainer/Label2.text = str(2**value)+\"x\"
+"
+
+[sub_resource type="GDScript" id="GDScript_vxf4s"]
+script/source = "extends PanelContainer
+
 func _on_spin_box_value_changed(value: float) -> void:
-	Engine.time_scale = value
+	var cam:Camera2D = get_viewport().get_camera_2d()
+	cam.zoom=Vector2(value,value);
+
+
+func _on_h_slider_value_changed(value: float) -> void:
+	var cam:Camera2D = get_viewport().get_camera_2d()
+	cam.zoom=Vector2(2**value,2**value);
+	$HBoxContainer/HBoxContainer/Label2.text = str(2**value)+\"x\"
 "
 
 [sub_resource type="GDScript" id="GDScript_7qte2"]
@@ -119,8 +134,9 @@ func _on_button_pressed() -> void:
 
 [node name="DebugMenu" type="PanelContainer"]
 process_mode = 3
-offset_right = 128.0
-offset_bottom = 169.0
+custom_minimum_size = Vector2(300, 300)
+offset_right = 300.0
+offset_bottom = 300.0
 theme = ExtResource("1_8pghh")
 script = SubResource("GDScript_2tfo1")
 
@@ -144,19 +160,54 @@ script = SubResource("GDScript_msjy0")
 [node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/GameSpeed"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/GameSpeed/HBoxContainer"]
-layout_mode = 2
-text = "Game Speed:"
-
-[node name="SpinBox" type="SpinBox" parent="PanelContainer/VBoxContainer/GameSpeed/HBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/GameSpeed/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-min_value = 0.1
-max_value = 10.0
-step = 0.01
-value = 1.0
-exp_edit = true
-suffix = "x"
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/GameSpeed/HBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Game Speed:"
+
+[node name="Label2" type="Label" parent="PanelContainer/VBoxContainer/GameSpeed/HBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "1x"
+
+[node name="HSlider" type="HSlider" parent="PanelContainer/VBoxContainer/GameSpeed/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -3.0
+max_value = 3.0
+tick_count = 7
+
+[node name="Zoom" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+script = SubResource("GDScript_vxf4s")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Zoom"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Zoom/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/Zoom/HBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 2
+text = "Zoom:"
+
+[node name="Label2" type="Label" parent="PanelContainer/VBoxContainer/Zoom/HBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "1x"
+
+[node name="HSlider" type="HSlider" parent="PanelContainer/VBoxContainer/Zoom/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+min_value = -4.0
+max_value = 3.0
+tick_count = 8
 
 [node name="Pickup" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
 layout_mode = 2
@@ -225,7 +276,8 @@ theme_type_variation = &"DarkPanel"
 layout_mode = 2
 
 [connection signal="toggled" from="PanelContainer/VBoxContainer/Immortal" to="PanelContainer/VBoxContainer/Immortal" method="_on_toggled"]
-[connection signal="value_changed" from="PanelContainer/VBoxContainer/GameSpeed/HBoxContainer/SpinBox" to="PanelContainer/VBoxContainer/GameSpeed" method="_on_spin_box_value_changed"]
+[connection signal="value_changed" from="PanelContainer/VBoxContainer/GameSpeed/HBoxContainer/HSlider" to="PanelContainer/VBoxContainer/GameSpeed" method="_on_h_slider_value_changed"]
+[connection signal="value_changed" from="PanelContainer/VBoxContainer/Zoom/HBoxContainer/HSlider" to="PanelContainer/VBoxContainer/Zoom" method="_on_h_slider_value_changed"]
 [connection signal="pressed" from="PanelContainer/VBoxContainer/Pickup/VBoxContainer/Button" to="PanelContainer/VBoxContainer/Pickup" method="_on_button_pressed"]
 [connection signal="pressed" from="PanelContainer/VBoxContainer/Remove/VBoxContainer/Button" to="PanelContainer/VBoxContainer/Remove" method="_on_button_pressed"]
 [connection signal="pressed" from="PanelContainer/VBoxContainer/Spawn/VBoxContainer/Button" to="PanelContainer/VBoxContainer/Spawn" method="_on_button_pressed"]

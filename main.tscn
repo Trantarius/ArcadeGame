@@ -4,20 +4,20 @@
 [ext_resource type="PackedScene" uid="uid://b4v2b4cphju7v" path="res://ui/debug_menu.tscn" id="3_bx4mw"]
 [ext_resource type="PackedScene" uid="uid://ccgupredk0a3f" path="res://player/player.tscn" id="3_d6lla"]
 [ext_resource type="Script" path="res://asteroid/AsteroidSpawner.gd" id="5_hea7j"]
-[ext_resource type="Script" path="res://PickupSpawner.gd" id="6_0lnqi"]
+[ext_resource type="Script" path="res://pickups/PickupSpawner.gd" id="6_0lnqi"]
 [ext_resource type="PackedScene" uid="uid://c470br5y4agbp" path="res://pickups/health_pickup.tscn" id="6_h8vvy"]
-[ext_resource type="PackedScene" uid="uid://d4epik40543it" path="res://hornet/hornet.tscn" id="6_x6syn"]
-[ext_resource type="PackedScene" uid="uid://b84l7h2qte8nl" path="res://spiky/spiky_factory.tscn" id="6_x7aoa"]
-[ext_resource type="Script" path="res://EnemySpawner.gd" id="6_xg0x2"]
-[ext_resource type="PackedScene" uid="uid://caglsq2mpkvoc" path="res://abilities/boost/boost_pickup.tscn" id="9_tblqw"]
-[ext_resource type="Script" path="res://HitNumberSpawner.gd" id="10_mwqnm"]
-[ext_resource type="Script" path="res://HealthBarSpawner.gd" id="11_bnywn"]
-[ext_resource type="PackedScene" uid="uid://7fxmn5qcukpx" path="res://abilities/handbrake/handbrake_pickup.tscn" id="11_oynry"]
-[ext_resource type="PackedScene" uid="uid://dj3sihx7v1ip0" path="res://abilities/sidestep/sidestep_pickup.tscn" id="12_gm13v"]
-[ext_resource type="PackedScene" uid="uid://cfy8pkp2n4b8d" path="res://abilities/light_cannon/light_cannon_pickup.tscn" id="13_nrt7w"]
-[ext_resource type="PackedScene" uid="uid://yidbh7wl3t3g" path="res://abilities/pulse_laser/pulse_laser_pickup.tscn" id="15_byc40"]
-[ext_resource type="PackedScene" uid="uid://cgy3if02alej2" path="res://abilities/scatter_gun/scatter_gun_pickup.tscn" id="15_c0lh3"]
-[ext_resource type="PackedScene" uid="uid://dhkxc6mxsom3a" path="res://abilities/proximity_mine/proximity_mine_pickup.tscn" id="16_w24yk"]
+[ext_resource type="PackedScene" uid="uid://d4epik40543it" path="res://enemies/hornet/hornet.tscn" id="6_x6syn"]
+[ext_resource type="PackedScene" uid="uid://b84l7h2qte8nl" path="res://enemies/spiky/spiky_factory.tscn" id="6_x7aoa"]
+[ext_resource type="Script" path="res://enemies/EnemySpawner.gd" id="6_xg0x2"]
+[ext_resource type="PackedScene" uid="uid://caglsq2mpkvoc" path="res://abilities/movement/boost/boost_pickup.tscn" id="9_tblqw"]
+[ext_resource type="Script" path="res://ui/world/HitNumberSpawner.gd" id="10_mwqnm"]
+[ext_resource type="Script" path="res://ui/world/HealthBarSpawner.gd" id="11_bnywn"]
+[ext_resource type="PackedScene" uid="uid://7fxmn5qcukpx" path="res://abilities/movement/handbrake/handbrake_pickup.tscn" id="11_oynry"]
+[ext_resource type="PackedScene" uid="uid://dj3sihx7v1ip0" path="res://abilities/movement/sidestep/sidestep_pickup.tscn" id="12_gm13v"]
+[ext_resource type="PackedScene" uid="uid://cfy8pkp2n4b8d" path="res://abilities/weapon/light_cannon/light_cannon_pickup.tscn" id="13_nrt7w"]
+[ext_resource type="PackedScene" uid="uid://yidbh7wl3t3g" path="res://abilities/weapon/pulse_laser/pulse_laser_pickup.tscn" id="15_byc40"]
+[ext_resource type="PackedScene" uid="uid://cgy3if02alej2" path="res://abilities/weapon/scatter_gun/scatter_gun_pickup.tscn" id="15_c0lh3"]
+[ext_resource type="PackedScene" uid="uid://dhkxc6mxsom3a" path="res://abilities/attack/proximity_mine/proximity_mine_pickup.tscn" id="16_w24yk"]
 
 [node name="Main" type="Node"]
 
@@ -41,6 +41,7 @@ grow_horizontal = 0
 [node name="EnemySpawner" type="Node" parent="."]
 script = ExtResource("6_xg0x2")
 target_points = 100.0
+min_spawn_distance = 2048.0
 enemy_list = Array[PackedScene]([ExtResource("6_x6syn"), ExtResource("6_x7aoa")])
 
 [node name="AsteroidSpawner" type="Node" parent="."]

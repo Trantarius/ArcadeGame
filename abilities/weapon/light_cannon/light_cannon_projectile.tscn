@@ -1,0 +1,35 @@
+[gd_scene load_steps=6 format=3 uid="uid://bqh75ayxlavl6"]
+
+[ext_resource type="Script" path="res://classes/Projectile.gd" id="1_cqn71"]
+[ext_resource type="Script" path="res://classes/Interpolator.gd" id="2_8y106"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_33omy"]
+radius = 8.0
+
+[sub_resource type="Gradient" id="Gradient_v04mo"]
+offsets = PackedFloat32Array(0, 0.8, 1)
+colors = PackedColorArray(1, 1, 1, 1, 0, 0, 1, 1, 0, 0, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_y6rjq"]
+gradient = SubResource("Gradient_v04mo")
+width = 19
+height = 19
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
+
+[node name="LightCannonProjectile" type="AnimatableBody2D"]
+collision_layer = 0
+collision_mask = 5
+sync_to_physics = false
+script = ExtResource("1_cqn71")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+shape = SubResource("CircleShape2D_33omy")
+
+[node name="Interpolator" type="Node2D" parent="."]
+script = ExtResource("2_8y106")
+
+[node name="Sprite2D" type="Sprite2D" parent="Interpolator"]
+texture = SubResource("GradientTexture2D_y6rjq")

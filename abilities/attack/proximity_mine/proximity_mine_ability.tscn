@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://c1abqegxiegd0"]
+
+[ext_resource type="Script" path="res://abilities/attack/proximity_mine/proximity_mine_ability.gd" id="1_p3mmb"]
+[ext_resource type="Texture2D" uid="uid://ce5syo2jakiqr" path="res://abilities/attack/proximity_mine/proximity_mine_icon.png" id="2_pnufd"]
+
+[node name="ProximityMineAbility" type="Node"]
+script = ExtResource("1_p3mmb")
+cooldown = 5.0
+ability_name = &"Proximity Mine"
+texture = ExtResource("2_pnufd")
+type = "Attack"
+mod_name = &"attack_ability"
+
+[connection signal="triggered" from="." to="." method="_on_triggered"]

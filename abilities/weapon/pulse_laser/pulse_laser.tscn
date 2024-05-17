@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://blpkj5dm1bxh5"]
+
+[ext_resource type="Script" path="res://abilities/weapon/pulse_laser/pulse_laser.gd" id="1_lsk2q"]
+[ext_resource type="Texture2D" uid="uid://d0b1i8dwuq1ah" path="res://abilities/weapon/pulse_laser/pulse_laser_icon.png" id="2_grv64"]
+
+[node name="PulseLaser" type="Node"]
+script = ExtResource("1_lsk2q")
+fire_rate = 1.0
+damage_amount = 20.0
+projectile_speed = 1000.0
+ability_name = &"Pulse Laser"
+texture = ExtResource("2_grv64")
+type = "Weapon"
+description = "A repeating laser gun. Onboard AI is able track and hit targets in front of you. Mostly effective at long range.
+
+Damage: {property damage_amount}
+Fire Rate: {property fire_rate}/s
+Laser Count: {property projectile_count}
+Range: {property projectile_speed}
+Auto Aim: {property projectile_size}°"
+mod_name = &"weapon"
+
+[connection signal="fire" from="." to="." method="_on_fire"]

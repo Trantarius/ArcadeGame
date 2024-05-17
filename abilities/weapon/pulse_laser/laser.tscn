@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://lasc2mwa8371"]
+
+[ext_resource type="Script" path="res://classes/Laser.gd" id="1_epoh6"]
+
+[sub_resource type="Gradient" id="Gradient_7bv15"]
+interpolation_color_space = 2
+colors = PackedColorArray(0.592157, 0.745098, 1, 1, 0, 0, 1, 0)
+
+[node name="Laser" type="Node2D"]
+position = Vector2(34, -72)
+script = ExtResource("1_epoh6")
+lifetime = 0.2
+damage_amount = 10.0
+collision_mask = 5
+gradient = SubResource("Gradient_7bv15")
+length = 1000.0
+width = 10.0

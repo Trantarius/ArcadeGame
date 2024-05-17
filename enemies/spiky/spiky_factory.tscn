@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=3 uid="uid://b84l7h2qte8nl"]
+
+[ext_resource type="Script" path="res://enemies/spiky/SpikyFactory.gd" id="1_8hxwo"]
+[ext_resource type="Script" path="res://classes/Interpolator.gd" id="2_2tqk4"]
+
+[node name="SpikyFactory" type="RigidBody2D" groups=["Enemies"]]
+collision_layer = 4
+collision_mask = 7
+max_contacts_reported = 1
+contact_monitor = true
+script = ExtResource("1_8hxwo")
+point_value = 10.0
+max_health = 100.0
+radius = 48.0
+linear_control_mode = 2
+angular_control_mode = 2
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(64, 0, 30.9096, 8.28221, 41.5692, 24, 22.6274, 22.6274, 32, 55.4256, 8.28221, 30.9096, -2.09815e-06, 48, -8.28221, 30.9096, -32, 55.4256, -22.6274, 22.6274, -41.5692, 24, -30.9096, 8.28221, -64, -5.59506e-06, -30.9096, -8.28221, -41.5692, -24, -22.6274, -22.6274, -32, -55.4256, -8.28221, -30.9096, 5.72394e-07, -48, 8.28221, -30.9096, 32, -55.4256, 22.6274, -22.6274, 41.5692, -24, 30.9096, -8.2822)
+
+[node name="Interpolator" type="Node2D" parent="."]
+script = ExtResource("2_2tqk4")
+
+[node name="Polygon2D" type="Polygon2D" parent="Interpolator"]
+color = Color(1, 0.5, 0.5, 1)
+polygon = PackedVector2Array(64, 0, 30.9096, 8.28221, 41.5692, 24, 22.6274, 22.6274, 32, 55.4256, 8.28221, 30.9096, -2.09815e-06, 48, -8.28221, 30.9096, -32, 55.4256, -22.6274, 22.6274, -41.5692, 24, -30.9096, 8.28221, -64, -5.59506e-06, -30.9096, -8.28221, -41.5692, -24, -22.6274, -22.6274, -32, -55.4256, -8.28221, -30.9096, 5.72394e-07, -48, 8.28221, -30.9096, 32, -55.4256, 22.6274, -22.6274, 41.5692, -24, 30.9096, -8.2822)

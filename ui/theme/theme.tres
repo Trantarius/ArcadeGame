@@ -1,4 +1,4 @@
-[gd_resource type="Theme" load_steps=20 format=3 uid="uid://d0ifc4kse0sbj"]
+[gd_resource type="Theme" load_steps=27 format=3 uid="uid://d0ifc4kse0sbj"]
 
 [ext_resource type="StyleBox" uid="uid://bh30n16nd06xb" path="res://ui/theme/light_panel.tres" id="1_82dfx"]
 [ext_resource type="StyleBox" uid="uid://d3cvoog7fbni7" path="res://ui/theme/dark_panel.tres" id="1_cuywo"]
@@ -23,6 +23,47 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_00m6f"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bfvhb"]
+
+[sub_resource type="Gradient" id="Gradient_v7lqm"]
+offsets = PackedFloat32Array(0.8, 1)
+colors = PackedColorArray(0.466181, 0.466181, 0.466181, 1, 0.466181, 0.466181, 0.466181, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_2pkml"]
+gradient = SubResource("Gradient_v7lqm")
+width = 16
+height = 16
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_tbyh2"]
+gradient = SubResource("Gradient_v7lqm")
+width = 16
+height = 16
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_isve5"]
+offsets = PackedFloat32Array(0.8, 1)
+colors = PackedColorArray(0.601223, 0.601223, 0.601223, 1, 0.601223, 0.601223, 0.601223, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_wfj27"]
+gradient = SubResource("Gradient_isve5")
+width = 16
+height = 16
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_s40nc"]
+offsets = PackedFloat32Array(1)
+colors = PackedColorArray(1, 1, 1, 0.196078)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_w3t78"]
+gradient = SubResource("Gradient_s40nc")
+width = 1
+height = 8
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5k0ol"]
 bg_color = Color(0.705882, 0, 0, 1)
@@ -62,6 +103,13 @@ FlatButton/styles/disabled = SubResource("StyleBoxEmpty_snvwu")
 FlatButton/styles/hover = SubResource("StyleBoxEmpty_bq0j3")
 FlatButton/styles/normal = SubResource("StyleBoxEmpty_00m6f")
 FlatButton/styles/pressed = SubResource("StyleBoxEmpty_bfvhb")
+HSlider/icons/grabber = SubResource("GradientTexture2D_2pkml")
+HSlider/icons/grabber_disabled = SubResource("GradientTexture2D_tbyh2")
+HSlider/icons/grabber_highlight = SubResource("GradientTexture2D_wfj27")
+HSlider/icons/tick = SubResource("GradientTexture2D_w3t78")
+HSlider/styles/grabber_area = ExtResource("1_82dfx")
+HSlider/styles/grabber_area_highlight = ExtResource("1_82dfx")
+HSlider/styles/slider = ExtResource("1_cuywo")
 HealthBar/base_type = &"ProgressBar"
 HealthBar/styles/background = SubResource("StyleBoxFlat_5k0ol")
 HealthBar/styles/fill = SubResource("StyleBoxFlat_n7qql")

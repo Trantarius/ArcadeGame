@@ -1,0 +1,29 @@
+[gd_scene load_steps=6 format=3 uid="uid://dj3sihx7v1ip0"]
+
+[ext_resource type="Script" path="res://abilities/AbilityPickup.gd" id="1_rajli"]
+[ext_resource type="PackedScene" uid="uid://j7ojgjiy4k3i" path="res://abilities/movement/sidestep/sidestep_ability.tscn" id="2_mxy85"]
+[ext_resource type="Script" path="res://classes/Interpolator.gd" id="3_e36v6"]
+[ext_resource type="Texture2D" uid="uid://idsavjhcaaub" path="res://abilities/movement/sidestep/sidestep_icon.png" id="4_f3wsj"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nooa2"]
+size = Vector2(32, 32)
+
+[node name="SidestepPickup" type="RigidBody2D"]
+collision_layer = 8
+collision_mask = 3
+script = ExtResource("1_rajli")
+ability_scene = ExtResource("2_mxy85")
+value = 10.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_nooa2")
+
+[node name="Interpolator" type="Node2D" parent="."]
+script = ExtResource("3_e36v6")
+
+[node name="Sprite2D" type="Sprite2D" parent="Interpolator"]
+texture_filter = 4
+scale = Vector2(0.125, 0.125)
+texture = ExtResource("4_f3wsj")
+
+[connection signal="picked_up" from="." to="." method="_on_picked_up"]

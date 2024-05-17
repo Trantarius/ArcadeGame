@@ -3,8 +3,8 @@
 [ext_resource type="Script" path="res://player/Player.gd" id="1_n287t"]
 [ext_resource type="Script" path="res://player/camera.gd" id="2_ccbte"]
 [ext_resource type="Shader" path="res://visual_effects/rocket_particles.gdshader" id="2_cdxa1"]
-[ext_resource type="Script" path="res://Interpolator.gd" id="2_kqvhg"]
-[ext_resource type="Shader" path="res://player/ambientparticles.gdshader" id="5_u0w6i"]
+[ext_resource type="Script" path="res://classes/Interpolator.gd" id="2_kqvhg"]
+[ext_resource type="Shader" path="res://visual_effects/ambientparticles.gdshader" id="5_u0w6i"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_tuyrf"]
 bounce = 0.5
