@@ -11,11 +11,13 @@ extends Actor
 ## Scales point_value for spawning purposes; higher rarity or point_value decreases spawn frequency
 @export var rarity:float = 1
 ## Minimum distance from the player at spawn
-@export var min_spawn_dist:float = 2000
+@export var min_spawn_distance:float = 2000
 ## Maximum distance from the player at spawn
-@export var max_spawn_dist:float = 5000
+@export var max_spawn_distance:float = 5000
 ## Maximum distance from a player before despawning
 @export var despawn_distance:float = 8000
+## Distance at which to show up on radar (<0 to disable)
+@export var radar_distance:float = -1
 
 func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 	super(state)

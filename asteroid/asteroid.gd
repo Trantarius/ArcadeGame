@@ -41,6 +41,9 @@ extends RigidBody2D
 		curvature_limit=to
 		generate()
 
+var polygon:PackedVector2Array
+var polygon_low:PackedVector2Array
+
 static func change_poly_resolution(poly:PackedVector2Array,res:float)->PackedVector2Array:
 	var retpoly:PackedVector2Array = []
 	var dist:float = 0
@@ -82,13 +85,13 @@ static func is_polygon_self_intersecting(poly:PackedVector2Array)->bool:
 
 ## Generates the polygon for the asteroid in a worker thread. 
 static func create_asteroid_polygon(_noise:FastNoiseLite, _noise_strength:float, _radius:float,
-	_stretch_limit:float, _resolution:float, _curvature_limit:float)->PackedVector2Array:
+	_stretch_limit:float, _resolution:float, _curvature_limit:float)->Dictionary:
 	
 	_noise=_noise.duplicate()
 	
 	# a dummy object to hold a 'done' signal
 	var done_object:Object = Object.new()
-	done_object.add_user_signal("done",[{'name':'poly','type':TYPE_PACKED_VECTOR2_ARRAY}])
+	done_object.add_user_signal("done",[{'name':'ret','type':TYPE_DICTIONARY}])
 	var done_signal:Signal = Signal(done_object, "done")
 	
 	var thread_func:Callable=func()->void:
@@ -114,6 +117,7 @@ static func create_asteroid_polygon(_noise:FastNoiseLite, _noise_strength:float,
 			subshape = Geometry2D.convex_hull(subshape)
 			poly = Geometry2D.merge_polygons(poly,subshape)[0]
 		poly = change_poly_resolution(poly,_radius/4)
+		var ret:Dictionary = {'poly_low':poly.duplicate()}
 		
 		var normals:PackedVector2Array = calc_poly_normals(poly)
 		for n:int in range(poly.size()):
@@ -131,7 +135,8 @@ static func create_asteroid_polygon(_noise:FastNoiseLite, _noise_strength:float,
 		poly = optimize_curvature(poly,_curvature_limit)
 		if(is_polygon_self_intersecting(poly)):
 			poly=[]
-		done_object.call_deferred("emit_signal","done",poly)
+		ret['poly'] = poly
+		done_object.call_deferred("emit_signal","done",ret)
 	
 	WorkerThreadPool.add_task(thread_func)
 	return await done_signal
@@ -154,27 +159,30 @@ func generate()->void:
 	# with the right parameters, a failed attempt is pretty rare, so just trying again with a new seed will probably fix it
 	const max_attempts:int=5
 	
-	var poly:PackedVector2Array = []
+	var polys:Dictionary = {'poly':[]}
 	for a:int in range(max_attempts):
 		
 		_generate_running=true
-		poly = await Asteroid.create_asteroid_polygon(noise,noise_strength,radius,stretch_limit,resolution,curvature_limit)
+		polys = await Asteroid.create_asteroid_polygon(
+			noise,noise_strength,radius,stretch_limit,resolution,curvature_limit)
 		_generate_running=false
 		if(_generate_queued):
 			_generate_queued=false
 			generate()
 			return
 		
-		if(poly.is_empty()):
+		if(polys.poly.is_empty()):
 			noise.set_block_signals(true)
 			noise.seed += 1
 			noise.set_block_signals(false)
 		else:
 			break
 	
-	if(poly.is_empty()):
+	if(polys.poly.is_empty()):
 		push_error("Failed to create asteroid polygon after ",max_attempts," attempts")
 		return
 	
-	$Interpolator/Polygon2D.polygon = poly
-	$CollisionPolygon2D.polygon = poly
+	$Interpolator/Polygon2D.polygon = polys.poly
+	$CollisionPolygon2D.polygon = polys.poly
+	polygon = polys.poly
+	polygon_low = polys.poly_low

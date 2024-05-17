@@ -1,8 +1,10 @@
-[gd_scene load_steps=19 format=3 uid="uid://gvye6ccvjd55"]
+[gd_scene load_steps=21 format=3 uid="uid://gvye6ccvjd55"]
 
 [ext_resource type="PackedScene" uid="uid://crylwoyahw6go" path="res://ui/info_panel.tscn" id="2_8k6rt"]
 [ext_resource type="PackedScene" uid="uid://b4v2b4cphju7v" path="res://ui/debug_menu.tscn" id="3_bx4mw"]
 [ext_resource type="PackedScene" uid="uid://ccgupredk0a3f" path="res://player/player.tscn" id="3_d6lla"]
+[ext_resource type="PackedScene" uid="uid://dxv4bwsrldkqn" path="res://ui/minimap.tscn" id="4_u66eo"]
+[ext_resource type="PackedScene" uid="uid://b20pt1kalrhub" path="res://ui/Radar.tscn" id="5_e1uom"]
 [ext_resource type="Script" path="res://asteroid/AsteroidSpawner.gd" id="5_hea7j"]
 [ext_resource type="Script" path="res://pickups/PickupSpawner.gd" id="6_0lnqi"]
 [ext_resource type="PackedScene" uid="uid://c470br5y4agbp" path="res://pickups/health_pickup.tscn" id="6_h8vvy"]
@@ -38,16 +40,35 @@ offset_right = -32.0
 offset_bottom = 0.0
 grow_horizontal = 0
 
+[node name="Minimap" parent="UILayer" instance=ExtResource("4_u66eo")]
+custom_minimum_size = Vector2(512, 512)
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -512.0
+offset_top = -512.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="Radar" parent="UILayer" instance=ExtResource("5_e1uom")]
+offset_right = 0.0
+offset_bottom = 0.0
+
 [node name="EnemySpawner" type="Node" parent="."]
 script = ExtResource("6_xg0x2")
 target_points = 100.0
-min_spawn_distance = 2048.0
 enemy_list = Array[PackedScene]([ExtResource("6_x6syn"), ExtResource("6_x7aoa")])
 
 [node name="AsteroidSpawner" type="Node" parent="."]
 script = ExtResource("5_hea7j")
 asteroid_count = 10.0
 max_linear_momentum = 20.0
+spawn_distance = 8000.0
+despawn_distance = 10000.0
 
 [node name="PickupSpawner" type="Node" parent="."]
 script = ExtResource("6_0lnqi")

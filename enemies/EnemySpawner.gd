@@ -4,10 +4,6 @@ extends Node
 @export var spawn_rate:float = 1
 ## Soft maximum total point_value of spawned enemies currently alive
 @export var target_points:float = 10
-## Minimum distance from player to spawn enemies
-@export var min_spawn_distance:float = sqrt(2)*1024
-## Maximum distance from player to spawn enemies
-@export var max_spawn_distance:float = 2048
 
 ## Enemy types to spawn. Each scene's root must have a script extending the Enemy class
 @export var enemy_list:Array[PackedScene]
@@ -81,7 +77,7 @@ func spawn(scene:PackedScene)->void:
 		
 		#pick a random position and rotation
 		var theta:float = randf()*TAU
-		var p_rel:Vector2 = Vector2(cos(theta),sin(theta)) * randf_range(min_spawn_distance,max_spawn_distance)
+		var p_rel:Vector2 = Vector2(cos(theta),sin(theta)) * randf_range(enemy.min_spawn_distance,enemy.max_spawn_distance)
 		candidate = Transform2D(randf()*TAU,players.pick_random().position+p_rel)
 		
 		#check for collisions
@@ -92,7 +88,7 @@ func spawn(scene:PackedScene)->void:
 		point_found = true
 		for player:Player in players:
 			var dist:float = (player.position-candidate.origin).length()
-			if(dist<min_spawn_distance):
+			if(dist<enemy.min_spawn_distance):
 				point_found=false
 				break
 	
