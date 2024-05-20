@@ -151,6 +151,8 @@ func slide_warp(motion:Vector2)->void:
 func jump_warp(motion:Vector2)->void:
 	_actor_warp_queue.push_back({&'type':&'jump',&'motion':motion})
 
+var subbodies:Array[ActorSubBody]
+
 func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 	
 	for warp:Dictionary in _actor_warp_queue:

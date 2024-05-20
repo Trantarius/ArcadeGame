@@ -25,9 +25,11 @@ max_angular_speed = 0.5
 [node name="LeftShield" type="Marker2D" parent="."]
 position = Vector2(12, 0)
 
-[node name="LeftShield" type="RigidBody2D" parent="LeftShield"]
+[node name="LeftShield" type="RigidBody2D" parent="LeftShield" node_paths=PackedStringArray("parent_actor", "target_marker")]
 collision_mask = 7
 script = ExtResource("2_tksjt")
+parent_actor = NodePath("../..")
+target_marker = NodePath("..")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="LeftShield/LeftShield"]
 rotation = -3.14159
@@ -46,9 +48,11 @@ polygon = PackedVector2Array(-32, 24, -8, 56, 0, 48, -16, 16, -16, 0, -32, 0)
 [node name="RightShield" type="Marker2D" parent="."]
 position = Vector2(12, 0)
 
-[node name="RightShield" type="RigidBody2D" parent="RightShield"]
+[node name="RightShield" type="RigidBody2D" parent="RightShield" node_paths=PackedStringArray("parent_actor", "target_marker")]
 collision_mask = 7
 script = ExtResource("2_tksjt")
+parent_actor = NodePath("../..")
+target_marker = NodePath("..")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="RightShield/RightShield"]
 rotation = -3.14159
