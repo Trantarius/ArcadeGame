@@ -37,7 +37,7 @@ func _ready()->void:
 		var results:Array[Dictionary] = get_world_2d().direct_space_state.intersect_shape(query,256)
 		
 		for res:Dictionary in results:
-			if(res.collider is Actor):
+			if(res.collider is Actor && !res.collider.invincible):
 				var damage:Damage = Damage.new()
 				damage.amount = damage_amount
 				damage.source = self

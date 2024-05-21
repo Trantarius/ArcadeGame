@@ -1,0 +1,57 @@
+[gd_scene load_steps=5 format=3 uid="uid://calsi17ho0g4c"]
+
+[ext_resource type="Script" path="res://enemies/broadside/turret.gd" id="1_w5xny"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_5y8vg"]
+radius = 24.0
+
+[sub_resource type="Gradient" id="Gradient_fq8sp"]
+offsets = PackedFloat32Array(0.97654, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_3djam"]
+gradient = SubResource("Gradient_fq8sp")
+width = 48
+height = 48
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[node name="Turret" type="RigidBody2D"]
+collision_layer = 4
+collision_mask = 0
+freeze = true
+freeze_mode = 1
+script = ExtResource("1_w5xny")
+physics_mode = 0
+linear_control_mode = 3
+angular_control_mode = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_5y8vg")
+
+[node name="Barrel" type="Line2D" parent="."]
+points = PackedVector2Array(-16, 0, 48, 0)
+default_color = Color(0.165656, 0.165656, 0.165656, 1)
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+modulate = Color(0.447059, 0.203922, 0.196078, 1)
+texture = SubResource("GradientTexture2D_3djam")
+
+[node name="Detector" type="Area2D" parent="."]
+top_level = true
+collision_mask = 2
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Detector"]
+polygon = PackedVector2Array(0, -16, 384, -384, 512, -256, 592, -128, 624, 0, 592, 128, 512, 256, 384, 384, 0, 16)
+
+[node name="Muzzle" type="Marker2D" parent="."]
+position = Vector2(48, 0)
+
+[node name="RemoteTransform2D" type="RemoteTransform2D" parent="."]
+remote_path = NodePath("../Detector")
+update_rotation = false
+update_scale = false
+
+[connection signal="body_entered" from="Detector" to="." method="_on_detector_body_entered"]
+[connection signal="body_exited" from="Detector" to="." method="_on_detector_body_exited"]

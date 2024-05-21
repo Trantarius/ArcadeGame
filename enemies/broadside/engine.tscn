@@ -1,0 +1,14 @@
+[gd_scene load_steps=2 format=3 uid="uid://c11upr826ghta"]
+
+[ext_resource type="Script" path="res://enemies/Enemy.gd" id="1_vj40v"]
+
+[node name="Engine" type="RigidBody2D"]
+position = Vector2(752, 112)
+script = ExtResource("1_vj40v")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(-64, -48, 48, -64, 96, -48, 96, -32, 64, -16, 64, 16, 96, 32, 96, 48, 48, 64, -64, 48)
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+color = Color(0.447059, 0.203922, 0.196078, 1)
+polygon = PackedVector2Array(-64, -48, 48, -64, 96, -48, 96, -32, 64, -16, 64, 16, 96, 32, 96, 48, 48, 64, -64, 48)

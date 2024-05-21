@@ -35,7 +35,7 @@ func _physics_process(delta: float) -> void:
 	
 	var collision:KinematicCollision2D = move_and_collide(linear_velocity*delta)
 	if(collision!=null):
-		if(collision.get_collider() is Actor):
+		if(collision.get_collider() is Actor && !collision.get_collider().invincible):
 			var damage:Damage = Damage.new()
 			damage.amount = damage_amount
 			damage.source = self

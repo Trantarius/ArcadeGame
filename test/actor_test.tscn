@@ -340,6 +340,8 @@ scale = Vector2(2, 2)
 texture = SubResource("GradientTexture2D_4ct4i")
 
 [node name="SubBodyActor" type="RigidBody2D" parent="."]
+process_mode = 4
+visible = false
 collision_layer = 0
 script = SubResource("GDScript_pu3on")
 max_linear_thrust = 512.0
@@ -447,3 +449,73 @@ polygon = PackedVector2Array(-296, -52, -408, 420, -296, 420)
 
 [node name="Polygon2D" type="Polygon2D" parent="StaticBody2D3"]
 polygon = PackedVector2Array(-296, -52, -408, 420, -296, 420)
+
+[node name="KinematicActor" type="RigidBody2D" parent="."]
+collision_layer = 0
+inertia = 1.0
+script = SubResource("GDScript_y6nsh")
+physics_mode = 1
+linear_control_mode = 2
+
+[node name="Interpolator" type="Node2D" parent="KinematicActor"]
+script = ExtResource("1_q6mkr")
+position_behavior = 1
+rotation_behavior = 1
+
+[node name="Sprite2D" type="Sprite2D" parent="KinematicActor/Interpolator"]
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("2_1x0lk")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="KinematicActor"]
+shape = SubResource("RectangleShape2D_njbur")
+
+[node name="ThrustLine" type="Line2D" parent="KinematicActor"]
+points = PackedVector2Array(-3, -32, 125, -30)
+width = 2.0
+default_color = Color(1, 0.239216, 0.243137, 1)
+
+[node name="VelocityLine" type="Line2D" parent="KinematicActor"]
+points = PackedVector2Array(3, -76, 126, -67)
+width = 2.0
+default_color = Color(0.313726, 0.341176, 1, 1)
+
+[node name="TargetLine" type="Line2D" parent="KinematicActor"]
+points = PackedVector2Array(13, -118, 129, -106)
+width = 2.0
+default_color = Color(0.270588, 0.854902, 0.298039, 1)
+
+[node name="AnimatableActor" type="RigidBody2D" parent="."]
+process_mode = 4
+visible = false
+collision_layer = 0
+inertia = 1.0
+script = SubResource("GDScript_y6nsh")
+physics_mode = 0
+linear_control_mode = 2
+
+[node name="Interpolator" type="Node2D" parent="AnimatableActor"]
+script = ExtResource("1_q6mkr")
+position_behavior = 1
+rotation_behavior = 1
+
+[node name="Sprite2D" type="Sprite2D" parent="AnimatableActor/Interpolator"]
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("2_1x0lk")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AnimatableActor"]
+shape = SubResource("RectangleShape2D_njbur")
+
+[node name="ThrustLine" type="Line2D" parent="AnimatableActor"]
+points = PackedVector2Array(-3, -32, 125, -30)
+width = 2.0
+default_color = Color(1, 0.239216, 0.243137, 1)
+
+[node name="VelocityLine" type="Line2D" parent="AnimatableActor"]
+points = PackedVector2Array(3, -76, 126, -67)
+width = 2.0
+default_color = Color(0.313726, 0.341176, 1, 1)
+
+[node name="TargetLine" type="Line2D" parent="AnimatableActor"]
+points = PackedVector2Array(13, -118, 129, -106)
+width = 2.0
+default_color = Color(0.270588, 0.854902, 0.298039, 1)

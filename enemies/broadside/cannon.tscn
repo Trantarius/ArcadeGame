@@ -1,0 +1,30 @@
+[gd_scene load_steps=2 format=3 uid="uid://crwwyc1s55imm"]
+
+[ext_resource type="Script" path="res://enemies/broadside/cannon.gd" id="1_bxy2k"]
+
+[node name="Cannon" type="RigidBody2D"]
+position = Vector2(-48, 160)
+script = ExtResource("1_bxy2k")
+physics_mode = 0
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(-32, -32, 32, -32, 48, 32, -48, 32)
+
+[node name="Polygon2D2" type="Polygon2D" parent="."]
+color = Color(0.196078, 0.196078, 0.196078, 1)
+polygon = PackedVector2Array(-32, 16, -16, 48, 16, 48, 32, 16)
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+color = Color(0.447059, 0.203922, 0.196078, 1)
+polygon = PackedVector2Array(-48, 32, -32, -32, 32, -32, 48, 32)
+
+[node name="Line2D" type="Line2D" parent="."]
+points = PackedVector2Array(-16, 16, -16, -16)
+default_color = Color(0.196078, 0.196078, 0.196078, 1)
+
+[node name="Line2D2" type="Line2D" parent="."]
+points = PackedVector2Array(16, 16, 16, -16)
+default_color = Color(0.194349, 0.194349, 0.194349, 1)
+
+[node name="Muzzle" type="Marker2D" parent="."]
+position = Vector2(0, 48)

@@ -62,7 +62,7 @@ func fire()->void:
 	else:
 		line.points = [Vector2.ZERO,(result.position-global_position).length() * Vector2.RIGHT]
 		var collider:Object = result.collider
-		if(collider is Actor):
+		if(collider is Actor && !collider.invincible):
 			var damage:Damage = Damage.new()
 			damage.amount = damage_amount
 			damage.source = self
