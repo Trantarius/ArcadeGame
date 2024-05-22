@@ -3,6 +3,12 @@ extends Actor
 
 ## Approximate radius at which to collect pickups
 @export var pickup_magnet:float = 256
+
+@export var max_rotation_speed:float
+@export var max_linear_speed:float
+@export var max_thrust:float
+@export var max_torque:float
+
 ## Total value of all enemies this player has killed
 var score:float:
 	set(to):
@@ -70,15 +76,16 @@ func _physics_process(delta: float) -> void:
 	
 	# since 'left' and 'right' are buttons, this will always be -1, 0, or 1
 	var rotation_input:float = Input.get_axis('left','right')
-	angular_target = rotation_input * max_angular_speed
+	$'.'.apply_torque(-sign(self.angular_velocity - rotation_input*max_rotation_speed)*max_torque)
 	
 	if(Input.is_action_pressed('forward')):
-		linear_target = global_transform.basis_xform(Vector2.UP).normalized() * max_linear_thrust
+		$'.'.apply_force(global_transform.basis_xform(Vector2.UP).normalized() * max_thrust)
 		$Interpolator/RocketParticles.emitting=true
-		$Interpolator/RocketParticles.process_material.set_shader_parameter('base_velocity',linear_velocity)
+		$Interpolator/RocketParticles.process_material.set_shader_parameter('base_velocity',self.linear_velocity)
 	else:
-		linear_target = Vector2.ZERO
 		$Interpolator/RocketParticles.emitting=false
+	
+	$'.'.linear_velocity = $'.'.linear_velocity.limit_length(max_linear_speed)
 
 static func find_nearest_player(location:Vector2, max_dist:float=-1)->Player:
 	var players:Array[Node] = Engine.get_main_loop().get_nodes_in_group('Players')

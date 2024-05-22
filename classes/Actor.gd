@@ -1,5 +1,5 @@
 class_name Actor
-extends RigidBody2D
+extends Node2D
 
 @export var max_health:float = 10:
 	set(to):
@@ -19,84 +19,10 @@ var health:float = max_health:
 
 ## Disables death. Can still take damage, but health never goes below 0.
 @export var immortal:bool = false
-## Disables damage. No damage taken or dealt signals are sent.
-@export var invincible:bool = false
 ## Toggles whether or not queue_free should automatically be called on death.
 @export var free_on_death:bool = true
 ## Approximate size of the actor
 @export var radius:float = 32
-
-enum ControlMode{
-	## Target is the desired thrust value (will be clamped to max thrust before being applied).
-	THRUST,
-	## Target is the desired acceleration. Thrust will automatically be set to try to reach that acceleration.
-	ACCELERATION,
-	## Target is the desired velocity. Thrust will automatically be set to try to reach that velocity.
-	VELOCITY,
-	## Target is the desired position. Thrust will automatically be set to try to reach that position (and stop there, if brake is true).
-	POSITION}
-
-enum PhysicsMode{
-	## The actor will not use any physics. The acceleration/velocity/position can be set directly via linear_target or angular_target.
-	ANIMATABLE,
-	## Allows the actor to ignore normal physics. It will still move on a ballistic trajectory, but other bodies won't stop it.
-	## Inertia must be manually set when using this mode.
-	KINEMATIC,
-	## Full physics. 
-	RIGID
-}
-
-@export_group('Physics')
-
-## Changes how detailed the physics will be.
-@export var physics_mode:PhysicsMode = PhysicsMode.RIGID:
-	set(to):
-		physics_mode = to
-		if(physics_mode==PhysicsMode.RIGID):
-			freeze = false
-			#PhysicsServer2D.body_set_mode(get_rid(), PhysicsServer2D.BODY_MODE_RIGID)
-		else:
-			freeze = true
-			freeze_mode = RigidBody2D.FREEZE_MODE_KINEMATIC
-			#PhysicsServer2D.body_set_mode(get_rid(), PhysicsServer2D.BODY_MODE_KINEMATIC)
-
-## Maximum self-applied force.
-@export var max_linear_thrust:float = 128
-## Linear velocity will be clamped if it exceeds this value.
-@export var max_linear_speed:float = 1024
-## Determines how linear_target will be used.
-@export var linear_control_mode:ControlMode = ControlMode.THRUST
-## When in position mode, controls how much thrust will be reversed to try to come to rest at the target position.
-@export var linear_brake:float = 1
-## See [member Actor.linear_control_mode]
-var linear_target:Vector2
-
-## Performs linear calculations in a reference frame defined by this position.
-var reference_position:Vector2
-## Performs linear calculations in a reference frame defined by this velocity.
-var reference_velocity:Vector2
-## Performs linear calculations in a reference frame defined by this acceleration.
-var reference_acceleration:Vector2
-
-## Maximum self-applied torque.
-@export var max_angular_thrust:float = 128
-## Angular velocity will be clamped if it exceeds this value.
-@export var max_angular_speed:float = 4
-## Determines how angular_target will be used.
-@export var angular_control_mode:ControlMode = ControlMode.THRUST
-## When in position mode, controls how much thrust will be reversed to try to come to rest at the target position.
-@export var angular_brake:float = 1
-## See [member Actor.angular_control_mode]
-var angular_target:float
-
-## Linear thrust applied last physics frame.
-var linear_thrust:Vector2
-## Linear acceleration applied last physics frame (excluding collisions).
-var linear_acceleration:Vector2
-## Angular thrust applied last physics frame.
-var angular_thrust:float
-## Angular acceleration applied last physics frame (excluding collisions).
-var angular_acceleration:float
 
 ## Map of StringName:Modifier
 var modifiers:Dictionary
@@ -121,20 +47,70 @@ static func _static_init()->void:
 	(Actor as Object).add_user_signal('something_took_damage',[{'name':'damage','type':TYPE_OBJECT}])
 	something_took_damage = Signal(Actor,'something_took_damage')
 
+var _actor_log_maxsize:int = 100
+const _actor_log_duration:float = 0.25
+var _actor_position_log:PackedVector2Array
+var _actor_time_log:PackedFloat64Array
+
+## Calculates the average velocity over the time period between [param period] seconds ago and now.
+func get_average_velocity(period:float = _actor_log_duration)->Vector2:
+	var start:int = _actor_time_log.bsearch(Util.game_time-period)
+	if(start>=_actor_position_log.size()-1):
+		if(_actor_position_log.size()>=2):
+			return (_actor_position_log[-1]-_actor_position_log[-2])/(_actor_time_log[-1]-_actor_time_log[-2])
+		else:
+			return Vector2.ZERO
+	return (_actor_position_log[-1]-_actor_position_log[start])/(_actor_time_log[-1]-_actor_time_log[start])
+
+## Calculates the average acceleration over the time period between [param period] seconds ago and now.
+func get_average_acceleration(period:float = _actor_log_duration)->Vector2:
+	var start:int = _actor_time_log.bsearch(Util.game_time-period)
+	if(start>=_actor_position_log.size()-2):
+		if(_actor_position_log.size()>=3):
+			var vm2:Vector2 = (_actor_position_log[-2]-_actor_position_log[-3])/(_actor_time_log[-2]-_actor_time_log[-3])
+			var tm2:float = (_actor_time_log[-2]+_actor_time_log[-3])/2
+			var vm1:Vector2 = (_actor_position_log[-1]-_actor_position_log[-2])/(_actor_time_log[-1]-_actor_time_log[-2])
+			var tm1:float = (_actor_time_log[-1]+_actor_time_log[-2])/2
+			return (vm1-vm2)/(tm1-tm2)
+		else:
+			return Vector2.ZERO
+	var v_o:Vector2 = (_actor_position_log[start+1]-_actor_position_log[start])/(_actor_time_log[start+1]-_actor_time_log[start])
+	var t_o:float = (_actor_time_log[start+1]+_actor_time_log[start])/2
+	var v_f:Vector2 = (_actor_position_log[-1]-_actor_position_log[-2])/(_actor_time_log[-1]-_actor_time_log[-2])
+	var t_f:float = (_actor_time_log[-1]+_actor_time_log[-2])/2
+	return (v_f-v_o)/(t_f-t_o)
+
+
 func _init()->void:
-	custom_integrator=true
-	contact_monitor=true
-	max_contacts_reported=3
 	# using _init instead of _ready for this to prevent it from being overridden
 	ready.connect(_actor_ready)
+	tree_entered.connect(_actor_enter_tree)
+	tree_exiting.connect(_actor_exit_tree)
 	
 func _actor_ready()->void:
 	health = max_health
 	something_spawned.emit(self)
 
-func take_damage(damage:Damage)->void:
-	if(invincible):
+func _actor_enter_tree()->void:
+	get_tree().physics_frame.connect(_actor_physics_process)
+
+func _actor_exit_tree()->void:
+	get_tree().physics_frame.disconnect(_actor_physics_process)
+
+func _actor_physics_process()->void:
+	if(!can_process()):
 		return
+	_actor_position_log.push_back(global_position)
+	_actor_time_log.push_back(Util.game_time)
+	if(_actor_time_log.size()>_actor_log_maxsize):
+		_actor_position_log = _actor_position_log.slice(_actor_position_log.size()-_actor_log_maxsize)
+		_actor_time_log = _actor_time_log.slice(_actor_time_log.size()-_actor_log_maxsize)
+	if(Util.game_time - _actor_time_log[0] > _actor_log_duration):
+		var start:int = _actor_time_log.bsearch(Util.game_time-_actor_log_duration)
+		_actor_position_log = _actor_position_log.slice(start)
+		_actor_time_log = _actor_time_log.slice(start)
+
+func take_damage(damage:Damage)->void:
 	damage.target=self
 	if(health<=0):
 		return # omae wa mo shindeiru
@@ -167,170 +143,3 @@ func remove_modifier(mod_name:StringName)->void:
 		modifiers.erase(mod_name)
 		mod_removed.emit(oldmod)
 		oldmod.queue_free()
-
-
-var _actor_warp_queue:Array[Dictionary]
-
-## Warps the actor in a direction defined by motion. It will be stopped early by anything in the way.
-func slide_warp(motion:Vector2)->void:
-	_actor_warp_queue.push_back({&'type':&'slide',&'motion':motion})
-
-## Warps the actor in a direction defined by motion. It will be cancelled if there is anything at the destination.
-func jump_warp(motion:Vector2)->void:
-	_actor_warp_queue.push_back({&'type':&'jump',&'motion':motion})
-
-func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
-	
-	for warp:Dictionary in _actor_warp_queue:
-		if(warp.type==&'slide'):
-			move_and_collide(warp.motion)
-		else:
-			var dest:Transform2D = state.transform.translated(warp.motion)
-			if(!test_move(dest,Vector2.ZERO)):
-				state.transform = dest
-	_actor_warp_queue.clear()
-		
-	match( physics_mode):
-		PhysicsMode.ANIMATABLE:
-			_integrate_forces_animatable(state)
-		PhysicsMode.KINEMATIC:
-			_integrate_forces_kinematic(state)
-		PhysicsMode.RIGID:
-			_integrate_forces_rigid(state)
-
-func _integrate_forces_animatable(state: PhysicsDirectBodyState2D) -> void:
-	
-	match(linear_control_mode):
-		ControlMode.THRUST, ControlMode.ACCELERATION:
-			state.linear_velocity += (linear_target+reference_acceleration) * state.step
-			linear_acceleration = (linear_target+reference_acceleration)
-			linear_thrust = linear_acceleration
-			set_deferred('global_position', global_position + state.linear_velocity * state.step)
-		
-		ControlMode.VELOCITY:
-			linear_acceleration = ((linear_target+reference_velocity)-state.linear_velocity)/state.step
-			linear_thrust = linear_acceleration
-			state.linear_velocity = linear_target+reference_velocity
-			set_deferred('global_position', global_position + state.linear_velocity * state.step)
-		
-		ControlMode.POSITION:
-			linear_acceleration = (((linear_target+reference_position)-state.transform.origin)/state.step - state.linear_velocity)/state.step
-			linear_thrust = linear_acceleration
-			state.linear_velocity = ((linear_target+reference_position) - state.transform.origin)/state.step
-			set_deferred('global_position', linear_target+reference_position)
-	
-	match(angular_control_mode):
-		ControlMode.THRUST, ControlMode.ACCELERATION:
-			state.angular_velocity += angular_target * state.step
-			angular_acceleration = angular_target
-			angular_thrust = angular_acceleration
-			set_deferred('global_rotation', global_rotation + state.angular_velocity*state.step)
-		
-		ControlMode.VELOCITY:
-			angular_acceleration = (angular_target-state.angular_velocity)/state.step
-			angular_thrust = angular_acceleration
-			state.angular_velocity = angular_target
-			set_deferred('global_rotation', global_rotation + state.angular_velocity*state.step)
-			
-		ControlMode.POSITION:
-			angular_acceleration = (angle_difference(state.transform.get_rotation(),angular_target)/state.step - 
-				state.angular_velocity)/state.step
-			angular_thrust = angular_acceleration
-			state.angular_velocity = angle_difference(state.transform.get_rotation(),angular_target)/state.step
-			set_deferred('global_rotation', angular_target)
-
-func _integrate_forces_kinematic(state: PhysicsDirectBodyState2D) -> void:
-	_integrate_forces_rigid(state)
-	set_deferred('global_position',global_position + state.linear_velocity*state.step)
-	set_deferred('global_rotation',global_rotation + state.angular_velocity*state.step)
-
-func _integrate_forces_rigid(state: PhysicsDirectBodyState2D) -> void:
-	
-	var current_position:Vector2 = state.transform.origin - reference_position
-	var current_velocity:Vector2 = state.linear_velocity - reference_velocity
-	var current_acceleration:Vector2 = state.get_constant_force()/mass - reference_acceleration
-	
-	var solve_accel:Callable = func solve_accel(wdir:Vector2)->Dictionary:
-		var cw:float = current_acceleration.dot(wdir)
-		var perp:Vector2 = current_acceleration - cw*wdir
-		var t_maxacc:float = max_linear_thrust/mass
-		var ret:Dictionary = {}
-		if(t_maxacc**2<perp.length_squared()):
-			ret[&'success']=false
-			# thrust won't be able to overcome current acc, just get as close as possible
-			if(current_acceleration.dot(wdir)>0):
-				ret[&'thrust'] = max_linear_thrust*-perp.normalized()
-			else:
-				ret[&'thrust'] = max_linear_thrust*-current_acceleration.normalized()
-		else:
-			ret[&'success'] = true
-			ret[&'final_acc'] = sqrt(t_maxacc**2 - perp.length_squared())+abs(cw)
-			var t_acc:Vector2 = wdir*(ret.final_acc)-current_acceleration
-			ret[&'thrust'] = t_acc*mass
-		return ret
-	
-	match(linear_control_mode):
-		ControlMode.THRUST:
-			linear_thrust = linear_target
-		
-		ControlMode.ACCELERATION:
-			linear_thrust = (linear_target - current_acceleration)*mass
-		
-		ControlMode.VELOCITY:
-			linear_thrust = solve_accel.call((linear_target-current_velocity).normalized()).thrust
-			linear_thrust = linear_thrust.limit_length((linear_target-current_velocity).length()/state.step*mass)
-		
-		ControlMode.POSITION:
-				
-			var brake:Dictionary = solve_accel.call(-current_velocity.normalized())
-			if(!brake.success):
-				# braking is impossible
-				linear_thrust = brake.thrust
-			else:
-				var brake_acc:float = brake.final_acc
-				var brake_time:float = linear_brake*current_velocity.length()/brake_acc
-				var anticipated_position:Vector2 = current_position + current_velocity*brake_time
-				var correction_dir:Vector2 = (linear_target-anticipated_position).normalized()
-				
-				linear_thrust = solve_accel.call((correction_dir-current_velocity.normalized()/2).normalized()).thrust
-				
-	var _inertia:float = PhysicsServer2D.body_get_param(get_rid(), PhysicsServer2D.BODY_PARAM_INERTIA)
-	var current_angular_acceleration:float = state.get_constant_torque()/_inertia
-	
-	match(angular_control_mode):
-		ControlMode.THRUST:
-			angular_thrust = angular_target
-		
-		ControlMode.ACCELERATION:
-			angular_thrust = (angular_target-current_angular_acceleration)*_inertia
-		
-		ControlMode.VELOCITY:
-			angular_thrust = (angular_target-state.angular_velocity)/state.step*_inertia
-		
-		ControlMode.POSITION:
-			var accel:float = max_angular_thrust/_inertia + current_angular_acceleration*-sign(state.angular_velocity)
-			var brake_time:float = angular_brake*abs(state.angular_velocity) / accel
-			var anticipated_position:float = rotation + state.angular_velocity*brake_time
-			angular_thrust = sign(-angle_difference(angular_target,anticipated_position))*max_angular_thrust
-	
-	linear_thrust = linear_thrust.limit_length(max_linear_thrust)
-	var linear_force:Vector2 = linear_thrust + state.get_constant_force()
-	state.set_constant_force(Vector2.ZERO)
-	linear_acceleration = linear_force / mass
-	
-	linear_acceleration += state.linear_velocity
-	linear_acceleration = linear_acceleration.limit_length(max_linear_speed)
-	linear_acceleration -= state.linear_velocity
-	
-	state.linear_velocity += linear_acceleration * state.step
-	
-	angular_thrust = clamp(angular_thrust, -max_angular_thrust, max_angular_thrust)
-	var angular_force:float = angular_thrust + state.get_constant_torque()
-	state.set_constant_torque(0)
-	angular_acceleration = angular_force / _inertia
-	
-	angular_acceleration += state.angular_velocity
-	angular_acceleration = clamp(angular_acceleration,-max_angular_speed,max_angular_speed)
-	angular_acceleration -= state.angular_velocity
-	
-	state.angular_velocity += angular_acceleration * state.step

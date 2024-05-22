@@ -27,6 +27,6 @@ func _process(delta: float) -> void:
 		
 		var dt:float = (Engine.get_physics_interpolation_fraction()*Engine.time_scale)/Engine.physics_ticks_per_second
 		var targpos:Vector2 = get_parent().position + get_parent().linear_velocity * dt
-		var disp:Vector2 = (targpos-position).limit_length(get_parent().max_linear_speed*get_process_delta_time())
+		var disp:Vector2 = (targpos-position).limit_length(get_parent().max_linear_speed*delta)
 		global_position += disp
 		

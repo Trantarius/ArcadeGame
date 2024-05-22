@@ -7,6 +7,9 @@ extends Enemy
 ## Desired distance from player
 @export var base_distance:float = 512
 
+@export var max_thrust:float
+@export var max_torque:float
+
 var fire_timer:CountdownTimer=CountdownTimer.new()
 
 enum{
@@ -26,10 +29,6 @@ func _ready() -> void:
 func _physics_process(_delta: float) -> void:
 	var target:Player = Player.find_nearest_player(global_position)
 	if(target==null):
-		linear_control_mode = ControlMode.THRUST
-		linear_target = Vector2.ZERO
-		angular_control_mode = ControlMode.THRUST
-		angular_target = 0
 		match(fire_stage):
 			STAGE_COOLDOWN:
 				fire_timer.paused = true
@@ -38,19 +37,18 @@ func _physics_process(_delta: float) -> void:
 		
 	else:
 		
-		linear_control_mode = ControlMode.POSITION
-		linear_target = ((global_position)-target.global_position).normalized()*base_distance + target.global_position
+		var desired_position:Vector2 =  ((global_position)-target.global_position).normalized()*base_distance + target.global_position
+		var desired_angle:float = (target.global_position-global_position).angle()
 		
-		angular_control_mode = ControlMode.POSITION
-		angular_target = (target.global_position-global_position).angle()
-		
-		reference_velocity = target.linear_velocity
-		reference_acceleration = target.linear_acceleration
+		var thrust:Vector2 = Ballistics.find_thrust_to_position(global_position,self.linear_velocity,Vector2.ZERO,
+			desired_position, target.linear_velocity, Vector2.ZERO, max_thrust)
+		$'.'.apply_force(thrust)
+		$'.'.apply_torque(Ballistics.find_torque_to_angle(global_rotation, self.angular_velocity, desired_angle, max_torque))
 		
 		# reverse the charging if too far or facing the wrong direction
 		var tdist:float = (target.global_position-global_position).length()
 		
-		if(tdist>3*base_distance/2 || abs(angle_difference(global_rotation,angular_target))>1):
+		if(tdist>3*base_distance/2 || abs(angle_difference(global_rotation,desired_angle))>1):
 			match(fire_stage):
 				STAGE_COOLDOWN:
 					fire_timer.paused = true
@@ -92,7 +90,7 @@ func _physics_process(_delta: float) -> void:
 func fire_projectile()->void:
 	var proj:Projectile = preload("res://enemies/shield_bearer/shield_bearer_projectile.tscn").instantiate()
 	proj.global_position = global_position
-	proj.linear_velocity = Vector2.RIGHT.rotated(global_rotation)*400 + reference_velocity
+	proj.linear_velocity = Vector2.RIGHT.rotated(global_rotation)*400 + self.linear_velocity
 	proj.global_rotation = global_rotation
 	proj.source = self
 	get_parent().add_child(proj)

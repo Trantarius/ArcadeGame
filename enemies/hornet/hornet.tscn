@@ -1,13 +1,16 @@
-[gd_scene load_steps=4 format=3 uid="uid://d4epik40543it"]
+[gd_scene load_steps=5 format=3 uid="uid://d4epik40543it"]
 
 [ext_resource type="Script" path="res://enemies/hornet/hornet.gd" id="1_ghiqj"]
 [ext_resource type="Script" path="res://classes/Interpolator.gd" id="2_yfdop"]
 [ext_resource type="Script" path="res://enemies/hornet/RandomWalk.gd" id="4_f6jcc"]
+[ext_resource type="Script" path="res://classes/HitBox.gd" id="4_sauan"]
 
 [node name="Hornet" type="RigidBody2D"]
 collision_layer = 4
 collision_mask = 7
 script = ExtResource("1_ghiqj")
+max_thrust = 100.0
+max_torque = 200.0
 contact_damage = 10.0
 point_value = 5.0
 max_health = 30.0
@@ -33,3 +36,14 @@ momentum = 1.0
 
 [node name="Marker2D" type="Marker2D" parent="."]
 position = Vector2(16, 0)
+
+[node name="HitBox" type="Area2D" parent="."]
+collision_layer = 4
+collision_mask = 2
+script = ExtResource("4_sauan")
+contact_damage_enabled = true
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="HitBox"]
+position = Vector2(8, 0)
+rotation = 1.5708
+polygon = PackedVector2Array(-12, -8, -8, 0, 8, 0, 12, -8, 16, 4, 8, 12, 0, 32, -8, 12, -16, 4)

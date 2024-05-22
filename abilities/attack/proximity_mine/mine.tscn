@@ -26,7 +26,7 @@ fill_to = Vector2(1, 0.5)
 
 [node name="Mine" type="RigidBody2D"]
 position = Vector2(280, 168)
-collision_layer = 0
+collision_layer = 16
 script = ExtResource("1_bumr1")
 off_color = Color(0.188235, 0.133333, 0, 1)
 arming_color = Color(0.694118, 0.67451, 0, 1)
@@ -41,6 +41,7 @@ shape = SubResource("CircleShape2D_g2vna")
 [node name="Detector" type="Area2D" parent="."]
 collision_layer = 0
 collision_mask = 4
+monitorable = false
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Detector"]
 visible = false

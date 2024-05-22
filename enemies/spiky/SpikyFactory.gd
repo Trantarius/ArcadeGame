@@ -8,8 +8,8 @@ extends Enemy
 var spawn_timer:float = 0
 
 func _ready() -> void:
-	linear_target = Vector2.ZERO
-	angular_target = max_angular_speed
+	$'.'.apply_force(-self.linear_velocity)
+	$'.'.apply_torque(-self.angular_velocity+1)
 
 func _physics_process(delta: float) -> void:
 	
@@ -22,6 +22,6 @@ func spawn_spiky()->void:
 	var dir:Vector2 = global_transform.basis_xform(Vector2.RIGHT).rotated(randf()*TAU)
 	var spiky:Spiky = preload("res://enemies/spiky/spiky.tscn").instantiate()
 	spiky.position = position + dir * 32
-	spiky.linear_velocity = dir * spiky.max_linear_speed/2
+	spiky.linear_velocity = dir * spiky.max_speed/2
 	spiky.add_collision_exception_with(self)
 	get_parent().add_child(spiky)

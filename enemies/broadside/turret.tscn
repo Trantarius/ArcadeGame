@@ -1,6 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://calsi17ho0g4c"]
+[gd_scene load_steps=6 format=3 uid="uid://calsi17ho0g4c"]
 
 [ext_resource type="Script" path="res://enemies/broadside/turret.gd" id="1_w5xny"]
+[ext_resource type="Script" path="res://classes/HitBox.gd" id="2_fvd0i"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_5y8vg"]
 radius = 24.0
@@ -17,15 +18,10 @@ fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(1, 0.5)
 
-[node name="Turret" type="RigidBody2D"]
+[node name="Turret" type="AnimatableBody2D"]
 collision_layer = 4
 collision_mask = 0
-freeze = true
-freeze_mode = 1
 script = ExtResource("1_w5xny")
-physics_mode = 0
-linear_control_mode = 3
-angular_control_mode = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_5y8vg")
@@ -39,7 +35,7 @@ modulate = Color(0.447059, 0.203922, 0.196078, 1)
 texture = SubResource("GradientTexture2D_3djam")
 
 [node name="Detector" type="Area2D" parent="."]
-top_level = true
+collision_layer = 0
 collision_mask = 2
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Detector"]
@@ -53,5 +49,11 @@ remote_path = NodePath("../Detector")
 update_rotation = false
 update_scale = false
 
-[connection signal="body_entered" from="Detector" to="." method="_on_detector_body_entered"]
-[connection signal="body_exited" from="Detector" to="." method="_on_detector_body_exited"]
+[node name="HitBox" type="Area2D" parent="."]
+collision_layer = 64
+collision_mask = 0
+monitoring = false
+script = ExtResource("2_fvd0i")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="HitBox"]
+shape = SubResource("CircleShape2D_5y8vg")

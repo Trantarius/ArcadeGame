@@ -30,6 +30,8 @@ func _ready()->void:
 		timer.time = duration
 		
 		var query:PhysicsShapeQueryParameters2D = PhysicsShapeQueryParameters2D.new()
+		query.collide_with_areas = true
+		query.collide_with_bodies = false
 		query.collision_mask = collision_mask
 		query.shape = CircleShape2D.new()
 		query.shape.radius = radius
@@ -37,23 +39,13 @@ func _ready()->void:
 		var results:Array[Dictionary] = get_world_2d().direct_space_state.intersect_shape(query,256)
 		
 		for res:Dictionary in results:
-			if(res.collider is Actor && !res.collider.invincible):
+			if(res.collider is HitBox):
 				var damage:Damage = Damage.new()
 				damage.amount = damage_amount
 				damage.source = self
 				damage.attacker = source
-				damage.target = res.collider
-				
-				var shape_owner:int = res.collider.shape_find_owner(res.shape)
-				var shape:Shape2D = res.collider.shape_owner_get_shape(shape_owner, res.shape)
-				var contacts:PackedVector2Array = query.shape.collide_and_get_contacts(query.transform, shape, 
-					res.collider.global_transform * PhysicsServer2D.body_get_shape_transform(res.collider.get_rid(), res.shape))
-				
-				if(contacts.is_empty()):
-					damage.position = res.collider.global_position
-				else:
-					damage.position = Array(contacts).reduce(func(a:Vector2,b:Vector2)->Vector2: return a+b)/contacts.size()
-				
+				damage.target = res.collider.actor
+				damage.position = global_position + (res.collider.global_position-global_position).limit_length(radius)
 				damage.direction = (damage.position-global_position).normalized()
 				damage.silent = damage_silent
 				damage_dealt.emit(damage)

@@ -7,7 +7,6 @@ extends Node2D
 var lifetime_timer:CountdownTimer = CountdownTimer.new()
 
 @export var damage_amount:float = 1
-@export var damage_silent:bool = false
 
 @export_flags_2d_physics var collision_mask:int
 @export var gradient:Gradient:
@@ -62,15 +61,14 @@ func fire()->void:
 	else:
 		line.points = [Vector2.ZERO,(result.position-global_position).length() * Vector2.RIGHT]
 		var collider:Object = result.collider
-		if(collider is Actor && !collider.invincible):
+		if(collider is HitBox):
 			var damage:Damage = Damage.new()
 			damage.amount = damage_amount
 			damage.source = self
 			damage.attacker = source
-			damage.target = collider
+			damage.target = collider.actor
 			damage.position = result.position
 			damage.direction = (query.to-query.from).normalized()
-			damage.silent = damage_silent
 			damage_dealt.emit(damage)
 			damage.target.take_damage(damage)
 	

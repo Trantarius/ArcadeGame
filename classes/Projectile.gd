@@ -1,28 +1,21 @@
 class_name Projectile
-extends AnimatableBody2D
+extends Area2D
 
 ## How long after firing the projectile is destroyed
 @export var lifetime:float = 10
 var lifetime_timer:CountdownTimer = CountdownTimer.new()
 
-@export_group('Damage','damage_')
 @export var damage_amount:float = 1
-@export var damage_silent:bool = false
 
 var source:Actor
-var linear_velocity:Vector2:
-	set(to):
-		constant_linear_velocity=to
-	get:
-		return constant_linear_velocity
-var angular_velocity:float:
-	set(to):
-		constant_angular_velocity=to
-	get:
-		return constant_angular_velocity
+var linear_velocity:Vector2
+var angular_velocity:float
 
-signal hit(collision:KinematicCollision2D)
 signal damage_dealt(damage:Damage)
+
+func _init()->void:
+	area_shape_entered.connect(_projectile_area_shape_entered)
+	body_entered.connect(_projectile_body_entered)
 
 func _ready()->void:
 	lifetime_timer.time = lifetime
@@ -33,18 +26,35 @@ func _physics_process(delta: float) -> void:
 	if(lifetime_timer.time <= 0):
 		queue_free()
 	
-	var collision:KinematicCollision2D = move_and_collide(linear_velocity*delta)
-	if(collision!=null):
-		if(collision.get_collider() is Actor && !collision.get_collider().invincible):
-			var damage:Damage = Damage.new()
-			damage.amount = damage_amount
-			damage.source = self
-			damage.attacker = source
-			damage.target = collision.get_collider()
-			damage.position = collision.get_position()
-			damage.direction = (linear_velocity - collision.get_collider_velocity()).normalized()
-			damage.silent = damage_silent
-			damage_dealt.emit(damage)
-			damage.target.take_damage(damage)
-		hit.emit(collision)
+	global_rotation += angular_velocity * delta
+	global_position += linear_velocity * delta
+
+var _projectile_has_hit:bool = false
+
+func _projectile_area_shape_entered(area_rid:RID, area:Area2D, area_shape_index:int, local_shape_index:int)->void:
+	if(area is HitBox && !_projectile_has_hit):
+		if(area.actor.health<=0):
+			return
+		
+		var contact:Dictionary = Util.collider_get_shape_contact(self, local_shape_index, area, area_shape_index)
+		
+		var damage:Damage = Damage.new()
+		damage.amount = damage_amount
+		damage.source = self
+		damage.attacker = source
+		damage.target = area.actor
+		if(contact.is_empty()):
+			damage.position = (area.global_position + global_position)/2
+			damage.direction = (area.global_position - global_position).normalized()
+		else:
+			damage.position = contact.position
+			damage.direction = contact.normal
+		damage_dealt.emit(damage)
+		damage.target.take_damage(damage)
+		
+		_projectile_has_hit=true
+		
 		queue_free()
+
+func _projectile_body_entered(body:Node2D)->void:
+	queue_free()

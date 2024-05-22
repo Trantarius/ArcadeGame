@@ -62,7 +62,7 @@ func spawn(ename:StringName)->void:
 		return Transform2D(randf()*TAU, campos + 
 			Vector2.from_angle(randf()*TAU) * randf_range(enemy.min_spawn_distance,enemy.max_spawn_distance))
 	
-	if(!Util.attempt_place_body(enemy,self,locator,5)):
+	if(!Util.attempt_place_actor(enemy,self,locator,5)):
 		push_error("Failed to place an enemy after 5 attempts")
 		enemy.queue_free()
 

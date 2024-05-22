@@ -10,27 +10,20 @@ var target:Actor
 
 func _ready() -> void:
 	$Detector.global_transform = global_transform
-	linear_target = position.rotated(get_parent().global_rotation)
-	reference_position = get_parent().global_position
-	reference_velocity = get_parent().linear_velocity
-	reference_acceleration = get_parent().linear_acceleration
+	$Detector.top_level=true
 
 func _physics_process(delta: float) -> void:
-	linear_target = position.rotated(get_parent().global_rotation)
-	reference_position = get_parent().global_position
-	reference_velocity = get_parent().linear_velocity
-	reference_acceleration = get_parent().linear_acceleration
 	
 	if(!is_instance_valid(target)):
-		angular_target = sign(angle_difference(rotation,$Detector.rotation))*turn_rate
+		global_rotation = rotate_toward(global_rotation, $Detector.global_rotation, turn_rate*delta)
 		return
+		
+	var shot_dir:Vector2 = Ballistics.aim_shot_linear(global_position, self.constant_linear_velocity, 
+		target.global_position, target.linear_velocity, shot_speed)
 	
-	var lead_time:float = (target.global_position-global_position).length()/shot_speed
-	var target_pos:Vector2 = target.global_position + target.linear_velocity * lead_time
-	var target_theta:float = (target_pos - global_position).angle()
-	angular_target = sign(angle_difference(rotation,target_theta))*turn_rate
+	global_rotation = rotate_toward(global_rotation, shot_dir.angle(), turn_rate*delta)
 	
-	if(abs(angle_difference(rotation,target_theta))<0.1 && fire_timer.time<=0):
+	if(abs(angle_difference(global_rotation,shot_dir.angle()))<0.1 && fire_timer.time<=0):
 		fire()
 		fire_timer.time = fire_delay
 
