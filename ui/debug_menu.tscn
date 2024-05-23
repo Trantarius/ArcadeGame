@@ -163,7 +163,7 @@ func _spawn(ename:StringName)->void:
 				var enemy:Enemy = enemyspawner.spawn_list[ename].scene.instantiate()
 				var locator:Callable = func()->Transform2D: return Transform2D(randf()*TAU, 
 					player.global_position + Vector2.from_angle(randf()*TAU)*(512+enemy.radius))
-				if(!Util.attempt_place_actor(enemy,enemyspawner,locator,5)):
+				if(!Util.attempt_place_node(enemy,enemyspawner,locator,5)):
 					push_error(\"Failed to place an enemy (nearby) after 5 attempts\")
 					enemy.queue_free()
 		else:
@@ -227,7 +227,7 @@ func _spawn(scene:PackedScene)->void:
 			var pickup:Pickup = scene.instantiate()
 			var locator:Callable = func()->Transform2D: return Transform2D(0,
 				player.global_position + Vector2.from_angle(randf()*TAU)*512)
-			if(!Util.attempt_place_body(pickup,pickupspawner,locator,5)):
+			if(!Util.attempt_place_node(pickup,pickupspawner,locator,5)):
 				push_error(\"Failed to spawn a pickup after 5 attempts\")
 				pickup.queue_free()
 			else:

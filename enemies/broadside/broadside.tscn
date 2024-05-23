@@ -1,88 +1,133 @@
-[gd_scene load_steps=5 format=3 uid="uid://duw4y42hn6e5i"]
+[gd_scene load_steps=7 format=3 uid="uid://duw4y42hn6e5i"]
 
 [ext_resource type="Script" path="res://enemies/broadside/broadside.gd" id="1_myy4k"]
 [ext_resource type="PackedScene" uid="uid://calsi17ho0g4c" path="res://enemies/broadside/turret.tscn" id="2_qy785"]
 [ext_resource type="PackedScene" uid="uid://crwwyc1s55imm" path="res://enemies/broadside/cannon.tscn" id="3_6q3fn"]
 [ext_resource type="PackedScene" uid="uid://c11upr826ghta" path="res://enemies/broadside/engine.tscn" id="4_srbmi"]
+[ext_resource type="Script" path="res://classes/Interpolator.gd" id="5_5wcpo"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vqa21"]
+size = Vector2(768, 512)
 
 [node name="Broadside" type="RigidBody2D"]
 collision_layer = 5
 collision_mask = 15
+mass = 1000.0
 script = ExtResource("1_myy4k")
 point_value = 100.0
-radius = 500.0
+radius = 300.0
+disable_health_bar = true
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
 position = Vector2(-208, 0)
 scale = Vector2(2, 2)
 polygon = PackedVector2Array(-256, 16, -128, 16, -112, 0, -128, -16, -256, -16, -248, -36, -240, -48, -224, -56, -64, -96, -56, -96, -48, -80, -40, -48, -8, -48, 0, -80, 4, -88, 12, -88, 16, -80, 24, -48, 56, -48, 64, -80, 68, -88, 76, -88, 80.1328, -79.7344, 88, -48, 120, -48, 128, -80, 132, -88, 140, -88, 144, -80, 152, -48, 184, -48, 192, -80, 196, -88, 204, -88, 207.704, -80.592, 216, -48, 248, -48, 256, -80, 260, -88, 268, -88, 272, -80, 280, -48, 312, -48, 320, -80, 328, -96, 376, -96, 416, -88, 360, -80, 360, -32, 416, -24, 376, -16, 376, 16, 416, 24, 360, 32, 360, 80, 416, 88, 376, 96, 328, 96, 320, 80, 312, 48, 280, 48, 272, 80, 268, 88, 260, 88, 256.154, 80.3087, 248, 48, 216, 48, 208, 80, 204, 88, 196, 88, 192, 80, 184, 48, 152, 48, 144, 80, 140, 88, 132, 88, 128, 80, 120, 48, 88, 48, 80, 80, 76, 88, 68, 88, 63.9378, 79.8755, 56, 48, 24, 48, 16, 80, 12, 88, 4, 88, 0, 80, -8, 48, -40, 48, -48, 80, -56, 96, -64, 96, -224, 56, -240, 48, -248, 36)
 
-[node name="Turret" parent="." instance=ExtResource("2_qy785")]
+[node name="Turret" parent="." groups=["BroadsidePart"] instance=ExtResource("2_qy785")]
 position = Vector2(-592, 128)
 rotation = 1.8326
+sync_to_physics = false
 
-[node name="Turret2" parent="." instance=ExtResource("2_qy785")]
+[node name="Turret2" parent="." groups=["BroadsidePart"] instance=ExtResource("2_qy785")]
 position = Vector2(-400, 176)
 rotation = 1.8326
+sync_to_physics = false
 
-[node name="Turret3" parent="." instance=ExtResource("2_qy785")]
+[node name="Turret3" parent="." groups=["BroadsidePart"] instance=ExtResource("2_qy785")]
 position = Vector2(-592, -128)
 rotation = -1.8326
+sync_to_physics = false
 
-[node name="Turret4" parent="." instance=ExtResource("2_qy785")]
+[node name="Turret4" parent="." groups=["BroadsidePart"] instance=ExtResource("2_qy785")]
 position = Vector2(-400, -176)
 rotation = -1.8326
+sync_to_physics = false
 
-[node name="Polygon2D" type="Polygon2D" parent="."]
+[node name="Cannon" parent="." groups=["BroadsidePart"] instance=ExtResource("3_6q3fn")]
+position = Vector2(-256, 128)
+sync_to_physics = false
+
+[node name="Cannon2" parent="." groups=["BroadsidePart"] instance=ExtResource("3_6q3fn")]
+position = Vector2(-128, 128)
+sync_to_physics = false
+
+[node name="Cannon3" parent="." groups=["BroadsidePart"] instance=ExtResource("3_6q3fn")]
+position = Vector2(0, 128)
+sync_to_physics = false
+
+[node name="Cannon4" parent="." groups=["BroadsidePart"] instance=ExtResource("3_6q3fn")]
+position = Vector2(128, 128)
+sync_to_physics = false
+
+[node name="Cannon5" parent="." groups=["BroadsidePart"] instance=ExtResource("3_6q3fn")]
+position = Vector2(256, 128)
+sync_to_physics = false
+
+[node name="Cannon6" parent="." groups=["BroadsidePart"] instance=ExtResource("3_6q3fn")]
+position = Vector2(384, 128)
+sync_to_physics = false
+
+[node name="Cannon7" parent="." groups=["BroadsidePart"] instance=ExtResource("3_6q3fn")]
+position = Vector2(384, -128)
+rotation = 3.14159
+sync_to_physics = false
+
+[node name="Cannon8" parent="." groups=["BroadsidePart"] instance=ExtResource("3_6q3fn")]
+position = Vector2(256, -128)
+rotation = 3.14159
+sync_to_physics = false
+
+[node name="Cannon9" parent="." groups=["BroadsidePart"] instance=ExtResource("3_6q3fn")]
+position = Vector2(128, -128)
+rotation = 3.14159
+sync_to_physics = false
+
+[node name="Cannon10" parent="." groups=["BroadsidePart"] instance=ExtResource("3_6q3fn")]
+position = Vector2(0, -128)
+rotation = 3.14159
+sync_to_physics = false
+
+[node name="Cannon11" parent="." groups=["BroadsidePart"] instance=ExtResource("3_6q3fn")]
+position = Vector2(-128, -128)
+rotation = 3.14159
+sync_to_physics = false
+
+[node name="Cannon12" parent="." groups=["BroadsidePart"] instance=ExtResource("3_6q3fn")]
+position = Vector2(-256, -128)
+rotation = 3.14159
+sync_to_physics = false
+
+[node name="Engine" parent="." groups=["BroadsidePart"] instance=ExtResource("4_srbmi")]
+position = Vector2(576, 112)
+sync_to_physics = false
+
+[node name="Engine2" parent="." groups=["BroadsidePart"] instance=ExtResource("4_srbmi")]
+position = Vector2(576, -112)
+sync_to_physics = false
+
+[node name="Interpolator" type="Node2D" parent="."]
+script = ExtResource("5_5wcpo")
+
+[node name="Polygon2D" type="Polygon2D" parent="Interpolator"]
 position = Vector2(-208, 0)
 scale = Vector2(2, 2)
 color = Color(0.197937, 0.197937, 0.197937, 1)
 polygon = PackedVector2Array(-112, 0, -128, -16, -256, -16, -248, -36, -240, -48, -224, -56, -64, -96, -56, -96, -48, -80, -40, -48, -8, -48, 0.348869, -80.6977, 4, -88, 12, -88, 16, -80, 24, -48, 56, -48, 64, -80, 68, -88, 76, -88, 80, -80, 88, -48, 120, -48, 128.294, -80.5875, 132, -88, 140, -88, 144, -80, 152, -48, 184, -48, 191.809, -79.6189, 196, -88, 204, -88, 208, -80, 216, -48, 248, -48, 256, -80, 260, -88, 268, -88, 272, -80, 280, -48, 312, -48, 319.677, -79.3531, 328, -96, 376, -96, 416, -88, 360, -80, 360, -32, 416, -24, 376, -16, 376, 16, 416, 24, 360, 32, 360, 80, 416, 88, 376, 96, 328, 96, 320, 80, 312, 48, 280, 48, 272, 80, 268, 88, 260, 88, 256, 80, 248, 48, 216, 48, 208, 80, 204, 88, 196, 88, 192, 80, 184, 48, 152, 48, 144, 80, 140, 88, 132, 88, 128, 80, 120, 48, 88, 48, 80, 80, 76, 88, 68, 88, 63.925, 79.85, 56, 48, 24, 48, 16, 80, 12, 88, 4, 88, 0, 80, -8, 48, -40, 48, -48, 80, -56, 96, -64, 96, -224, 56, -240, 48, -248, 36, -256, 16, -128, 16)
 
-[node name="Cannon" parent="." instance=ExtResource("3_6q3fn")]
-position = Vector2(-256, 128)
+[node name="PortCannonDetector" type="Area2D" parent="."]
+position = Vector2(64, 416)
+collision_layer = 0
+collision_mask = 2
+monitorable = false
 
-[node name="Cannon2" parent="." instance=ExtResource("3_6q3fn")]
-position = Vector2(-128, 128)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PortCannonDetector"]
+shape = SubResource("RectangleShape2D_vqa21")
 
-[node name="Cannon3" parent="." instance=ExtResource("3_6q3fn")]
-position = Vector2(0, 128)
+[node name="StarboardCannonDetector" type="Area2D" parent="."]
+position = Vector2(64, -416)
+collision_layer = 0
+collision_mask = 2
+monitorable = false
 
-[node name="Cannon4" parent="." instance=ExtResource("3_6q3fn")]
-position = Vector2(128, 128)
-
-[node name="Cannon5" parent="." instance=ExtResource("3_6q3fn")]
-position = Vector2(256, 128)
-
-[node name="Cannon6" parent="." instance=ExtResource("3_6q3fn")]
-position = Vector2(384, 128)
-
-[node name="Cannon7" parent="." instance=ExtResource("3_6q3fn")]
-position = Vector2(384, -128)
-rotation = 3.14159
-
-[node name="Cannon8" parent="." instance=ExtResource("3_6q3fn")]
-position = Vector2(256, -128)
-rotation = 3.14159
-
-[node name="Cannon9" parent="." instance=ExtResource("3_6q3fn")]
-position = Vector2(128, -128)
-rotation = 3.14159
-
-[node name="Cannon10" parent="." instance=ExtResource("3_6q3fn")]
-position = Vector2(0, -128)
-rotation = 3.14159
-
-[node name="Cannon11" parent="." instance=ExtResource("3_6q3fn")]
-position = Vector2(-128, -128)
-rotation = 3.14159
-
-[node name="Cannon12" parent="." instance=ExtResource("3_6q3fn")]
-position = Vector2(-256, -128)
-rotation = 3.14159
-
-[node name="Engine" parent="." instance=ExtResource("4_srbmi")]
-position = Vector2(576, 112)
-
-[node name="Engine2" parent="." instance=ExtResource("4_srbmi")]
-position = Vector2(576, -112)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StarboardCannonDetector"]
+shape = SubResource("RectangleShape2D_vqa21")

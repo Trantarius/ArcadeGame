@@ -57,7 +57,7 @@ func spawn_asteroid(locator:Callable)->void:
 	aster.noise.seed = randi()
 	aster.mass = (aster.radius/50)**3
 	
-	if(!Util.attempt_place_body(aster,self,locator,5)):
+	if(!Util.attempt_place_node(aster,self,locator,5)):
 		aster.queue_free()
 		push_error("Failed to place an asteroid after 5 attempts")
 	else:

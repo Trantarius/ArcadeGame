@@ -47,7 +47,6 @@ func _area_shape_entered(area_rid:RID, area:Area2D, area_shape_index:int, local_
 		var contact:Dictionary = Util.collider_get_shape_contact(self, local_shape_index,
 			area, area_shape_index)
 		
-		
 		var damage:Damage = Damage.new()
 		damage.amount = contact_damage_amount
 		if(contact.is_empty()):
@@ -56,7 +55,6 @@ func _area_shape_entered(area_rid:RID, area:Area2D, area_shape_index:int, local_
 		else:
 			damage.position = contact.position
 			damage.direction = contact.normal
-		damage.source = self
 		damage.attacker = actor
 		damage.target = area.actor
 		damage_dealt.emit(damage)

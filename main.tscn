@@ -30,7 +30,7 @@
 [node name="EnemySpawner" type="Node" parent="."]
 script = ExtResource("6_xg0x2")
 target_points = 100.0
-enemy_list = Array[PackedScene]([ExtResource("6_x6syn"), ExtResource("6_x7aoa"), ExtResource("5_mw3qt"), ExtResource("6_hld7t")])
+enemy_list = Array[PackedScene]([ExtResource("6_x6syn"), ExtResource("6_hld7t"), ExtResource("6_x7aoa"), ExtResource("5_mw3qt")])
 
 [node name="AsteroidSpawner" type="Node" parent="."]
 script = ExtResource("5_hea7j")

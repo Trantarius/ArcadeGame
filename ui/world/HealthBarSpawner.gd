@@ -48,6 +48,8 @@ func _ready() -> void:
 	Actor.something_spawned.connect(_on_something_spawned)
 
 func _on_something_spawned(actor:Actor)->void:
+	if(actor.disable_health_bar):
+		return
 	if(actor is Player && enable_on_player):
 		give_healthbar(actor)
 	elif(actor is Enemy && enable_on_enemy):

@@ -1,11 +1,6 @@
 class_name Enemy
 extends Actor
 
-## Damage dealt to player on contact (requires contact_monitor to be enabled)
-@export var contact_damage:float = 1
-## Whether or not the enemy should die when dealing contact damage
-@export var contact_suicide:bool = false
-
 ## How strong this enemy is; used for spawning and scoring
 @export var point_value:float = 1
 ## Scales point_value for spawning purposes; higher rarity or point_value decreases spawn frequency

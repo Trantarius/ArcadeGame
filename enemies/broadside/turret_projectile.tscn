@@ -1,9 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://b3nelbyc6lf72"]
+[gd_scene load_steps=6 format=3 uid="uid://b3nelbyc6lf72"]
 
 [ext_resource type="Script" path="res://classes/Projectile.gd" id="1_c4hb8"]
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_7xdpk"]
-radius = 6.0
+[ext_resource type="Script" path="res://classes/Interpolator.gd" id="2_rqgio"]
 
 [sub_resource type="Gradient" id="Gradient_qxm0k"]
 offsets = PackedFloat32Array(0, 0.879765, 1)
@@ -17,14 +15,20 @@ fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(1, 0.5)
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_7xdpk"]
+radius = 6.0
+
 [node name="TurretProjectile" type="Area2D"]
-collision_layer = 0
-collision_mask = 33
+collision_layer = 32
+collision_mask = 3
 script = ExtResource("1_c4hb8")
 damage_amount = 5.0
 
+[node name="Interpolator" type="Node2D" parent="."]
+script = ExtResource("2_rqgio")
+
+[node name="Sprite2D" type="Sprite2D" parent="Interpolator"]
+texture = SubResource("GradientTexture2D_aankv")
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_7xdpk")
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-texture = SubResource("GradientTexture2D_aankv")

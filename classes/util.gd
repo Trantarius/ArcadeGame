@@ -6,68 +6,47 @@ var game_time:float
 func _process(delta: float) -> void:
 	game_time+=delta
 
-## Determines if a physics body would fit at a particular location. The body does not have to be in the tree or active.
-func does_body_fit(body:PhysicsBody2D, tform:Transform2D)->bool:
-	var space:PhysicsDirectSpaceState2D = get_viewport().find_world_2d().direct_space_state
+## Limits an angle to be between left and right. The difference between left and right must be less than PI. 
+func angle_clamp(angle:float, left:float, right:float)->float:
+	if(angle_difference(angle,left)>0):
+		return left
+	if(angle_difference(angle,right)<0):
+		return right
+	return angle
+
+## Determines if the physics bodies contained by this node would fit at a particular location. 
+## The node does not have to be in the tree or active.
+func does_node_fit(node:Node2D, tform:Transform2D)->bool:
+	if(node is PhysicsBody2D):
+		var space:PhysicsDirectSpaceState2D = get_viewport().find_world_2d().direct_space_state
+		
+		for idx:int in range(PhysicsServer2D.body_get_shape_count(node.get_rid())):
+			var shape:RID = PhysicsServer2D.body_get_shape(node.get_rid(),idx)
+			var shape_tf:Transform2D = PhysicsServer2D.body_get_shape_transform(node.get_rid(),idx)
+			var query:PhysicsShapeQueryParameters2D = PhysicsShapeQueryParameters2D.new()
+			query.shape_rid = shape
+			query.transform = tform * shape_tf
+			query.collision_mask = node.collision_mask
+			var result:Array[Dictionary] = space.intersect_shape(query,1)
+			if(!result.is_empty()):
+				return false
 	
-	for idx:int in range(PhysicsServer2D.body_get_shape_count(body.get_rid())):
-		var shape:RID = PhysicsServer2D.body_get_shape(body.get_rid(),idx)
-		var shape_tf:Transform2D = PhysicsServer2D.body_get_shape_transform(body.get_rid(),idx)
-		var query:PhysicsShapeQueryParameters2D = PhysicsShapeQueryParameters2D.new()
-		query.shape_rid = shape
-		query.transform = tform * shape_tf
-		query.collision_mask = body.collision_mask
-		var result:Dictionary = space.get_rest_info(query)
-		if(!result.is_empty()):
-			return false
+	for child:Node in get_children():
+		if(child is Node2D):
+			if(!does_node_fit(child,tform * child.transform)):
+				return false
 	
 	return true
 
-## Determines if an area would fit at a particular location. The area does not have to be in the tree or active.
-func does_area_fit(area:Area2D, tform:Transform2D)->bool:
-	var space:PhysicsDirectSpaceState2D = get_viewport().find_world_2d().direct_space_state
-	
-	for idx:int in range(PhysicsServer2D.area_get_shape_count(area.get_rid())):
-		var shape:RID = PhysicsServer2D.area_get_shape(area.get_rid(),idx)
-		var shape_tf:Transform2D = PhysicsServer2D.area_get_shape_transform(area.get_rid(),idx)
-		var query:PhysicsShapeQueryParameters2D = PhysicsShapeQueryParameters2D.new()
-		query.shape_rid = shape
-		query.transform = tform * shape_tf
-		query.collision_mask = area.collision_mask
-		var result:Dictionary = space.get_rest_info(query)
-		if(!result.is_empty()):
-			return false
-	
-	return true
-
-## Tries to find a place to put a body using [param locator] to produce candidate global transforms.
-func attempt_place_body(body:PhysicsBody2D, parent:Node, locator:Callable, max_attempts:int)->bool:
+## Tries to find a place to put a node using [param locator] to produce candidate global transforms.
+func attempt_place_node(node:Node2D, parent:Node, locator:Callable, max_attempts:int)->bool:
 	var transform:Transform2D = locator.call()
-	if(does_body_fit(body,transform)):
-		body.global_transform = transform
-		parent.add_child.bind(body).call_deferred()
+	if(does_node_fit(node,transform)):
+		node.transform = transform
+		parent.add_child.call_deferred(node)
 		return true
 	elif(max_attempts>1):
-		return attempt_place_body(body,parent,locator,max_attempts-1)
-	else:
-		return false
-
-## Tries to find a place to put an actor using [param locator] to produce candidate global transforms.
-func attempt_place_actor(actor:Actor, parent:Node, locator:Callable, max_attempts:int)->bool:
-	actor.global_transform = Transform2D.IDENTITY
-	var transform:Transform2D = locator.call()
-	var fits:bool = true
-	var bodies:Array[Node] = actor.find_children('*','PhysicsBody2D')
-	for body:PhysicsBody2D in bodies:
-		if(!does_body_fit(body,transform*body.global_transform)):
-			fits=false
-			break
-	if(fits):
-		actor.global_transform = transform
-		parent.add_child(actor)
-		return true
-	elif(max_attempts>1):
-		return attempt_place_actor(actor,parent,locator,max_attempts-1)
+		return attempt_place_node(node,parent,locator,max_attempts-1)
 	else:
 		return false
 

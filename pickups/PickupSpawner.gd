@@ -48,7 +48,7 @@ func drop_event(total_value:float, radius:float, position:Vector2, velocity:Vect
 		var pickup:Pickup = spawn_list[chosen].scene.instantiate()
 		var locator:Callable = func()->Transform2D:
 			return Transform2D(0,Vector2.from_angle(randf()*TAU)*sqrt(randf())*radius + position)
-		if(!Util.attempt_place_body(pickup,self,locator,5)):
+		if(!Util.attempt_place_node(pickup,self,locator,5)):
 			push_error("Failed to place a pickup after 5 attempts")
 			pickup.queue_free()
 			leftover=total_value

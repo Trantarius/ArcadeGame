@@ -64,6 +64,7 @@ shader_parameter/parallax = 0.5
 
 [node name="Player" type="RigidBody2D" groups=["Players"]]
 collision_layer = 2
+collision_mask = 5
 physics_material_override = SubResource("PhysicsMaterial_tuyrf")
 script = ExtResource("1_n287t")
 max_rotation_speed = 10.0

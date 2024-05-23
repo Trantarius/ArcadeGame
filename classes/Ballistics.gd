@@ -13,9 +13,12 @@ max_thrust:float, brake:float=1)->Vector2:
 	var relative_velocity:Vector2 = velocity - target_velocity
 	var relative_acceleration:Vector2 = acceleration - target_acceleration
 	
-	var brake_dir:Vector2 = - relative_velocity.normalized()
+	if(relative_position.length()<0.001 || max_thrust<=0):
+		return Vector2.ZERO
+	
+	var brake_dir:Vector2 = Vector2.ZERO if relative_velocity.length()<0.001 else - relative_velocity.normalized()
 	var brake_perp:Vector2 = relative_acceleration - relative_acceleration.dot(brake_dir)*brake_dir
-	if(max_thrust**2<brake_perp.length_squared()):
+	if(max_thrust**2<=brake_perp.length_squared()):
 		# thrust won't be able to overcome target acc, just get as close as possible
 		if(relative_acceleration.dot(brake_dir)>0):
 			return max_thrust*-brake_perp.normalized()
@@ -27,13 +30,15 @@ max_thrust:float, brake:float=1)->Vector2:
 	
 		var brake_time:float = brake * relative_velocity.length()/brake_acc
 		var anticipated_position:Vector2 = relative_position + relative_velocity*brake_time
-		var correction_dir:Vector2 = (-anticipated_position.normalized()-relative_velocity.normalized()/2).normalized()
+		var pos_corr:Vector2 = relative_position.normalized() if anticipated_position.length()<0.001 else -anticipated_position.normalized()
+		var vel_corr:Vector2 = Vector2.ZERO if relative_velocity.length()<0.001 else -relative_velocity.normalized()
+		var correction_dir:Vector2 = (pos_corr+vel_corr/2.1).normalized()
 		
 		var corr_perp:Vector2 = relative_acceleration - relative_acceleration.dot(correction_dir)*correction_dir
 		var ret:Dictionary = {}
 		if(max_thrust**2<corr_perp.length_squared()):
 			# thrust won't be able to overcome target acc, just get as close as possible
-			if(relative_acceleration.dot(correction_dir)>0):
+			if(relative_acceleration.dot(correction_dir)>=0):
 				return max_thrust*-corr_perp.normalized()
 			else:
 				return max_thrust*-relative_acceleration.normalized()
@@ -48,7 +53,10 @@ static func find_thrust_to_velocity(velocity:Vector2, acceleration:Vector2, targ
 	var relative_velocity:Vector2 = velocity - target_velocity
 	var relative_acceleration:Vector2 = acceleration - target_acceleration
 	
-	var corr_dir:Vector2 = (target_velocity-velocity).normalized()
+	if(relative_velocity.length()<0.001):
+		return Vector2.ZERO
+	
+	var corr_dir:Vector2 = -relative_velocity.normalized()
 	
 	var cw:float = relative_acceleration.dot(corr_dir)
 	var perp:Vector2 = relative_acceleration - cw*corr_dir
@@ -65,8 +73,11 @@ static func find_thrust_to_velocity(velocity:Vector2, acceleration:Vector2, targ
 ## Finds a torque to come to rest at a given angle.
 static func find_torque_to_angle(rotation:float, angular_velocity:float, target_rotation:float, max_torque:float)->float:
 	var brake_time:float = abs(angular_velocity) / max_torque
-	var anticipated_position:float = rotation + angular_velocity*brake_time
-	return sign(-angle_difference(target_rotation,anticipated_position))*max_torque
+	var brake_drift:float = angular_velocity*brake_time + -sign(angular_velocity)*max_torque*(brake_time**2)/2
+	if(brake_drift>TAU):
+		return -sign(angular_velocity)*max_torque
+	var anticipated_position:float = rotation + brake_drift
+	return tanh(10*angle_difference(anticipated_position,target_rotation))*max_torque
 
 ## Applies a smooth minimum operation to make hitting the max value less abrupt
 static func soft_limit_length(v:Vector2, limit:float, softness:float=limit/5)->Vector2:

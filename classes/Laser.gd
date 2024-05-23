@@ -51,6 +51,7 @@ func fire()->void:
 	lifetime_timer.time = lifetime
 	line.material.set_shader_parameter('shade_offset',0)
 	var query:PhysicsRayQueryParameters2D = PhysicsRayQueryParameters2D.new()
+	query.collide_with_areas = true
 	query.collision_mask = collision_mask
 	query.from = global_position
 	query.to = global_position + Vector2.RIGHT.rotated(global_rotation) * length
@@ -64,7 +65,6 @@ func fire()->void:
 		if(collider is HitBox):
 			var damage:Damage = Damage.new()
 			damage.amount = damage_amount
-			damage.source = self
 			damage.attacker = source
 			damage.target = collider.actor
 			damage.position = result.position

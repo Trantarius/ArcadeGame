@@ -1,11 +1,10 @@
 extends Enemy
 
 
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
+func fire()->void:
+	var proj:Projectile = preload("res://enemies/broadside/cannon_projectile.tscn").instantiate()
+	proj.top_level = true
+	proj.global_transform = $Muzzle.global_transform
+	proj.linear_velocity = 300*Vector2.from_angle($Muzzle.global_rotation) + get_average_velocity()
+	proj.source = self
+	add_child(proj)

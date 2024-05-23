@@ -9,7 +9,6 @@ extends Node2D
 		queue_redraw()
 
 @export var damage_amount:float
-@export var damage_silent:bool = false
 
 @export_flags_2d_physics var collision_mask:int
 
@@ -42,12 +41,10 @@ func _ready()->void:
 			if(res.collider is HitBox):
 				var damage:Damage = Damage.new()
 				damage.amount = damage_amount
-				damage.source = self
 				damage.attacker = source
 				damage.target = res.collider.actor
 				damage.position = global_position + (res.collider.global_position-global_position).limit_length(radius)
 				damage.direction = (damage.position-global_position).normalized()
-				damage.silent = damage_silent
 				damage_dealt.emit(damage)
 				damage.target.take_damage(damage)
 

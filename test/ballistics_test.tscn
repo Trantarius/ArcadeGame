@@ -205,4 +205,4 @@ script = SubResource("GDScript_v7sbi")
 position = Vector2(19, 168)
 
 [node name="TargetVel" type="Marker2D" parent="LinearShot"]
-position = Vector2(91, 142)
+position = Vector2(103, 119)

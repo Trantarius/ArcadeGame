@@ -40,7 +40,6 @@ func _projectile_area_shape_entered(area_rid:RID, area:Area2D, area_shape_index:
 		
 		var damage:Damage = Damage.new()
 		damage.amount = damage_amount
-		damage.source = self
 		damage.attacker = source
 		damage.target = area.actor
 		if(contact.is_empty()):

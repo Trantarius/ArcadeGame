@@ -1,7 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://calsi17ho0g4c"]
+[gd_scene load_steps=8 format=3 uid="uid://calsi17ho0g4c"]
 
 [ext_resource type="Script" path="res://enemies/broadside/turret.gd" id="1_w5xny"]
 [ext_resource type="Script" path="res://classes/HitBox.gd" id="2_fvd0i"]
+[ext_resource type="Script" path="res://classes/ArcDetector.gd" id="2_std03"]
+[ext_resource type="Script" path="res://classes/Interpolator.gd" id="4_idxw3"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_5y8vg"]
 radius = 24.0
@@ -26,34 +28,42 @@ script = ExtResource("1_w5xny")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_5y8vg")
 
-[node name="Barrel" type="Line2D" parent="."]
-points = PackedVector2Array(-16, 0, 48, 0)
-default_color = Color(0.165656, 0.165656, 0.165656, 1)
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-modulate = Color(0.447059, 0.203922, 0.196078, 1)
-texture = SubResource("GradientTexture2D_3djam")
-
 [node name="Detector" type="Area2D" parent="."]
 collision_layer = 0
 collision_mask = 2
-
-[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Detector"]
-polygon = PackedVector2Array(0, -16, 384, -384, 512, -256, 592, -128, 624, 0, 592, 128, 512, 256, 384, 384, 0, 16)
-
-[node name="Muzzle" type="Marker2D" parent="."]
-position = Vector2(48, 0)
-
-[node name="RemoteTransform2D" type="RemoteTransform2D" parent="."]
-remote_path = NodePath("../Detector")
-update_rotation = false
-update_scale = false
+monitorable = false
+script = ExtResource("2_std03")
+max_angle = 0.75
 
 [node name="HitBox" type="Area2D" parent="."]
-collision_layer = 64
+collision_layer = 4
 collision_mask = 0
 monitoring = false
 script = ExtResource("2_fvd0i")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="HitBox"]
 shape = SubResource("CircleShape2D_5y8vg")
+
+[node name="Barrel" type="Marker2D" parent="."]
+
+[node name="Muzzle" type="Marker2D" parent="Barrel"]
+position = Vector2(48, 0)
+
+[node name="Interpolator" type="Node2D" parent="Barrel" node_paths=PackedStringArray("target", "offset_target")]
+script = ExtResource("4_idxw3")
+target = NodePath("../..")
+offset_target = NodePath("..")
+
+[node name="Barrel" type="Line2D" parent="Barrel/Interpolator"]
+points = PackedVector2Array(-16, 0, 48, 0)
+default_color = Color(0.165656, 0.165656, 0.165656, 1)
+
+[node name="Interpolator" type="Node2D" parent="."]
+script = ExtResource("4_idxw3")
+
+[node name="Sprite2D" type="Sprite2D" parent="Interpolator"]
+modulate = Color(0.447059, 0.203922, 0.196078, 1)
+texture = SubResource("GradientTexture2D_3djam")
+
+[connection signal="body_entered" from="Detector" to="." method="_on_detector_body_entered"]
+[connection signal="body_exited" from="Detector" to="." method="_on_detector_body_exited"]

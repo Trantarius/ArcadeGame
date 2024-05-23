@@ -1,0 +1,35 @@
+[gd_scene load_steps=6 format=3 uid="uid://c2oh24ptn7mbq"]
+
+[ext_resource type="Script" path="res://classes/Projectile.gd" id="1_5f2bs"]
+[ext_resource type="Script" path="res://classes/Interpolator.gd" id="2_7j1hq"]
+
+[sub_resource type="Gradient" id="Gradient_ra8x4"]
+offsets = PackedFloat32Array(0, 0.00849858, 0.235127, 1)
+colors = PackedColorArray(1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 0, 0.721569, 1, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_mkpr5"]
+gradient = SubResource("Gradient_ra8x4")
+width = 96
+height = 32
+fill_to = Vector2(0, 1)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6odyh"]
+size = Vector2(8, 96)
+
+[node name="CannonProjectile" type="Area2D"]
+collision_layer = 32
+collision_mask = 3
+script = ExtResource("1_5f2bs")
+lifetime = 3.0
+damage_amount = 10.0
+
+[node name="Interpolator" type="Node2D" parent="."]
+script = ExtResource("2_7j1hq")
+
+[node name="Sprite2D2" type="Sprite2D" parent="Interpolator"]
+rotation = 1.5708
+texture = SubResource("GradientTexture2D_mkpr5")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(11, 0)
+shape = SubResource("RectangleShape2D_6odyh")

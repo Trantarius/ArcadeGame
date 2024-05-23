@@ -40,11 +40,7 @@ func _on_fire() -> void:
 			var target_theta = (target.global_position-muzzle_pos).angle()
 			var leftlimit_theta:float = muzzle_dir.angle() - deg_to_rad(projectile_size)
 			var rightlimit_theta:float = muzzle_dir.angle() + deg_to_rad(projectile_size)
-			
-			if(angle_difference(leftlimit_theta,target_theta)<0):
-				target_theta = leftlimit_theta
-			elif(angle_difference(rightlimit_theta,target_theta)>0):
-				target_theta = rightlimit_theta
+			target_theta = Util.angle_clamp(target_theta, leftlimit_theta, rightlimit_theta)
 			
 			var laser:Laser = preload("res://abilities/weapon/pulse_laser/laser.tscn").instantiate()
 			get_viewport().get_camera_2d().add_child(laser)

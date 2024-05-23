@@ -26,7 +26,6 @@ color_ramp = SubResource("Gradient_84e4i")
 noise = SubResource("FastNoiseLite_53gf4")
 
 [node name="Asteroid" type="RigidBody2D" groups=["Asteroids"]]
-collision_mask = 7
 script = ExtResource("1_fifpj")
 noise = SubResource("FastNoiseLite_sf31h")
 noise_strength = 0.102
