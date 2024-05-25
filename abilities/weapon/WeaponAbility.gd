@@ -28,7 +28,7 @@ func _init()->void:
 func _weapon_ability_activate()->void:
 	fire_timer.time = 1.0/fire_rate
 
-func _process(_delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	if(fire_timer.time<0 && is_active):
 		fire.emit()
 		fire_timer.time += 1.0/fire_rate

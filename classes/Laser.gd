@@ -50,27 +50,23 @@ func _ready()->void:
 func fire()->void:
 	lifetime_timer.time = lifetime
 	line.material.set_shader_parameter('shade_offset',0)
-	var query:PhysicsRayQueryParameters2D = PhysicsRayQueryParameters2D.new()
-	query.collide_with_areas = true
-	query.collision_mask = collision_mask
-	query.from = global_position
-	query.to = global_position + Vector2.RIGHT.rotated(global_rotation) * length
-	var result:Dictionary = get_world_2d().direct_space_state.intersect_ray(query)
 	
-	if(result.is_empty()):
-		line.points = [Vector2.ZERO,Vector2.RIGHT*length]
-	else:
-		line.points = [Vector2.ZERO,(result.position-global_position).length() * Vector2.RIGHT]
-		var collider:Object = result.collider
-		if(collider is HitBox):
+	var results:Array[Dictionary] = Util.raycast(global_position, global_position + Vector2.from_angle(global_rotation) * length, collision_mask)
+	for hit:Dictionary in results:
+		if(hit.collider is HitBox):
 			var damage:Damage = Damage.new()
 			damage.amount = damage_amount
 			damage.attacker = source
-			damage.target = collider.actor
-			damage.position = result.position
-			damage.direction = (query.to-query.from).normalized()
+			damage.target = hit.collider.actor
+			damage.position = hit.position
+			damage.direction = Vector2.from_angle(global_rotation)
 			damage_dealt.emit(damage)
 			damage.target.take_damage(damage)
+	
+	if(results.is_empty()):
+		line.points = [Vector2.ZERO,Vector2.RIGHT*length]
+	else:
+		line.points = [Vector2.ZERO, global_transform.affine_inverse() * results.back().position]
 	
 func _process(_delta: float) -> void:
 	if(!Engine.is_editor_hint()):

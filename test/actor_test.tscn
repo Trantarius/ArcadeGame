@@ -95,10 +95,6 @@ separation = 256.0
 
 [node name="Actor" type="Node2D" parent="."]
 script = SubResource("GDScript_qd7x4")
-max_health = null
-immortal = null
-free_on_death = null
-radius = null
 
 [node name="Sprite2D" type="Sprite2D" parent="Actor"]
 scale = Vector2(0.25, 0.25)

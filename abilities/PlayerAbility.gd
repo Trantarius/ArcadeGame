@@ -13,9 +13,3 @@ var type:String
 
 ## Description of the ability for the ability card.
 @export_multiline var description:String
-
-func _enter_tree()->void:
-	is_active = get_parent() is Player
-
-func _exit_tree() -> void:
-	is_active = false

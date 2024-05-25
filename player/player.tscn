@@ -64,7 +64,6 @@ shader_parameter/parallax = 0.5
 
 [node name="Player" type="RigidBody2D" groups=["Players"]]
 collision_layer = 2
-collision_mask = 5
 physics_material_override = SubResource("PhysicsMaterial_tuyrf")
 script = ExtResource("1_n287t")
 max_rotation_speed = 10.0
@@ -95,7 +94,6 @@ position = Vector2(0, -12)
 polygon = PackedVector2Array(-8, 8, 0, -12, 8, 8, 0, 4)
 
 [node name="Camera2D" type="Camera2D" parent="."]
-top_level = true
 script = ExtResource("2_ccbte")
 
 [node name="AmbientParticles" type="GPUParticles2D" parent="Camera2D"]

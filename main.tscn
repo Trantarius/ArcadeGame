@@ -1,6 +1,7 @@
-[gd_scene load_steps=23 format=3 uid="uid://gvye6ccvjd55"]
+[gd_scene load_steps=24 format=3 uid="uid://gvye6ccvjd55"]
 
 [ext_resource type="PackedScene" uid="uid://crylwoyahw6go" path="res://ui/info_panel.tscn" id="2_8k6rt"]
+[ext_resource type="PackedScene" uid="uid://d3ek2vmqvfst3" path="res://abilities/weapon/light_cannon/light_cannon.tscn" id="2_dqgwh"]
 [ext_resource type="PackedScene" uid="uid://b4v2b4cphju7v" path="res://ui/debug_menu.tscn" id="3_bx4mw"]
 [ext_resource type="PackedScene" uid="uid://ccgupredk0a3f" path="res://player/player.tscn" id="3_d6lla"]
 [ext_resource type="PackedScene" uid="uid://dxv4bwsrldkqn" path="res://ui/minimap.tscn" id="4_u66eo"]
@@ -26,6 +27,8 @@
 [node name="Main" type="Node"]
 
 [node name="Player" parent="." instance=ExtResource("3_d6lla")]
+
+[node name="LightCannon" parent="Player" instance=ExtResource("2_dqgwh")]
 
 [node name="EnemySpawner" type="Node" parent="."]
 script = ExtResource("6_xg0x2")

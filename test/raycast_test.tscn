@@ -1,0 +1,216 @@
+[gd_scene load_steps=9 format=3 uid="uid://cwcarixt0il"]
+
+[ext_resource type="Script" path="res://classes/ArcDetector.gd" id="1_i6t2b"]
+
+[sub_resource type="GDScript" id="GDScript_jbgal"]
+script/source = "extends Node2D
+
+#func _ready() -> void:
+	#Engine.physics_ticks_per_second = 1
+
+func _physics_process(_delta: float) -> void:
+	var mpos:Vector2 = get_global_mouse_position()
+	$RayCast2D.target_position = mpos - $RayCast2D.global_position
+	
+	$ArcDetector.rotation = (mpos-$ArcDetector.global_position).angle()
+	var move:Vector2 = Input.get_vector('left','right','forward','back')
+	$ArcDetector.position += move * _delta * 50
+	
+	var results:Array[Dictionary] = []
+	results = Util.raycast(Vector2.ZERO,mpos, ~0, 10)
+	results.sort_custom(func(a:Dictionary,b:Dictionary)->bool: return a.collider.get_instance_id() > b.collider.get_instance_id())
+	
+	$Info.text=''
+	
+	$Info.text += \"node result:\\n\"
+	$Info.text += \"    collider: \"+str($RayCast2D.get_collider()) + \"\\n\"
+	$Info.text += \"    position: \"+str($RayCast2D.get_collision_point()) + \"\\n\"
+	
+	$Info.text += \"manual result:\\n\"
+	var count:int = 0
+	for hit:Dictionary in results:
+		$Info.text += \"    \"+str(count)+\":\\n\"
+		$Info.text += \"        collider: \"+str(hit.collider)+\"\\n\"
+		$Info.text += \"        position: \"+str(hit.position)+\"\\n\"
+		count += 1
+	
+	$Info.text += \"detector result:    used \"+str($ArcDetector.raycasts_used)+\" raycasts\\n\"
+	count = 0
+	for det:CollisionObject2D in $ArcDetector.detected:
+		$Info.text += \"    \"+str(count)+\":\\n\"
+		$Info.text += \"        collider: \"+str(det)+\"\\n\"
+		count+=1
+	
+	if(results.is_empty()):
+		$ManualRaycast.points = [Vector2.ZERO, mpos - $ManualRaycast.global_position]
+	else:
+		$ManualRaycast.points = [Vector2.ZERO, results.back().position - $ManualRaycast.global_position]
+	
+
+func raycast()->void:
+	var space:PhysicsDirectSpaceState2D = get_viewport().find_world_2d().direct_space_state
+	
+	var query:PhysicsRayQueryParameters2D = PhysicsRayQueryParameters2D.new()
+	query.collide_with_areas = true
+	query.collide_with_bodies = true
+	query.collision_mask = ~0
+	query.from = Vector2.ZERO
+	query.to = get_global_mouse_position()
+	var res:Dictionary={0:0}
+	while(!res.is_empty()):
+		res = space.intersect_ray(query)
+		if(res.is_empty()):
+			break
+		print(res)
+		query.exclude = query.exclude + [res.rid]
+"
+
+[sub_resource type="LabelSettings" id="LabelSettings_jttyt"]
+outline_size = 4
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="Gradient" id="Gradient_erdgd"]
+offsets = PackedFloat32Array(0.970675, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_qokui"]
+gradient = SubResource("Gradient_erdgd")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(1, 0.5)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ypn21"]
+radius = 100.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_a6apy"]
+size = Vector2(45, 45)
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_00qn7"]
+radius = 31.0
+
+[node name="RaycastTest" type="Node2D"]
+script = SubResource("GDScript_jbgal")
+
+[node name="Info" type="Label" parent="."]
+z_index = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -480.0
+offset_top = -480.0
+offset_right = 480.0
+offset_bottom = -320.0
+grow_horizontal = 2
+text = "hjfgkfk"
+label_settings = SubResource("LabelSettings_jttyt")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="ArcDetector" type="Area2D" parent="."]
+z_index = 2
+rotation = 3.55
+collision_layer = 0
+collision_mask = 16777215
+monitorable = false
+script = ExtResource("1_i6t2b")
+max_angle = 0.5
+require_raycast = true
+raycast_mask = 255
+debug_draw = true
+
+[node name="ManualRaycast" type="Line2D" parent="."]
+points = PackedVector2Array(0, 0, 192, 0)
+width = 3.0
+default_color = Color(0, 0.580392, 0.0156863, 1)
+
+[node name="RayCast2D" type="RayCast2D" parent="."]
+collision_mask = 4294967295
+
+[node name="Bodies" type="Node2D" parent="."]
+modulate = Color(0.473976, 0.473976, 0.473976, 1)
+
+[node name="Area2D3" type="Area2D" parent="Bodies"]
+position = Vector2(-184, -368)
+
+[node name="Sprite2D" type="Sprite2D" parent="Bodies/Area2D3"]
+scale = Vector2(3.23, 3.23)
+texture = SubResource("GradientTexture2D_qokui")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bodies/Area2D3"]
+shape = SubResource("CircleShape2D_ypn21")
+
+[node name="Area2D2" type="Area2D" parent="Bodies"]
+position = Vector2(-152, -200)
+
+[node name="Polygon2D" type="Polygon2D" parent="Bodies/Area2D2"]
+polygon = PackedVector2Array(64, 72, 40, -24, -104, -32, -224, -104, -152, -240, 0, -360, 248, -264, 304, -360, 88, -416, -216, -368, -400, -224, -368, 80, -128, 128)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Bodies/Area2D2"]
+polygon = PackedVector2Array(40, -24, -104, -32, -224, -104, -152, -240, 0, -360, 248, -264, 304, -360, 88, -416, -216, -368, -400, -224, -368, 80, -128, 128, 64, 72)
+
+[node name="Area2D" type="Area2D" parent="Bodies"]
+position = Vector2(360, 192)
+
+[node name="Polygon2D" type="Polygon2D" parent="Bodies/Area2D"]
+position = Vector2(32, -80)
+rotation = -1.26884
+polygon = PackedVector2Array(-98.7939, 5.6355, 95.9142, 12.0197, 96.4148, -13.2736, -95.9142, -12.0197)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Bodies/Area2D"]
+polygon = PackedVector2Array(8, 16, 72, -168, 48, -176, -8, 8)
+
+[node name="StaticBody2D4" type="AnimatableBody2D" parent="Bodies"]
+position = Vector2(-152, 296)
+
+[node name="Polygon2D" type="Polygon2D" parent="Bodies/StaticBody2D4"]
+polygon = PackedVector2Array(-64, -56, -16, -32, 40, -8, 112, 8, 160, 16, 224, 24, 208, 56, 152, 48, 104, 40, 32, 24, -32, 0, -80, -24, -144, -64, -208, -112, -184, -136, -128, -96)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Bodies/StaticBody2D4"]
+polygon = PackedVector2Array(224, 24, 208, 56, 152, 48, 104, 40, 32, 24, -32, 0, -80, -24, -144, -64, -208, -112, -184, -136, -128, -96, -64, -56, -16, -32, 40, -8, 112, 8, 160, 16)
+
+[node name="StaticBody2D3" type="Area2D" parent="Bodies"]
+position = Vector2(-280, 24)
+
+[node name="Polygon2D" type="Polygon2D" parent="Bodies/StaticBody2D3"]
+polygon = PackedVector2Array(0, -32, 32, 0, 0, 32, -32, 0)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bodies/StaticBody2D3"]
+rotation = 0.785398
+shape = SubResource("RectangleShape2D_a6apy")
+
+[node name="StaticBody2D2" type="RigidBody2D" parent="Bodies"]
+position = Vector2(-120, 88)
+
+[node name="Polygon2D" type="Polygon2D" parent="Bodies/StaticBody2D2"]
+polygon = PackedVector2Array(-64, -80, 72, 48, 40, 80, -96, -56)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Bodies/StaticBody2D2"]
+polygon = PackedVector2Array(72, 48, 40, 80, -96, -56, -64, -80)
+
+[node name="AnimatableBody2D" type="AnimatableBody2D" parent="Bodies"]
+position = Vector2(272, 128)
+
+[node name="Polygon2D" type="Polygon2D" parent="Bodies/AnimatableBody2D"]
+polygon = PackedVector2Array(0, -64, 16, -16, 64, 0, 16, 16, 0, 64, -16, 16, -64, 0, -16, -16)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Bodies/AnimatableBody2D"]
+polygon = PackedVector2Array(0, -64, 16, -16, 64, 0, 16, 16, 0, 64, -16, 16, -64, 0, -16, -16)
+
+[node name="Area2D" type="Area2D" parent="Bodies/AnimatableBody2D"]
+
+[node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="Bodies/AnimatableBody2D/Area2D"]
+polygon = PackedVector2Array(0, -64, 16, -16, 64, 0, 16, 16, 0, 64, -16, 16, -64, 0, -16, -16)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Bodies"]
+position = Vector2(182, -246)
+
+[node name="Sprite2D" type="Sprite2D" parent="Bodies/StaticBody2D"]
+texture = SubResource("GradientTexture2D_qokui")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Bodies/StaticBody2D"]
+shape = SubResource("CircleShape2D_00qn7")
+
+[node name="Area2D" type="Area2D" parent="Bodies/StaticBody2D"]
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Bodies/StaticBody2D/Area2D"]
+shape = SubResource("CircleShape2D_00qn7")

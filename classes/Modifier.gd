@@ -22,7 +22,19 @@ signal activated
 signal deactivated
 
 func _enter_tree()->void:
-	is_active = get_parent() is Actor
+	var parent:Node = get_parent()
+	if(parent is Actor):
+		if(parent.modifiers.has(mod_name)):
+			var old:Modifier = parent.modifiers[mod_name]
+			parent.remove_child(old)
+			old.queue_free()
+		parent.modifiers[mod_name] = self
+		is_active = true
+	else:
+		is_active = false
 
 func _exit_tree() -> void:
+	var parent:Node = get_parent()
+	if(parent is Actor):
+		parent.modifiers.erase(mod_name)
 	is_active = false

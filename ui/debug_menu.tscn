@@ -95,23 +95,23 @@ var mod_buttons:Dictionary
 func _ready() -> void:
 	var player:Player = get_tree().get_first_node_in_group('Players')
 	if(is_instance_valid(player)):
-		player.mod_added.connect(_on_player_mod_added)
-		player.mod_removed.connect(_on_player_mod_removed)
+		player.child_entered_tree.connect(_on_player_child_added)
+		player.child_exiting_tree.connect(_on_player_child_removed)
 		for mod:Modifier in player.modifiers.values():
-			_on_player_mod_added(mod)
+			_on_player_child_added(mod)
 
-func _on_player_mod_added(mod:Modifier)->void:
-	if(mod is PlayerAbility):
+func _on_player_child_added(node:Node)->void:
+	if(node is PlayerAbility):
 		var button:Button = Button.new()
-		button.text = mod.ability_name
-		button.pressed.connect(_remove.bind(mod))
+		button.text = node.ability_name
+		button.pressed.connect(_remove.bind(node))
 		$VBoxContainer/PanelContainer/VBoxContainer.add_child(button)
-		mod_buttons[mod]=button
+		mod_buttons[node]=button
 
-func _on_player_mod_removed(mod:Modifier)->void:
-	if(mod_buttons.has(mod)):
-		mod_buttons[mod].queue_free()
-		mod_buttons.erase(mod)
+func _on_player_child_removed(node:Node)->void:
+	if(mod_buttons.has(node)):
+		mod_buttons[node].queue_free()
+		mod_buttons.erase(node)
 
 func _remove(ability:PlayerAbility)->void:
 	if(is_instance_valid(ability) && ability.is_active):

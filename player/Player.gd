@@ -17,9 +17,6 @@ var score:float:
 
 signal score_changed(to:float)
 
-func _ready()->void:
-	add_ability(load("res://abilities/weapon/light_cannon/light_cannon.tscn").instantiate())
-
 func get_muzzle_position()->Vector2:
 	return $Interpolator/Muzzle.global_position
 func get_muzzle_direction()->Vector2:
@@ -47,7 +44,7 @@ func _add_ability(ability:PlayerAbility):
 		if(modifiers[ability.mod_name] is PlayerAbility && 
 			modifiers[ability.mod_name].ability_name==ability.ability_name):
 			# if the existing ability is the same thing, just refresh it without asking
-			add_modifier(ability)
+			add_child(ability)
 		else:
 			var uilayer:CanvasLayer = get_tree().get_first_node_in_group('UILayer')
 			var chooser:Control = load('res://ui/ability_choice_screen.tscn').instantiate()
@@ -56,12 +53,12 @@ func _add_ability(ability:PlayerAbility):
 			uilayer.add_child(chooser)
 			var selected:PlayerAbility = await chooser.select_finished
 			if(selected==ability):
-				add_modifier(ability)
+				add_child(ability)
 			else:
 				ability.queue_free()
 	else:
 		# if player doesn't have this type of ability, just add it
-		add_modifier(ability)
+		add_child(ability)
 
 func _on_death(_damage:Damage)->void:
 	# ensure camera stays around after player dies

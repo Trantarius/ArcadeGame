@@ -90,3 +90,43 @@ func collider_get_shape_contact(collider_a:CollisionObject2D, shape_idx_a:int, c
 	pos /= contacts.size()/2
 	norm /= contacts.size()/2
 	return {&'position':pos, &'normal':norm}
+
+## Simplified interface for a complex raycast. [param penetration] is how many collisions to pass through and return.
+## If a collision happens in the same place as another, it is considered the same even if it is with a different collider.
+## Returns an array of results from [method PhysicsDirectSpaceState2D.intersect_ray].
+func raycast(from:Vector2, to:Vector2, collision_mask:int, penetration:int = 1,
+	include_areas:bool = true, include_bodies:bool = true, exclude:Array[CollisionObject2D]=[])->Array[Dictionary]:
+	
+	var space:PhysicsDirectSpaceState2D = get_viewport().find_world_2d().direct_space_state
+	
+	var results:Array[Dictionary] = []
+	var hit_count:int = 0
+	var query:PhysicsRayQueryParameters2D = PhysicsRayQueryParameters2D.new()
+	query.collide_with_areas = include_areas
+	query.collide_with_bodies = include_bodies
+	query.collision_mask = collision_mask
+	query.from = from
+	query.to = to
+	query.exclude = exclude.map(func(body:CollisionObject2D)->RID: return body.get_rid())
+	while(hit_count <= penetration):
+		var res:Dictionary = space.intersect_ray(query)
+		if(res.is_empty()):
+			break
+		if(results.is_empty() || !((res.position-results.back().position).length()<0.1)):
+			hit_count += 1
+		if(hit_count <= penetration):
+			results.push_back(res)
+		query.exclude = query.exclude + [res.rid]
+	return results
+
+## Gets a [Shape2D] resource from a collider, based on the shape index.
+func collider_get_shape2d(collider:CollisionObject2D, shape_idx:int)->Shape2D:
+	var shape_owner:int = collider.shape_find_owner(shape_idx)
+	var shape_id:int = -1
+	for i:int in range(collider.shape_owner_get_shape_count(shape_owner)):
+		if(collider.shape_owner_get_shape_index(shape_owner,i)==shape_idx):
+			shape_id=i
+			break
+	if(shape_id<0):
+		return null
+	return collider.shape_owner_get_shape(shape_owner, shape_id)

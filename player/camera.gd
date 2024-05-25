@@ -11,6 +11,7 @@ var _last_pos:Vector2
 
 func _ready()->void:
 	get_viewport().size_changed.connect(_on_viewport_size_changed)
+	top_level = true
 
 func _on_viewport_size_changed()->void:
 	var vp:Viewport = get_viewport()
