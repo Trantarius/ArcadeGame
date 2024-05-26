@@ -1,0 +1,218 @@
+[gd_scene load_steps=8 format=3 uid="uid://buce1v3ucmtcx"]
+
+[ext_resource type="Script" path="res://enemies/broadside/BoatAI.gd" id="1_bhs21"]
+[ext_resource type="Script" path="res://test/grid.gd" id="1_cuwvd"]
+[ext_resource type="Texture2D" uid="uid://bude4na0hnosm" path="res://icon.svg" id="2_shys1"]
+
+[sub_resource type="GDScript" id="GDScript_oec02"]
+script/source = "extends Polygon2D
+
+var linear_velocity:Vector2
+var angular_velocity:float
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	
+	$BoatAI.linear_velocity = linear_velocity
+	$BoatAI.angular_velocity = angular_velocity
+	$BoatAI.target_position = $'../Target'.global_position
+	$BoatAI.target_velocity = $'../Target'.velocity
+		
+	linear_velocity += $BoatAI.force * delta
+	angular_velocity += $BoatAI.torque * delta
+	
+	global_position += linear_velocity * delta
+	global_rotation += angular_velocity * delta
+"
+
+[sub_resource type="GDScript" id="GDScript_ndaeq"]
+script/source = "extends Node2D
+
+var velocity:Vector2
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	var to_target:Vector2 = get_global_mouse_position() - global_position
+	velocity = to_target
+	global_position += velocity * delta
+"
+
+[sub_resource type="GDScript" id="GDScript_3jiqg"]
+script/source = "@tool
+extends Polygon2D
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _physics_process(delta: float) -> void:
+	$BoatAI.target_position = $Target.global_position
+	$BoatAI.desired_distance = ($Target.global_position - $Target/TargetDistance.global_position).length()
+	$BoatAI.linear_velocity = $Velocity.global_position - global_position
+"
+
+[sub_resource type="GDScript" id="GDScript_vabf8"]
+script/source = "extends NavigationObstacle2D
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	pass
+"
+
+[node name="BoatAiTest" type="Node2D"]
+
+[node name="Grid" type="Node2D" parent="."]
+script = ExtResource("1_cuwvd")
+color = Color(0.241156, 0.241156, 0.241156, 1)
+thickness = 1.0
+separation = 100.0
+
+[node name="Boats" type="Node2D" parent="."]
+
+[node name="Boat" type="Polygon2D" parent="Boats"]
+position = Vector2(492, 278)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat"]
+script = ExtResource("1_bhs21")
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat2" type="Polygon2D" parent="Boats"]
+position = Vector2(386, 599)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat2"]
+script = ExtResource("1_bhs21")
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat3" type="Polygon2D" parent="Boats"]
+position = Vector2(861, 647)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat3"]
+script = ExtResource("1_bhs21")
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat4" type="Polygon2D" parent="Boats"]
+position = Vector2(822, 325)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat4"]
+script = ExtResource("1_bhs21")
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat5" type="Polygon2D" parent="Boats"]
+position = Vector2(158, 355)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat5"]
+script = ExtResource("1_bhs21")
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Target" type="Node2D" parent="Boats"]
+script = SubResource("GDScript_ndaeq")
+
+[node name="Sprite2D" type="Sprite2D" parent="Boats/Target"]
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("2_shys1")
+
+[node name="Camera2D" type="Camera2D" parent="Boats/Target"]
+enabled = false
+
+[node name="Fixed" type="Polygon2D" parent="."]
+process_mode = 4
+visible = false
+position = Vector2(484, 402)
+rotation = 9.68719
+color = Color(0.396889, 0.396889, 0.396889, 1)
+polygon = PackedVector2Array(-14, -4, 8, -4, 16, 0, 8, 4, -14, 4)
+script = SubResource("GDScript_3jiqg")
+
+[node name="BoatAI" type="Node2D" parent="Fixed"]
+script = ExtResource("1_bhs21")
+keel_damp = 10.0
+keel_drag = 10.0
+max_thrust = 100.0
+rest_torque = 1.0
+max_torque = 2.0
+desired_distance = 31.4006
+ignore_rotation_within_distance = null
+debug_draw = true
+avoidance_enabled = false
+
+[node name="Target" type="Marker2D" parent="Fixed"]
+top_level = true
+position = Vector2(444, 434)
+
+[node name="TargetDistance" type="Marker2D" parent="Fixed/Target"]
+position = Vector2(-25, -19)
+
+[node name="Velocity" type="Marker2D" parent="Fixed"]
+visible = false
+position = Vector2(50, 0)
+
+[node name="Obstacles" type="Node2D" parent="."]
+
+[node name="NavigationObstacle2D" type="NavigationObstacle2D" parent="Obstacles"]
+position = Vector2(661, 458)
+radius = 64.0
+script = SubResource("GDScript_vabf8")
+
+[node name="NavigationObstacle2D2" type="NavigationObstacle2D" parent="Obstacles"]
+position = Vector2(178, 775)
+radius = 64.0
+script = SubResource("GDScript_vabf8")
+
+[node name="NavigationObstacle2D3" type="NavigationObstacle2D" parent="Obstacles"]
+position = Vector2(287, 173)
+radius = 64.0
+script = SubResource("GDScript_vabf8")
+
+[node name="NavigationObstacle2D4" type="NavigationObstacle2D" parent="Obstacles"]
+position = Vector2(736, 183)
+radius = 64.0
+script = SubResource("GDScript_vabf8")

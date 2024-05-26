@@ -63,7 +63,7 @@ func _physics_process(delta: float) -> void:
 			charging_shot.global_scale = Vector2.ONE * (charge_delay-fire_timer.time)/charge_delay
 			charging_shot.global_position = $Marker2D.global_position
 			if(fire_timer.time<=0):
-				charging_shot.top_level=true
+				charging_shot.reparent(get_tree().current_scene)
 				charging_shot.global_transform = $Marker2D.global_transform
 				charging_shot.linear_velocity = 200 * Vector2.from_angle(global_rotation) + self.linear_velocity
 				var interp:Interpolator = charging_shot.get_node(^'Interpolator')

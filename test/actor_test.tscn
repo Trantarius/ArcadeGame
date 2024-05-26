@@ -1,49 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://c5gp5de2oi4dt"]
 
+[ext_resource type="Script" path="res://test/grid.gd" id="1_wkfgm"]
 [ext_resource type="Texture2D" uid="uid://bude4na0hnosm" path="res://icon.svg" id="2_1x0lk"]
-
-[sub_resource type="GDScript" id="GDScript_pdst4"]
-script/source = "@tool
-extends Node2D
-
-@export var color:Color:
-	set(to):
-		color = to
-		queue_redraw()
-@export var thickness:float:
-	set(to):
-		thickness = to
-		queue_redraw()
-@export var separation:float:
-	set(to):
-		separation = to
-		queue_redraw()
-
-func _process(delta: float) -> void:
-	queue_redraw()
-
-func _draw() -> void:
-	var rect:Rect2 = get_canvas_transform().affine_inverse() * get_viewport_rect()
-	
-	var left:float = floor((rect.position.x-thickness)/separation)*separation
-	var right:float = ceil((rect.end.x+thickness)/separation)*separation
-	var top:float = floor((rect.position.y-thickness)/separation)*separation
-	var bottom:float = ceil((rect.end.y+thickness)/separation)*separation
-	
-	if(is_nan(left)||is_inf(left)||is_nan(right)||is_inf(right)||is_nan(top)||is_inf(top)||is_nan(bottom)||is_inf(bottom)):
-		return
-	if((right-left)/separation>100 || (bottom-top)/separation>100):
-		return
-	
-	var x:float = left
-	while(x<=right):
-		draw_line(Vector2(x,top),Vector2(x,bottom),color,thickness)
-		x+=separation
-	var y:float = top
-	while(y<=bottom):
-		draw_line(Vector2(left,y),Vector2(right,y),color,thickness)
-		y+=separation
-"
 
 [sub_resource type="GDScript" id="GDScript_qd7x4"]
 script/source = "extends Actor
@@ -88,7 +46,7 @@ func _process(delta: float) -> void:
 [node name="ActorTest" type="Node"]
 
 [node name="Grid" type="Node2D" parent="."]
-script = SubResource("GDScript_pdst4")
+script = ExtResource("1_wkfgm")
 color = Color(0.18359, 0.18359, 0.18359, 1)
 thickness = 1.0
 separation = 256.0

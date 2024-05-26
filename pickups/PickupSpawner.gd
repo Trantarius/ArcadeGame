@@ -28,7 +28,7 @@ func _on_something_died(damage:Damage)->void:
 	if(damage.attacker is Player && damage.target is Enemy):
 	
 		var total_value:float = damage.target.point_value * 2**(randfn(0,1)) * global_drop_rate_multiplier
-		drop_event(total_value,damage.target.radius,damage.target.position,damage.target.get_average_velocity())
+		drop_event(total_value,damage.target.radius,damage.target.global_position,damage.target.get_average_velocity())
 
 func drop_event(total_value:float, radius:float, position:Vector2, velocity:Vector2)->void:
 	total_value += leftover

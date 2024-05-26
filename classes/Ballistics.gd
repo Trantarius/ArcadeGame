@@ -73,11 +73,11 @@ static func find_thrust_to_velocity(velocity:Vector2, acceleration:Vector2, targ
 ## Finds a torque to come to rest at a given angle.
 static func find_torque_to_angle(rotation:float, angular_velocity:float, target_rotation:float, max_torque:float)->float:
 	var brake_time:float = abs(angular_velocity) / max_torque
-	var brake_drift:float = angular_velocity*brake_time + -sign(angular_velocity)*max_torque*(brake_time**2)/2
+	var brake_drift:float = angular_velocity*brake_time/2
 	if(brake_drift>TAU):
 		return -sign(angular_velocity)*max_torque
 	var anticipated_position:float = rotation + brake_drift
-	return tanh(10*angle_difference(anticipated_position,target_rotation))*max_torque
+	return sign(angle_difference(anticipated_position,target_rotation))*max_torque
 
 ## Applies a smooth minimum operation to make hitting the max value less abrupt
 static func soft_limit_length(v:Vector2, limit:float, softness:float=limit/5)->Vector2:
@@ -90,24 +90,56 @@ static func soft_limit_length(v:Vector2, limit:float, softness:float=limit/5)->V
 ## Finds a direction to shoot a projectile to hit a moving target. The target is assumed to be moving at a constant speed.
 ## Returns Vector2.ZERO if the target is impossible to hit.
 static func aim_shot_linear(position:Vector2, velocity:Vector2, target_position:Vector2, target_velocity:Vector2, proj_speed:float)->Vector2:
-	var v:Vector2 = target_velocity - velocity
+	var solution:Dictionary = solve_linear_intercept(proj_speed, target_position-position, target_velocity-velocity)
+	if(is_inf(solution.time)):
+		return Vector2.ZERO
+	else:
+		return solution.velocity
+	
+## Given a target with an initial position and constant velocity, and an agent with initial position of (0,0) and constant speed,
+## returns the necessary velocity of the agent to intercept the target, along with the time to the intercept and its location.
+static func solve_linear_intercept(speed:float, target_position:Vector2, target_velocity:Vector2)->Dictionary:
+	if(target_position.is_zero_approx()):
+		# already there
+		return {'velocity':Vector2.ZERO,
+				'time':0, 
+				'intercept':Vector2.ZERO}
+	
+	var target_dir:Vector2 = target_position.normalized()
+	var target_dist:float = target_position.length()
+	
+	var v:Vector2 = target_velocity
 	var vlen:float = v.length()
 	if(is_equal_approx(vlen,0)):
 		# target is not moving
-		return (target_position-position).normalized()*proj_speed
+		return {'velocity':target_dir*speed,
+				'time':target_dist/speed,
+				'intercept':target_position}
 	
-	var A:float = (position-target_position).dot(v)/vlen
-	var B:float = -(position-target_position).dot(v.orthogonal())/vlen
+	var A:float = -target_position.dot(v)/vlen
+	var B:float = target_position.dot(v.orthogonal())/vlen
 	if(is_equal_approx(B,0)):
-		# target is moving straight at position
-		return (target_position-position).normalized()*proj_speed
+		# target is moving straight at/away from position
+		var target_speed:float = target_velocity.dot(target_dir)
+		if(target_speed<speed):
+			var time:float = target_dist/(speed - target_speed)
+			return {'velocity': target_dir * speed,
+					'time': time,
+					'intercept': target_dir * speed * time}
+		else:
+			return {'velocity': target_dir * speed,
+					'time': INF,
+					'intercept': Vector2(INF,INF) * sign(target_dir)}
+	
 	var a:float = A**2/B**2 + 1
 	var b:float = -2*A*vlen/B
-	var c:float = vlen**2 - proj_speed**2
+	var c:float = vlen**2 - speed**2
 	var det:float = b**2 - 4*a*c
 	if(det<0):
-		# impossible to hit
-		return Vector2.ZERO
+		# impossible to intercept
+		return {'velocity': target_velocity.normalized()*speed,
+				'time': INF,
+				'intercept': Vector2(INF,INF) * sign(target_velocity)}
 	
 	var ortho:float = (-b+sqrt(det))/(2*a)
 	var T:float = B/ortho
@@ -117,9 +149,13 @@ static func aim_shot_linear(position:Vector2, velocity:Vector2, target_position:
 		T=alt_T
 		ortho=alt_ortho
 	if(T<0):
-		# impossible to hit
-		return Vector2.ZERO
+		# impossible to intercept
+		return {'velocity': target_velocity.normalized()*speed,
+				'time': INF,
+				'intercept': Vector2(INF,INF) * sign(target_velocity)}
 	
 	var para:float = vlen - ortho*A/B
-	return (ortho*v.orthogonal() + para*v)/vlen
-	
+	var vel:Vector2 = (ortho*v.orthogonal() + para*v)/vlen
+	return {'velocity': vel,
+			'time': T,
+			'intercept': vel * T}

@@ -23,6 +23,7 @@ fill_to = Vector2(1, 0.5)
 [node name="Turret" type="AnimatableBody2D"]
 collision_layer = 4
 collision_mask = 0
+sync_to_physics = false
 script = ExtResource("1_w5xny")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -34,12 +35,6 @@ collision_mask = 2
 monitorable = false
 script = ExtResource("2_std03")
 max_angle = 0.75
-max_detected_count = null
-require_raycast = null
-min_raycast_separation = null
-raycast_hint_margin = null
-raycast_mask = null
-debug_draw = null
 
 [node name="HitBox" type="Area2D" parent="."]
 collision_layer = 4

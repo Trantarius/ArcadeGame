@@ -1,12 +1,16 @@
-[gd_scene load_steps=4 format=3 uid="uid://crwwyc1s55imm"]
+[gd_scene load_steps=5 format=3 uid="uid://crwwyc1s55imm"]
 
 [ext_resource type="Script" path="res://enemies/broadside/cannon.gd" id="1_bxy2k"]
 [ext_resource type="Script" path="res://classes/HitBox.gd" id="2_hofhh"]
 [ext_resource type="Script" path="res://classes/Interpolator.gd" id="3_brp2e"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_o75hj"]
+size = Vector2(128, 768)
+
 [node name="Cannon" type="AnimatableBody2D"]
 collision_layer = 4
-collision_mask = 7
+collision_mask = 0
+sync_to_physics = false
 script = ExtResource("1_bxy2k")
 radius = 45.0
 
@@ -44,3 +48,12 @@ default_color = Color(0.196078, 0.196078, 0.196078, 1)
 [node name="Line2D2" type="Line2D" parent="Interpolator"]
 points = PackedVector2Array(16, 16, 16, -16)
 default_color = Color(0.194349, 0.194349, 0.194349, 1)
+
+[node name="Detector" type="Area2D" parent="."]
+position = Vector2(0, 416)
+collision_layer = 0
+collision_mask = 2
+monitorable = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Detector"]
+shape = SubResource("RectangleShape2D_o75hj")

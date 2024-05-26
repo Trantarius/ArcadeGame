@@ -19,4 +19,4 @@ func _on_fire() -> void:
 		bullet.damage_amount = damage_amount
 		bullet.scale = Vector2.ONE * projectile_size/8
 		bullet.lifetime = projectile_lifetime
-		get_parent().get_parent().add_child(bullet)
+		get_tree().current_scene.add_child(bullet)

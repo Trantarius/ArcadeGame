@@ -6,7 +6,8 @@
 
 [node name="Engine" type="AnimatableBody2D"]
 collision_layer = 4
-collision_mask = 7
+collision_mask = 0
+sync_to_physics = false
 script = ExtResource("1_vj40v")
 radius = 72.0
 

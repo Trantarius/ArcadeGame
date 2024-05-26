@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://1ou2bpdp2log"]
+[gd_scene load_steps=4 format=3 uid="uid://1ou2bpdp2log"]
 
 [sub_resource type="GDScript" id="GDScript_sewsl"]
 script/source = "@tool
@@ -130,6 +130,7 @@ var tvelpos:Vector2
 
 var points:Array[Vector2]
 var tpoints:Array[Vector2]
+var hit:Vector2
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -156,10 +157,11 @@ func update()->void:
 	points = [pos]
 	tpoints = [tpos]
 	var time:float = 0
-	var tvel:Vector2 = tvelpos - tpos
-	var pvel:Vector2 = Ballistics.aim_shot_linear(pos,Vector2.ZERO,tpos,tvel,proj_speed)
+	var tvel:Vector2 = (tvelpos - tpos).limit_length(proj_speed*0.95)
+	var intercept:Dictionary = Ballistics.solve_linear_intercept(proj_speed, tpos-pos, tvel)
+	hit = intercept.intercept
 	while(time<duration):
-		points.push_back(points.back() + pvel*timestep)
+		points.push_back(points.back() + intercept.velocity*timestep)
 		tpoints.push_back(tpoints.back() + tvel*timestep)
 		time+=timestep
 
@@ -171,7 +173,63 @@ func _draw() -> void:
 		if(n%10==0):
 			draw_line(points[n]-global_position, tpoints[n]-global_position, Color.BLUE)
 	
+	if(hit.is_finite()):
+		draw_circle(hit, 3, Color.GREEN)
+	
 "
+
+[sub_resource type="GDScript" id="GDScript_nah1q"]
+script/source = "@tool
+extends Node2D
+
+var pos:Vector2
+var capos:Vector2
+var dapos:Vector2
+var cvpos:Vector2
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(_delta: float) -> void:
+	if(global_position != pos):
+		pos = global_position
+		queue_redraw()
+	if($CurrentAngle.position != capos):
+		capos = $CurrentAngle.position
+		queue_redraw()
+	if($DesiredAngle.position != dapos):
+		dapos = $DesiredAngle.position
+		queue_redraw()
+	if($CurrentVelocity.position != cvpos):
+		cvpos = $CurrentVelocity.position
+		queue_redraw()
+		
+
+func _draw()->void:
+	
+	var curr_theta:float = capos.angle()
+	var targ_theta:float = dapos.angle()
+	var curr_vel:float = cvpos.angle() - curr_theta
+	var max_torque:float = 1
+	var torque:float
+	
+	var brake_time:float = abs(curr_vel) / max_torque
+	var brake_drift:float = curr_vel*brake_time/2
+	if(brake_drift>TAU):
+		torque = -sign(curr_vel)*max_torque
+	else:
+		var anticipated_position:float = curr_theta + brake_drift
+		draw_line(Vector2.ZERO, Vector2.from_angle(anticipated_position) * capos.length(), Color(1,1,0))
+		torque = sign(angle_difference(anticipated_position,targ_theta))*max_torque
+	
+	draw_line(Vector2.ZERO, capos, Color(0,0,1))
+	draw_line(Vector2.ZERO, dapos, Color(0,1,1))
+	
+	draw_arc(Vector2.ZERO, 50, curr_theta, curr_vel+curr_theta, 64, Color(1,0,0))
+	draw_arc(Vector2.ZERO, 60, curr_theta, torque+curr_theta, 64, Color(0,1,0))"
 
 [node name="BallisticsTest" type="Node"]
 
@@ -198,11 +256,23 @@ position = Vector2(312, 43)
 position = Vector2(192, -28)
 
 [node name="LinearShot" type="Node2D" parent="."]
-position = Vector2(-174, 449)
+position = Vector2(40, 192)
 script = SubResource("GDScript_v7sbi")
 
 [node name="Target" type="Marker2D" parent="LinearShot"]
-position = Vector2(19, 168)
+position = Vector2(0, 328)
 
 [node name="TargetVel" type="Marker2D" parent="LinearShot"]
-position = Vector2(103, 119)
+position = Vector2(68, 292)
+
+[node name="Torque" type="Node2D" parent="."]
+script = SubResource("GDScript_nah1q")
+
+[node name="CurrentAngle" type="Marker2D" parent="Torque"]
+position = Vector2(125, -14)
+
+[node name="DesiredAngle" type="Marker2D" parent="Torque"]
+position = Vector2(159, 47)
+
+[node name="CurrentVelocity" type="Marker2D" parent="Torque"]
+position = Vector2(53, 92)

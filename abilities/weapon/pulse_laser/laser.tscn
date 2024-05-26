@@ -7,7 +7,7 @@ interpolation_color_space = 2
 colors = PackedColorArray(0.592157, 0.745098, 1, 1, 0, 0, 1, 0)
 
 [node name="Laser" type="Node2D"]
-position = Vector2(34, -72)
+position = Vector2(75.12, 76.035)
 script = ExtResource("1_epoh6")
 lifetime = 0.2
 damage_amount = 10.0

@@ -1,8 +1,5 @@
 extends WeaponAbility
 
-## Standard deviation of shot angle
-const innaccuracy:float = deg_to_rad(1)
-
 func _on_fire() -> void:
 	
 	var muzzle_pos:Vector2 = get_parent().get_muzzle_position()
@@ -20,7 +17,7 @@ func _on_fire() -> void:
 			get_viewport().get_camera_2d().add_child(laser)
 			laser.damage_amount = damage_amount
 			laser.global_position = muzzle_pos
-			laser.global_rotation = muzzle_dir.angle() + randfn(0,innaccuracy)
+			laser.global_rotation = muzzle_dir.angle()
 			laser.length = projectile_speed
 			laser.source = get_parent()
 			laser.fire()
@@ -32,9 +29,9 @@ func _on_fire() -> void:
 			var target_theta = ($ArcDetector.detected[target].position-muzzle_pos).angle()
 			
 			var laser:Laser = preload("res://abilities/weapon/pulse_laser/laser.tscn").instantiate()
-			get_viewport().get_camera_2d().add_child(laser)
+			get_tree().current_scene.add_child(laser)
 			laser.damage_amount = damage_amount
 			laser.global_position = muzzle_pos
-			laser.global_rotation = target_theta + randfn(0,innaccuracy)
+			laser.global_rotation = target_theta
 			laser.length = projectile_speed
 			laser.fire()
