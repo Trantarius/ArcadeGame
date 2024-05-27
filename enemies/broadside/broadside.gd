@@ -52,12 +52,15 @@ func _physics_process(_delta: float) -> void:
 				cannon.fire()
 			starboard_fire_timer.time = cannon_fire_delay
 	
-	var keel_dir:Vector2 = Vector2.from_angle(global_rotation).orthogonal()
-	var keel_vel:float = self.linear_velocity.dot(keel_dir)
-	var keel_imp:Vector2 = -tanh(keel_vel) * keel_dir * keel_force
-	$'.'.apply_central_force(keel_imp)
+	var player:Player = Player.find_nearest_player(global_position)
 	
-	var target:Player = Player.find_nearest_player(global_position)
-	if(is_instance_valid(target)):
-		
-		var current_perp_dist:float = (target.global_position - global_position).dot(keel_dir)
+	$BoatAI.linear_velocity = self.linear_velocity
+	$BoatAI.angular_velocity = self.angular_velocity
+	if(is_instance_valid(player)):
+		$BoatAI.target_position = player.global_position
+		$BoatAI.target_velocity = player.get_average_velocity()
+
+
+func _on_boat_ai_forces_updated() -> void:
+	$'.'.apply_central_force($BoatAI.force*self.mass)
+	$'.'.apply_torque($BoatAI.torque*PhysicsServer2D.body_get_param($'.'.get_rid(), PhysicsServer2D.BODY_PARAM_INERTIA))

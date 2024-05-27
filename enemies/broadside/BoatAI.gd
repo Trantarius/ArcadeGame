@@ -149,6 +149,8 @@ func _exit_tree() -> void:
 		_stop_avoidance()
 
 func _physics_process(_delta: float) -> void:
+	if(Engine.is_editor_hint() && ! debug_draw):
+		return
 	var next_draw_calls:Array[Callable]
 	var next_force:Vector2
 	var next_torque:float
@@ -246,8 +248,6 @@ func _physics_process(_delta: float) -> void:
 			if(debug_draw):
 				next_draw_calls.push_back(draw_line.bind(Vector2.ZERO, safe_vel.rotated(-global_rotation), Color(0,1,1)))
 	
-	
-	
 	var desired_angle:float = desired_direction.angle()
 	next_torque += sign(angle_difference(angular_brake_pos,desired_angle))*remap(abs(para_vel), 0, max_speed, rest_torque, max_torque)
 	
@@ -271,6 +271,9 @@ func _physics_process(_delta: float) -> void:
 	if(debug_draw):
 		_draw_calls = next_draw_calls
 		queue_redraw()
+	
+	if(!Engine.is_editor_hint()):
+		forces_updated.emit()
 
 func _draw()->void:
 	if(debug_draw):
