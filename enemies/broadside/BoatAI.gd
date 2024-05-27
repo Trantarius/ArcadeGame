@@ -4,7 +4,9 @@ extends Node2D
 
 ## Damps velocity perpendicular to the ship's heading
 @export var keel_damp:float = 4
-## Damps velocity parallel to the ship's heading
+## Damps rotation
+@export var keel_angular_damp:float = 1
+## Damps velocity parallel to the ship's heading, proportional to the perpendicular keel force
 @export var keel_drag:float = 4
 
 ## Max forward thrust.
@@ -12,7 +14,7 @@ extends Node2D
 
 ## Max torque when not moving
 @export var rest_torque:float = 0.5
-## Highest possible torque
+## Highest possible torque (happens when at max speed)
 @export var max_torque:float = 10
 
 @export var max_speed:float = 500:
@@ -21,6 +23,7 @@ extends Node2D
 			max_speed = to
 			if(is_inside_tree() && avoidance_enabled && !Engine.is_editor_hint()):
 				NavigationServer2D.agent_set_max_speed(_agent, max_speed)
+
 @export var max_angular_speed:float = 1
 
 @export var desired_distance:float = 500
@@ -99,6 +102,9 @@ var angular_velocity:float
 var target_position:Vector2
 var target_velocity:Vector2
 
+var _avg_target_velocity:Vector2
+var _avg_target_position:Vector2
+
 ## The output force to be applied to whatever is obeying this AI
 var force:Vector2
 ## The output torque to be applied to whatever is obeying this AI
@@ -147,6 +153,10 @@ func _physics_process(_delta: float) -> void:
 	var next_force:Vector2
 	var next_torque:float
 	
+	var weight:float = _delta/((target_position-global_position).length()/max_speed)
+	_avg_target_velocity = (_avg_target_velocity + weight*target_velocity)/(1+weight)
+	_avg_target_position = (_avg_target_position + weight*target_position)/(1+weight)
+	
 	var keel_dir:Vector2 = Vector2.from_angle(global_rotation).orthogonal()
 	var keel_vel:float = linear_velocity.dot(keel_dir)
 	var keel_force:Vector2 = keel_dir * -keel_vel * keel_damp
@@ -155,70 +165,97 @@ func _physics_process(_delta: float) -> void:
 	if(debug_draw):
 		next_draw_calls.push_back(draw_line.bind(Vector2.ZERO, keel_force.rotated(-global_rotation), Color(1,0,0)))
 	next_force += keel_force
-		
-	var target_relpos:Vector2 = target_position - global_position
-	var solution:Dictionary = Ballistics.solve_linear_intercept(max_speed, target_relpos, target_velocity)
-	var desired_direction:Vector2 = solution.velocity.normalized()
-	var target_dist:float = target_relpos.length()
+	
+	var keel_torque:float = -angular_velocity * keel_angular_damp
+	next_torque += keel_torque
 	
 	var angular_brake_time:float = abs(angular_velocity)/max_torque
 	var angular_brake_drift:float = angular_velocity*angular_brake_time/2
 	var angular_brake_pos:float = global_rotation + angular_brake_drift
 	
+	var tt_a:float = 0.5*max_thrust
+	var tt_b:float = linear_velocity.dot((target_position-global_position).normalized())
+	var tt_c:float = -(target_position-global_position).length()
+	var tt_det:float = tt_b**2 - 4*tt_a*tt_c
+	var appx_travel_time:float = (-abs(tt_b) + sqrt(tt_det))/(2*tt_a)
+	var appx_avg_speed:float = (target_position-global_position).length()/appx_travel_time
+	
+	var target_relpos:Vector2 = target_position - global_position
+	var solution:Dictionary = Ballistics.solve_linear_intercept(max_speed, target_relpos, _avg_target_velocity)
+	var intercept:Vector2 = solution.intercept
+	var desired_direction:Vector2 = solution.velocity.normalized()
+	var target_dist:float = target_relpos.length()
+	
+	
+	
 	if(!is_inf(solution.time)):
 		if(debug_draw):
-			next_draw_calls.push_back(draw_arc.bind(solution.intercept.rotated(-global_rotation), desired_distance, 0, TAU, 32, Color(0,0,1)))
-			next_draw_calls.push_back(draw_circle.bind(solution.intercept.rotated(-global_rotation), 2, Color(0,0,1)))
-		
-		target_dist = solution.intercept.length()
-		var perp_dir:Vector2 = solution.intercept.normalized().orthogonal()
+			next_draw_calls.push_back(draw_arc.bind(intercept.rotated(-global_rotation), desired_distance, 0, TAU, 32, Color(0,0,1)))
+			next_draw_calls.push_back(draw_circle.bind(intercept.rotated(-global_rotation), 2, Color(0,0,1)))
+
+		target_dist = intercept.length()
+		var perp_dir:Vector2 = intercept.normalized().orthogonal()
 		perp_dir *= sign(perp_dir.dot(Vector2.from_angle(angular_brake_pos)))
 		var perp_angle:float = perp_dir.angle()
-		
+
 		if(target_dist>desired_distance):
 			var des_angle:float = asin(desired_distance*0.75/target_dist)
-			var curr_angle:float = angle_difference(solution.intercept.angle(), angular_brake_pos)
+			var curr_angle:float = angle_difference(intercept.angle(), angular_brake_pos)
 			
 			des_angle = sign(curr_angle)*abs(des_angle)
-			desired_direction = Vector2.from_angle(des_angle + solution.intercept.angle())
-		
+			desired_direction = Vector2.from_angle(des_angle + intercept.angle())
+
 		elif(ignore_rotation_within_distance):
 			desired_direction = Vector2.from_angle(global_rotation)
 		else:
 			desired_direction = perp_dir
 	
+	
+	var current_direction:Vector2 = Vector2.from_angle(global_rotation)
+		
+	var dist_err:float = target_dist-desired_distance
+	# gives the boat more speed the further it is from the desired distance
+	var speed_dfactor:float = sqrt(abs(dist_err)*max_thrust*2)/max_speed
+	const min_angle_factor:float = 0.1
+	const angle_factor_base:float = 100
+	# makes the boat only thrust forward when facing pretty close to the direction it wants to go
+	var speed_afactor:float = angle_factor_base**(current_direction.dot(desired_direction)-1)
+	# makes the boat move just a little bit when facing the wrong direction so it can turn
+	var angle_correction_factor:float = 0.1*(-current_direction.dot(desired_direction) + 1)/2
+	var des_speed:float = max_speed * (speed_dfactor * speed_afactor + angle_correction_factor)/1.1
+	
+	var des_vel:Vector2 = desired_direction * des_speed
+	des_vel += _avg_target_velocity
+	desired_direction = des_vel.normalized()
+	des_speed = min(des_vel.length(),max_speed)
+	
 	if(debug_draw):
-		next_draw_calls.push_back(draw_line.bind(Vector2.ZERO, desired_direction.rotated(-global_rotation) * 32, Color(0,1,0)))
+		next_draw_calls.push_back(draw_line.bind(Vector2.ZERO, desired_direction.rotated(-global_rotation) * des_speed, Color(0,1,0)))
 	
 	if(avoidance_enabled):
 		if(debug_draw):
 			next_draw_calls.push_back(draw_circle.bind(Vector2.ZERO, avoidance_radius, Color(0.1,0.8,0.8,0.5)))
 		if(!Engine.is_editor_hint()):
 			NavigationServer2D.agent_set_position(_agent, global_position)
-			NavigationServer2D.agent_set_velocity(_agent, desired_direction * (max(linear_velocity.dot(desired_direction),0) + max_thrust))
+			NavigationServer2D.agent_set_velocity(_agent, desired_direction * des_speed)
 			var safe_vel3:Vector3 = await _avoidance_callback_signal
 			var safe_vel:Vector2 = Vector2(safe_vel3.x, safe_vel3.z)
 			desired_direction = safe_vel.normalized()
+			des_speed = safe_vel.length()
 			
 			if(debug_draw):
-				next_draw_calls.push_back(draw_line.bind(Vector2.ZERO, desired_direction.rotated(-global_rotation) * 32, Color(0,1,1)))
+				next_draw_calls.push_back(draw_line.bind(Vector2.ZERO, safe_vel.rotated(-global_rotation), Color(0,1,1)))
+	
+	
 	
 	var desired_angle:float = desired_direction.angle()
-	var current_direction:Vector2 = Vector2.from_angle(global_rotation)
+	next_torque += sign(angle_difference(angular_brake_pos,desired_angle))*remap(abs(para_vel), 0, max_speed, rest_torque, max_torque)
 	
-	next_torque = sign(angle_difference(angular_brake_pos,desired_angle))*max_torque
-	
-	if(debug_draw):
-		next_draw_calls.push_back(draw_arc.bind(Vector2.ZERO, 32, 0, next_torque * PI/max_torque, 16, Color(1,0,0)))
-	
-	var tfactor:float = max(current_direction.dot(desired_direction),0)**4
-	var dist_err:float = max(target_dist-desired_distance,0)
-	tfactor *= dist_err**2/(dist_err**2 + desired_distance)
-	tfactor = clamp(tfactor,-1,1)
-	var thrust:Vector2 = tfactor * current_direction * max_thrust
+	var speed_err:float = linear_velocity.dot(current_direction) - des_speed
+	var thrust:Vector2 = -tanh(speed_err) * current_direction * max_thrust
 	if(debug_draw):
 		next_draw_calls.push_back(draw_line.bind(Vector2.ZERO, thrust.rotated(-global_rotation), Color(1,0,0)))
-	next_force += tfactor * current_direction * max_thrust
+	next_force += thrust
 	
 	next_force += linear_velocity
 	next_force = next_force.limit_length(max_speed)
@@ -237,6 +274,5 @@ func _physics_process(_delta: float) -> void:
 
 func _draw()->void:
 	if(debug_draw):
-		draw_circle(global_transform.affine_inverse() * target_position, 2, Color(0,1,0))
 		for dcall:Callable in _draw_calls:
 			dcall.call()

@@ -111,4 +111,3 @@ keel_drag = 10.0
 max_thrust = 100.0
 rest_torque = 1.0
 max_torque = 100.0
-ignore_rotation_within_distance = null

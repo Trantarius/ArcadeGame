@@ -10,6 +10,12 @@ script/source = "extends Polygon2D
 var linear_velocity:Vector2
 var angular_velocity:float
 
+func _ready()->void:
+	if($'../Boat'!=self):
+		remove_child($BoatAI)
+		var newai:BoatAI = $'../Boat/BoatAI'.duplicate()
+		add_child(newai)
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	
@@ -91,8 +97,11 @@ script = SubResource("GDScript_oec02")
 
 [node name="BoatAI" type="Node2D" parent="Boats/Boat"]
 script = ExtResource("1_bhs21")
+max_thrust = 100.0
+rest_torque = 0.01
+max_torque = 100.0
+max_speed = 1000.0
 desired_distance = 128.0
-debug_draw = true
 avoidance_radius = 18.0
 avoidance_time_horizon_agents = 8.0
 avoidance_time_horizon_obstacles = 8.0
@@ -105,6 +114,7 @@ script = SubResource("GDScript_oec02")
 
 [node name="BoatAI" type="Node2D" parent="Boats/Boat2"]
 script = ExtResource("1_bhs21")
+rest_torque = 0.01
 desired_distance = 128.0
 debug_draw = true
 avoidance_radius = 18.0
@@ -119,6 +129,7 @@ script = SubResource("GDScript_oec02")
 
 [node name="BoatAI" type="Node2D" parent="Boats/Boat3"]
 script = ExtResource("1_bhs21")
+rest_torque = 0.01
 desired_distance = 128.0
 debug_draw = true
 avoidance_radius = 18.0
@@ -133,6 +144,7 @@ script = SubResource("GDScript_oec02")
 
 [node name="BoatAI" type="Node2D" parent="Boats/Boat4"]
 script = ExtResource("1_bhs21")
+rest_torque = 0.01
 desired_distance = 128.0
 debug_draw = true
 avoidance_radius = 18.0
@@ -147,6 +159,607 @@ script = SubResource("GDScript_oec02")
 
 [node name="BoatAI" type="Node2D" parent="Boats/Boat5"]
 script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat6" type="Polygon2D" parent="Boats"]
+position = Vector2(1426, 473)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat6"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat7" type="Polygon2D" parent="Boats"]
+position = Vector2(1320, 794)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat7"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat8" type="Polygon2D" parent="Boats"]
+position = Vector2(1795, 842)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat8"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat9" type="Polygon2D" parent="Boats"]
+position = Vector2(1756, 520)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat9"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat10" type="Polygon2D" parent="Boats"]
+position = Vector2(1092, 550)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat10"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat11" type="Polygon2D" parent="Boats"]
+position = Vector2(-612, 341)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat11"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat12" type="Polygon2D" parent="Boats"]
+position = Vector2(-718, 662)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat12"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat13" type="Polygon2D" parent="Boats"]
+position = Vector2(-243, 710)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat13"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat14" type="Polygon2D" parent="Boats"]
+position = Vector2(-282, 388)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat14"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat15" type="Polygon2D" parent="Boats"]
+position = Vector2(-946, 418)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat15"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat16" type="Polygon2D" parent="Boats"]
+position = Vector2(-471, 1120)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat16"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat17" type="Polygon2D" parent="Boats"]
+position = Vector2(-577, 1441)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat17"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat18" type="Polygon2D" parent="Boats"]
+position = Vector2(-102, 1489)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat18"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat19" type="Polygon2D" parent="Boats"]
+position = Vector2(-141, 1167)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat19"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat20" type="Polygon2D" parent="Boats"]
+position = Vector2(-805, 1197)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat20"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat21" type="Polygon2D" parent="Boats"]
+position = Vector2(553, 1026)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat21"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat22" type="Polygon2D" parent="Boats"]
+position = Vector2(447, 1347)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat22"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat23" type="Polygon2D" parent="Boats"]
+position = Vector2(922, 1395)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat23"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat24" type="Polygon2D" parent="Boats"]
+position = Vector2(883, 1073)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat24"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat25" type="Polygon2D" parent="Boats"]
+position = Vector2(219, 1103)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat25"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat26" type="Polygon2D" parent="Boats"]
+position = Vector2(1568, 1129)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat26"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat27" type="Polygon2D" parent="Boats"]
+position = Vector2(1462, 1450)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat27"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat28" type="Polygon2D" parent="Boats"]
+position = Vector2(1937, 1498)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat28"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat29" type="Polygon2D" parent="Boats"]
+position = Vector2(1898, 1176)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat29"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat30" type="Polygon2D" parent="Boats"]
+position = Vector2(1234, 1206)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat30"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat31" type="Polygon2D" parent="Boats"]
+position = Vector2(1493, -252)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat31"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat32" type="Polygon2D" parent="Boats"]
+position = Vector2(1387, 69)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat32"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat33" type="Polygon2D" parent="Boats"]
+position = Vector2(1862, 117)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat33"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat34" type="Polygon2D" parent="Boats"]
+position = Vector2(1823, -205)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat34"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat35" type="Polygon2D" parent="Boats"]
+position = Vector2(1159, -175)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat35"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat36" type="Polygon2D" parent="Boats"]
+position = Vector2(450, -492)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat36"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat37" type="Polygon2D" parent="Boats"]
+position = Vector2(344, -171)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat37"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat38" type="Polygon2D" parent="Boats"]
+position = Vector2(819, -123)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat38"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat39" type="Polygon2D" parent="Boats"]
+position = Vector2(780, -445)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat39"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat40" type="Polygon2D" parent="Boats"]
+position = Vector2(116, -415)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat40"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat41" type="Polygon2D" parent="Boats"]
+position = Vector2(-686, -444)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat41"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat42" type="Polygon2D" parent="Boats"]
+position = Vector2(-792, -123)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat42"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat43" type="Polygon2D" parent="Boats"]
+position = Vector2(-317, -75)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat43"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat44" type="Polygon2D" parent="Boats"]
+position = Vector2(-356, -397)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat44"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
+desired_distance = 128.0
+debug_draw = true
+avoidance_radius = 18.0
+avoidance_time_horizon_agents = 8.0
+avoidance_time_horizon_obstacles = 8.0
+
+[node name="Boat45" type="Polygon2D" parent="Boats"]
+position = Vector2(-1020, -367)
+color = Color(0.823529, 0.537255, 0.278431, 1)
+polygon = PackedVector2Array(-14, -4, 12, -4, 20, 0, 12, 4, -14, 4)
+script = SubResource("GDScript_oec02")
+
+[node name="BoatAI" type="Node2D" parent="Boats/Boat45"]
+script = ExtResource("1_bhs21")
+rest_torque = 0.01
 desired_distance = 128.0
 debug_draw = true
 avoidance_radius = 18.0
@@ -161,7 +774,6 @@ scale = Vector2(0.25, 0.25)
 texture = ExtResource("2_shys1")
 
 [node name="Camera2D" type="Camera2D" parent="Boats/Target"]
-enabled = false
 
 [node name="Fixed" type="Polygon2D" parent="."]
 process_mode = 4
@@ -180,7 +792,6 @@ max_thrust = 100.0
 rest_torque = 1.0
 max_torque = 2.0
 desired_distance = 31.4006
-ignore_rotation_within_distance = null
 debug_draw = true
 avoidance_enabled = false
 
