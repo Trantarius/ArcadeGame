@@ -107,11 +107,14 @@ polygon = PackedVector2Array(-112, 0, -128, -16, -256, -16, -248, -36, -240, -48
 [node name="BoatAI" type="Node2D" parent="."]
 rotation = 3.14159
 script = ExtResource("6_c4kd0")
+keel_damp = 4.0
+keel_angular_damp = 1.0
+keel_drag = 4.0
 max_thrust = 50.0
-rest_torque = 0.01
 max_torque = 1.0
 max_speed = 800.0
 desired_distance = 1000.0
+approach = null
 avoidance_radius = 600.0
 
 [connection signal="forces_updated" from="BoatAI" to="." method="_on_boat_ai_forces_updated"]

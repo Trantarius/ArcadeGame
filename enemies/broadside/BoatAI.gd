@@ -2,33 +2,35 @@
 class_name BoatAI
 extends Node2D
 
-## Damps velocity perpendicular to the ship's heading
-@export var keel_damp:float = 4
-## Damps rotation
-@export var keel_angular_damp:float = 1
-## Damps velocity parallel to the ship's heading, proportional to the perpendicular keel force
-@export var keel_drag:float = 4
+## Damps velocity perpendicular to the ship's heading.
+@export var keel_damp:float = 10
+## Damps rotation.
+@export var keel_angular_damp:float = 10
+## Damps velocity parallel to the ship's heading, proportional to the perpendicular keel force.
+@export var keel_drag:float = 10
 
 ## Max forward thrust.
-@export var max_thrust:float = 30
+@export var max_thrust:float = 100
 
-## Max torque when not moving
-@export var rest_torque:float = 0.5
-## Highest possible torque (happens when at max speed)
-@export var max_torque:float = 10
+## Highest possible torque (happens when at max speed).
+@export var max_torque:float = 100
 
-@export var max_speed:float = 500:
+## Max desired speed. Boat will not voluntarily pass this speed.
+@export var max_speed:float = 1000:
 	set(to):
 		if(max_speed!=to):
 			max_speed = to
 			if(is_inside_tree() && avoidance_enabled && !Engine.is_editor_hint()):
 				NavigationServer2D.agent_set_max_speed(_agent, max_speed)
 
+## Max desired anglular speed. Boat will not voluntarily pass this.
 @export var max_angular_speed:float = 1
 
+## Desired (minimum) distance from [member target_position].
 @export var desired_distance:float = 500
-
-@export var ignore_rotation_within_distance:bool = false
+## Parameter that determines the angle at which the ship approaches the target. 0 means the ship will go straight for the target,
+## 1 means the ship will approach such that the target is perpendicular to the ship's heading.
+@export_range(0,1) var approach:float = 0.75
 
 @export var debug_draw:bool = false
 
@@ -92,18 +94,12 @@ extends Node2D
 			if(is_inside_tree() && avoidance_enabled && !Engine.is_editor_hint()):
 				NavigationServer2D.agent_set_time_horizon_obstacles(_agent, avoidance_time_horizon_obstacles)
 
-var _agent:RID
-var _draw_calls:Array[Callable]
-var _last_target_side:float = 1
-
 var linear_velocity:Vector2
 var angular_velocity:float
 
 var target_position:Vector2
 var target_velocity:Vector2
 
-var _avg_target_velocity:Vector2
-var _avg_target_position:Vector2
 
 ## The output force to be applied to whatever is obeying this AI
 var force:Vector2
@@ -114,6 +110,10 @@ var torque:float
 signal forces_updated
 
 signal _avoidance_callback_signal(safe_vel:Vector3)
+
+var _avg_target_velocity:Vector2
+var _agent:RID
+var _draw_calls:Array[Dictionary]
 
 func _avoidance_callback(arg)->void:
 	_avoidance_callback_signal.emit(arg)
@@ -148,16 +148,12 @@ func _exit_tree() -> void:
 	if(avoidance_enabled):
 		_stop_avoidance()
 
-func _physics_process(_delta: float) -> void:
+func _physics_process(delta: float) -> void:
 	if(Engine.is_editor_hint() && ! debug_draw):
 		return
-	var next_draw_calls:Array[Callable]
+	var next_draw_calls:Array[Dictionary]
 	var next_force:Vector2
 	var next_torque:float
-	
-	var weight:float = _delta/((target_position-global_position).length()/max_speed)
-	_avg_target_velocity = (_avg_target_velocity + weight*target_velocity)/(1+weight)
-	_avg_target_position = (_avg_target_position + weight*target_position)/(1+weight)
 	
 	var keel_dir:Vector2 = Vector2.from_angle(global_rotation).orthogonal()
 	var keel_vel:float = linear_velocity.dot(keel_dir)
@@ -165,96 +161,72 @@ func _physics_process(_delta: float) -> void:
 	var para_vel:float = linear_velocity.dot(keel_dir.orthogonal())
 	keel_force += keel_dir.orthogonal() * -sign(para_vel)*abs(keel_vel) * keel_drag
 	if(debug_draw):
-		next_draw_calls.push_back(draw_line.bind(Vector2.ZERO, keel_force.rotated(-global_rotation), Color(1,0,0)))
+		next_draw_calls.push_back({'type':'line','start':Vector2.ZERO,'end':keel_force,'color':Color(1,0,0),'global':false})
 	next_force += keel_force
 	
 	var keel_torque:float = -angular_velocity * keel_angular_damp
 	next_torque += keel_torque
 	
-	var angular_brake_time:float = abs(angular_velocity)/max_torque
-	var angular_brake_drift:float = angular_velocity*angular_brake_time/2
-	var angular_brake_pos:float = global_rotation + angular_brake_drift
-	
-	var tt_a:float = 0.5*max_thrust
-	var tt_b:float = linear_velocity.dot((target_position-global_position).normalized())
-	var tt_c:float = -(target_position-global_position).length()
-	var tt_det:float = tt_b**2 - 4*tt_a*tt_c
-	var appx_travel_time:float = (-abs(tt_b) + sqrt(tt_det))/(2*tt_a)
-	var appx_avg_speed:float = (target_position-global_position).length()/appx_travel_time
-	
 	var target_relpos:Vector2 = target_position - global_position
-	var solution:Dictionary = Ballistics.solve_linear_intercept(max_speed, target_relpos, _avg_target_velocity)
-	var intercept:Vector2 = solution.intercept
-	var desired_direction:Vector2 = solution.velocity.normalized()
 	var target_dist:float = target_relpos.length()
 	
-	
-	
-	if(!is_inf(solution.time)):
-		if(debug_draw):
-			next_draw_calls.push_back(draw_arc.bind(intercept.rotated(-global_rotation), desired_distance, 0, TAU, 32, Color(0,0,1)))
-			next_draw_calls.push_back(draw_circle.bind(intercept.rotated(-global_rotation), 2, Color(0,0,1)))
-
-		target_dist = intercept.length()
-		var perp_dir:Vector2 = intercept.normalized().orthogonal()
-		perp_dir *= sign(perp_dir.dot(Vector2.from_angle(angular_brake_pos)))
-		var perp_angle:float = perp_dir.angle()
-
-		if(target_dist>desired_distance):
-			var des_angle:float = asin(desired_distance*0.75/target_dist)
-			var curr_angle:float = angle_difference(intercept.angle(), angular_brake_pos)
-			
-			des_angle = sign(curr_angle)*abs(des_angle)
-			desired_direction = Vector2.from_angle(des_angle + intercept.angle())
-
-		elif(ignore_rotation_within_distance):
-			desired_direction = Vector2.from_angle(global_rotation)
-		else:
-			desired_direction = perp_dir
-	
-	
-	var current_direction:Vector2 = Vector2.from_angle(global_rotation)
-		
-	var dist_err:float = target_dist-desired_distance
-	# gives the boat more speed the further it is from the desired distance
-	var speed_dfactor:float = sqrt(abs(dist_err)*max_thrust*2)/max_speed
-	const min_angle_factor:float = 0.1
-	const angle_factor_base:float = 100
-	# makes the boat only thrust forward when facing pretty close to the direction it wants to go
-	var speed_afactor:float = angle_factor_base**(current_direction.dot(desired_direction)-1)
-	# makes the boat move just a little bit when facing the wrong direction so it can turn
-	var angle_correction_factor:float = 0.1*(-current_direction.dot(desired_direction) + 1)/2
-	var des_speed:float = max_speed * (speed_dfactor * speed_afactor + angle_correction_factor)/1.1
-	
-	var des_vel:Vector2 = desired_direction * des_speed
-	des_vel += _avg_target_velocity
-	desired_direction = des_vel.normalized()
-	des_speed = min(des_vel.length(),max_speed)
+	var weight:float = delta * max_thrust / (desired_distance)
+	_avg_target_velocity = (_avg_target_velocity + weight*target_velocity)/(1+weight)
+	#_avg_target_velocity = _avg_target_velocity.move_toward(target_velocity,delta*max_thrust)
 	
 	if(debug_draw):
-		next_draw_calls.push_back(draw_line.bind(Vector2.ZERO, desired_direction.rotated(-global_rotation) * des_speed, Color(0,1,0)))
+		next_draw_calls.push_back({'type':'arc','position':target_position,'radius':desired_distance,'color':Color(0,0,1),'global':true})
+		next_draw_calls.push_back({'type':'circle','position':target_position,'radius':2,'color':Color(0,0,1),'global':true})
+		next_draw_calls.push_back({'type':'line','start':target_position,'end':target_position+_avg_target_velocity,'color':Color(0,0,1),'global':true})
+	
+	var angular_brake_time:float = abs(angular_velocity)/max_torque
+	var angular_brake_drift:float = angular_velocity * angular_brake_time/2
+	var angular_brake_pos:float = global_rotation + angular_brake_drift
+	
+	var current_direction:Vector2 = Vector2.from_angle(global_rotation)
+	var desired_velocity:Vector2
+	if(target_dist>desired_distance):
+		var app_angle:float = asin(desired_distance*approach/target_dist)
+		var curr_angle:float = angle_difference(target_relpos.angle(), angular_brake_pos)
+		
+		app_angle = sign(curr_angle)*abs(app_angle)
+		desired_velocity = Vector2.from_angle(app_angle + target_relpos.angle())
+		
+		var dist_err:float = max(target_dist-desired_distance, 0)
+		# gives the boat more speed the further it is from the desired distance
+		var speed_dfactor:float = sqrt(abs(dist_err)*max_thrust*2)/max_speed
+		const angle_factor_base:float = 100
+		# makes the boat only thrust forward when facing pretty close to the direction it wants to go
+		var speed_afactor:float = angle_factor_base**(current_direction.dot(desired_velocity)-1)
+		# makes the boat move just a little bit when facing the wrong direction so it can turn
+		var angle_correction_factor:float = 0.1*(-current_direction.dot(desired_velocity) + 1)/2
+		var des_speed:float = max_speed * (speed_dfactor * speed_afactor + angle_correction_factor)/1.1
+		desired_velocity *= des_speed
+	
+	desired_velocity += _avg_target_velocity
+	desired_velocity.limit_length(max_speed)
+	
+	if(debug_draw):
+		next_draw_calls.push_back({'type':'line','start':Vector2.ZERO,'end':desired_velocity,'color':Color(0,1,0),'global':false})
 	
 	if(avoidance_enabled):
 		if(debug_draw):
-			next_draw_calls.push_back(draw_circle.bind(Vector2.ZERO, avoidance_radius, Color(0.1,0.8,0.8,0.5)))
+			next_draw_calls.push_back({'type':'circle','position':Vector2.ZERO,'radius':avoidance_radius,'color':Color(0.1,0.8,0.8,0.5),'global':false})
 		if(!Engine.is_editor_hint()):
 			NavigationServer2D.agent_set_position(_agent, global_position)
-			NavigationServer2D.agent_set_velocity(_agent, desired_direction * des_speed)
+			NavigationServer2D.agent_set_velocity(_agent, desired_velocity)
 			var safe_vel3:Vector3 = await _avoidance_callback_signal
-			var safe_vel:Vector2 = Vector2(safe_vel3.x, safe_vel3.z)
-			desired_direction = safe_vel.normalized()
-			des_speed = safe_vel.length()
+			desired_velocity = Vector2(safe_vel3.x, safe_vel3.z)
 			
 			if(debug_draw):
-				next_draw_calls.push_back(draw_line.bind(Vector2.ZERO, safe_vel.rotated(-global_rotation), Color(0,1,1)))
+				next_draw_calls.push_back({'type':'line','start':Vector2.ZERO,'end':desired_velocity,'color':Color(0,1,1),'global':false})
 	
-	var desired_angle:float = desired_direction.angle()
-	next_torque += sign(angle_difference(angular_brake_pos,desired_angle))*remap(abs(para_vel), 0, max_speed, rest_torque, max_torque)
+	next_torque += sign(angle_difference(angular_brake_pos,desired_velocity.angle())) * abs(para_vel) * max_torque/max_speed
 	
-	var speed_err:float = linear_velocity.dot(current_direction) - des_speed
-	var thrust:Vector2 = -tanh(speed_err) * current_direction * max_thrust
+	var speed_err:float = linear_velocity.dot(current_direction) - desired_velocity.length()
+	var thrust:Vector2 = -tanh(speed_err/4)*max_thrust * current_direction
 	if(debug_draw):
-		next_draw_calls.push_back(draw_line.bind(Vector2.ZERO, thrust.rotated(-global_rotation), Color(1,0,0)))
+		next_draw_calls.push_back({'type':'line','start':Vector2.ZERO,'end':thrust,'color':Color(1,0,0),'global':false})
 	next_force += thrust
 	
 	next_force += linear_velocity
@@ -277,5 +249,21 @@ func _physics_process(_delta: float) -> void:
 
 func _draw()->void:
 	if(debug_draw):
-		for dcall:Callable in _draw_calls:
-			dcall.call()
+		var inv:Transform2D = global_transform.affine_inverse()
+		for dcall:Dictionary in _draw_calls:
+			match dcall.type:
+				'line':
+					if(dcall.global):
+						draw_line(inv * dcall.start, inv * dcall.end, dcall.color)
+					else:
+						draw_line(inv * (dcall.start+global_position), inv * (dcall.end+global_position), dcall.color)
+				'arc':
+					if(dcall.global):
+						draw_arc(inv * dcall.position, dcall.radius, 0, TAU, 64, dcall.color)
+					else:
+						draw_arc(inv * (dcall.position+global_position), dcall.radius, 0, TAU, 64, dcall.color)
+				'circle':
+					if(dcall.global):
+						draw_circle(inv * dcall.position, dcall.radius, dcall.color)
+					else:
+						draw_circle(inv * (dcall.position+global_position), dcall.radius, dcall.color)
