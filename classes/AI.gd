@@ -142,14 +142,20 @@ func _enter_tree() -> void:
 	if(avoidance_enabled):
 		_start_avoidance()
 	
+	var time:float = Util.game_time
 	await get_tree().physics_frame
 	while(is_inside_tree()):
 		await get_tree().physics_frame
 		if(can_process()):
 			pre_update.emit()
 			await _update()
+			var dtime:float = Util.game_time-time
+			linear_velocity += force * dtime
+			angular_velocity += torque * dtime
+			time=Util.game_time
 			post_update.emit()
 			if(debug_draw):
+				_draw_calls.push_back({'type':'line','start':Vector2.ZERO,'end':force,'color':Color(0.8,0.8,0,0.75),'global':false})
 				queue_redraw()
 
 func _exit_tree() -> void:

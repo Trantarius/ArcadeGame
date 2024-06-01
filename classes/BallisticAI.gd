@@ -1,13 +1,7 @@
 class_name BallisticAI
 extends AI
 
-## Controls how much thrust will be reversed to try to come to rest at the target position.
-@export var brake_strength:float = 1
-
-func _physics_process(_delta: float) -> void:
-	var next_force:Vector2
-	var next_torque:float
-	var next_draw_calls:Array[Dictionary]
+func _update()->void:
 	
 	var relative_position:Vector2 = global_position - target_position
 	var relative_velocity:Vector2 = linear_velocity - target_velocity
@@ -15,24 +9,22 @@ func _physics_process(_delta: float) -> void:
 	var brake_time:float = relative_velocity.length()/max_linear_thrust
 	var brake_pos:Vector2 = relative_position + relative_velocity * brake_time/2
 	var desired_speed:float = sqrt(2*relative_position.length()*max_linear_thrust)
-	var desired_velocity:Vector2 = desired_speed * -brake_pos.normalized()
+	var desired_velocity:Vector2 = desired_speed * -brake_pos.normalized() + target_velocity
 	
-				
+	desired_velocity = (desired_velocity.limit_length(max_linear_speed))
+	force += (desired_velocity-linear_velocity).normalized()*max_linear_thrust
 	
-	next_force = next_force.limit_length(max_linear_thrust)
-	next_force += linear_velocity
-	next_force = next_force.limit_length(max_linear_speed)
-	next_force -= linear_velocity
+	var safe_vel:Vector2 = await make_velocity_safe(linear_velocity)
+	force += (safe_vel-linear_velocity)/get_physics_process_delta_time()
 	
-	next_torque = clamp(next_torque, -max_angular_thrust, max_angular_thrust)
-	next_torque += angular_velocity
-	next_torque = clamp(next_torque,-max_angular_speed,max_angular_speed)
-	next_torque -= angular_velocity
+	force = force.limit_length(max_linear_thrust)
+	force += linear_velocity
+	force = force.limit_length(max_linear_speed)
+	force -= linear_velocity
 	
-	force = next_force
-	torque = next_torque
-	if(debug_draw):
-		_draw_calls=next_draw_calls
-		queue_redraw()
+	torque = clamp(torque, -max_angular_thrust, max_angular_thrust)
+	torque += angular_velocity
+	torque = clamp(torque,-max_angular_speed,max_angular_speed)
+	torque -= angular_velocity
 	
-	forces_updated.emit()
+	
