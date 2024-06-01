@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://buce1v3ucmtcx"]
+[gd_scene load_steps=7 format=3 uid="uid://buce1v3ucmtcx"]
 
 [ext_resource type="Script" path="res://enemies/broadside/BoatAI.gd" id="1_bhs21"]
 [ext_resource type="Script" path="res://test/grid.gd" id="1_cuwvd"]
@@ -15,19 +15,21 @@ func _ready()->void:
 		remove_child($BoatAI)
 		var newai:BoatAI = $'../Boat/BoatAI'.duplicate()
 		add_child(newai)
+	$BoatAI.pre_update.connect(_pre_update)
+	$BoatAI.post_update.connect(_post_update)
 
-func _physics_process(delta: float) -> void:
-	
+func _pre_update()->void:
 	$BoatAI.linear_velocity = linear_velocity
 	$BoatAI.angular_velocity = angular_velocity
 	$BoatAI.target_position = $'../Target'.global_position
 	$BoatAI.target_velocity = $'../Target'.velocity
-		
-	linear_velocity += $BoatAI.force * delta
-	angular_velocity += $BoatAI.torque * delta
+
+func _post_update()->void:
+	linear_velocity += $BoatAI.force * get_physics_process_delta_time()
+	angular_velocity += $BoatAI.torque * get_physics_process_delta_time()
 	
-	global_position += linear_velocity * delta
-	global_rotation += angular_velocity * delta
+	global_position += linear_velocity * get_physics_process_delta_time()
+	global_rotation += angular_velocity * get_physics_process_delta_time()
 "
 
 [sub_resource type="GDScript" id="GDScript_ndaeq"]
@@ -45,23 +47,6 @@ func _physics_process(delta: float) -> void:
 	var to_target:Vector2 = get_global_mouse_position() - global_position
 	velocity = to_target
 	global_position += velocity * delta
-"
-
-[sub_resource type="GDScript" id="GDScript_3jiqg"]
-script/source = "@tool
-extends Polygon2D
-
-
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _physics_process(delta: float) -> void:
-	$BoatAI.target_position = $Target.global_position
-	$BoatAI.desired_distance = ($Target.global_position - $Target/TargetDistance.global_position).length()
-	$BoatAI.linear_velocity = $Velocity.global_position - global_position
 "
 
 [sub_resource type="GDScript" id="GDScript_vabf8"]
@@ -97,7 +82,6 @@ script = SubResource("GDScript_oec02")
 [node name="BoatAI" type="Node2D" parent="Boats/Boat"]
 script = ExtResource("1_bhs21")
 desired_distance = 128.0
-approach = null
 debug_draw = true
 avoidance_radius = 18.0
 
@@ -112,11 +96,7 @@ script = ExtResource("1_bhs21")
 keel_damp = 4.0
 keel_angular_damp = 1.0
 keel_drag = 4.0
-max_thrust = 30.0
-max_torque = 10.0
-max_speed = 500.0
 desired_distance = 128.0
-approach = null
 debug_draw = true
 avoidance_radius = 18.0
 avoidance_time_horizon_agents = 8.0
@@ -133,11 +113,7 @@ script = ExtResource("1_bhs21")
 keel_damp = 4.0
 keel_angular_damp = 1.0
 keel_drag = 4.0
-max_thrust = 30.0
-max_torque = 10.0
-max_speed = 500.0
 desired_distance = 128.0
-approach = null
 debug_draw = true
 avoidance_radius = 18.0
 avoidance_time_horizon_agents = 8.0
@@ -154,11 +130,7 @@ script = ExtResource("1_bhs21")
 keel_damp = 4.0
 keel_angular_damp = 1.0
 keel_drag = 4.0
-max_thrust = 30.0
-max_torque = 10.0
-max_speed = 500.0
 desired_distance = 128.0
-approach = null
 debug_draw = true
 avoidance_radius = 18.0
 avoidance_time_horizon_agents = 8.0
@@ -175,11 +147,7 @@ script = ExtResource("1_bhs21")
 keel_damp = 4.0
 keel_angular_damp = 1.0
 keel_drag = 4.0
-max_thrust = 30.0
-max_torque = 10.0
-max_speed = 500.0
 desired_distance = 128.0
-approach = null
 debug_draw = true
 avoidance_radius = 18.0
 avoidance_time_horizon_agents = 8.0
@@ -196,11 +164,7 @@ script = ExtResource("1_bhs21")
 keel_damp = 4.0
 keel_angular_damp = 1.0
 keel_drag = 4.0
-max_thrust = 30.0
-max_torque = 10.0
-max_speed = 500.0
 desired_distance = 128.0
-approach = null
 debug_draw = true
 avoidance_radius = 18.0
 avoidance_time_horizon_agents = 8.0
@@ -217,11 +181,7 @@ script = ExtResource("1_bhs21")
 keel_damp = 4.0
 keel_angular_damp = 1.0
 keel_drag = 4.0
-max_thrust = 30.0
-max_torque = 10.0
-max_speed = 500.0
 desired_distance = 128.0
-approach = null
 debug_draw = true
 avoidance_radius = 18.0
 avoidance_time_horizon_agents = 8.0
@@ -238,11 +198,7 @@ script = ExtResource("1_bhs21")
 keel_damp = 4.0
 keel_angular_damp = 1.0
 keel_drag = 4.0
-max_thrust = 30.0
-max_torque = 10.0
-max_speed = 500.0
 desired_distance = 128.0
-approach = null
 debug_draw = true
 avoidance_radius = 18.0
 avoidance_time_horizon_agents = 8.0
@@ -257,36 +213,6 @@ texture = ExtResource("2_shys1")
 
 [node name="Camera2D" type="Camera2D" parent="Boats/Target"]
 process_callback = 0
-
-[node name="Fixed" type="Polygon2D" parent="."]
-process_mode = 4
-visible = false
-position = Vector2(484, 402)
-rotation = 9.68719
-color = Color(0.396889, 0.396889, 0.396889, 1)
-polygon = PackedVector2Array(-14, -4, 8, -4, 16, 0, 8, 4, -14, 4)
-script = SubResource("GDScript_3jiqg")
-
-[node name="BoatAI" type="Node2D" parent="Fixed"]
-script = ExtResource("1_bhs21")
-keel_angular_damp = 1.0
-max_torque = 2.0
-max_speed = 500.0
-desired_distance = 31.4006
-approach = null
-debug_draw = true
-avoidance_enabled = false
-
-[node name="Target" type="Marker2D" parent="Fixed"]
-top_level = true
-position = Vector2(444, 434)
-
-[node name="TargetDistance" type="Marker2D" parent="Fixed/Target"]
-position = Vector2(-25, -19)
-
-[node name="Velocity" type="Marker2D" parent="Fixed"]
-visible = false
-position = Vector2(50, 0)
 
 [node name="Obstacles" type="Node2D" parent="."]
 
