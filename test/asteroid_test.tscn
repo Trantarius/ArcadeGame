@@ -1,0 +1,60 @@
+[gd_scene load_steps=3 format=3 uid="uid://ckygff1jgddng"]
+
+[ext_resource type="PackedScene" uid="uid://d0upt6jghwnyf" path="res://asteroid/asteroid.tscn" id="1_orbyv"]
+
+[sub_resource type="GDScript" id="GDScript_bg0kd"]
+script/source = "extends Node2D
+
+@export var do_sample:bool = false
+@export var sample_size:int = 100
+
+func _ready() -> void:
+	if(do_sample):
+		var sample:Array
+		var time:float = 0
+		var chunk_count:float = 0
+		var extent_by_chunk_count:Array = []
+		for n:int in range(16):
+			extent_by_chunk_count.push_back([])
+		var extent:float = 0
+		var success:float = 0
+		for s:int in range(sample_size):
+			$Asteroid.noise.seed = randi()
+			var result:Dictionary = await Asteroid.create_asteroid_polygon($Asteroid.noise,$Asteroid.noise_strength,$Asteroid.radius,
+																		   $Asteroid.stretch_limit,$Asteroid.resolution,$Asteroid.curvature_limit)
+			time += result.time
+			chunk_count += result.chunks.size()
+			var max_extent:float = 0
+			for chunk:Dictionary in result.chunks:
+				var cextent:float = chunk.position.length() + chunk.radius
+				max_extent = max(max_extent,cextent)
+			extent += max_extent
+			extent_by_chunk_count[result.chunks.size()].push_back(max_extent)
+			if(!result.poly.is_empty()):
+				success += 1
+		
+		print(\"Asteroid test:\")
+		print(\"time: %s us\"%[roundi(time/sample_size)])
+		print(\"success rate: %.2f%%\"%[100*success/sample_size])
+		print(\"chunk_count: %.2f\"%[chunk_count/sample_size])
+		print(\"extent: %.2f\"%[extent/sample_size])
+		var exts_str:String
+		for e:int in range(extent_by_chunk_count.size()):
+			if(!extent_by_chunk_count[e].is_empty()):
+				var avg:float = extent_by_chunk_count[e].reduce(func(a:float,b:float)->float: return a+b) / extent_by_chunk_count[e].size()
+				exts_str += '%s: %.2f\\t'%[e,avg]
+		print(exts_str)
+
+func _input(event: InputEvent) -> void:
+	if(event.is_action_pressed(\"attack_ability\")):
+		$Asteroid.noise.seed = randi()
+		$Asteroid.generate()
+"
+
+[node name="AsteroidTest" type="Node2D"]
+script = SubResource("GDScript_bg0kd")
+do_sample = true
+
+[node name="Asteroid" parent="." instance=ExtResource("1_orbyv")]
+
+[node name="Camera2D" type="Camera2D" parent="."]

@@ -155,7 +155,7 @@ func _enter_tree() -> void:
 			time=Util.game_time
 			post_update.emit()
 			if(debug_draw):
-				_draw_calls.push_back({'type':'line','start':Vector2.ZERO,'end':force,'color':Color(0.8,0.8,0,0.75),'global':false})
+				_draw_calls.push_back({'type':'line','start':Vector2.ZERO,'end':force,'color':Color(0.8,0.8,0.1,0.75),'global':false})
 				queue_redraw()
 
 func _exit_tree() -> void:

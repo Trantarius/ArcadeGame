@@ -7,7 +7,6 @@
 resource_local_to_scene = true
 seed = 3871
 frequency = 0.015625
-fractal_octaves = 3
 cellular_return_type = 0
 
 [sub_resource type="Gradient" id="Gradient_84e4i"]
