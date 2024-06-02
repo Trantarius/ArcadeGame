@@ -1,16 +1,15 @@
-[gd_scene load_steps=5 format=3 uid="uid://d4epik40543it"]
+[gd_scene load_steps=6 format=3 uid="uid://d4epik40543it"]
 
 [ext_resource type="Script" path="res://enemies/hornet/hornet.gd" id="1_ghiqj"]
 [ext_resource type="Script" path="res://classes/Interpolator.gd" id="2_yfdop"]
 [ext_resource type="Script" path="res://enemies/hornet/RandomWalk.gd" id="4_f6jcc"]
 [ext_resource type="Script" path="res://classes/HitBox.gd" id="4_sauan"]
+[ext_resource type="Script" path="res://classes/BallisticAI.gd" id="5_g1cgk"]
 
 [node name="Hornet" type="RigidBody2D"]
 collision_layer = 4
 collision_mask = 7
 script = ExtResource("1_ghiqj")
-max_thrust = 100.0
-max_torque = 100.0
 point_value = 5.0
 max_health = 30.0
 radius = 18.0
@@ -46,3 +45,11 @@ contact_damage_enabled = true
 position = Vector2(8, 0)
 rotation = 1.5708
 polygon = PackedVector2Array(-12, -8, -8, 0, 8, 0, 12, -8, 16, 4, 8, 12, 0, 32, -8, 12, -16, 4)
+
+[node name="BallisticAI" type="Node2D" parent="."]
+script = ExtResource("5_g1cgk")
+max_angular_speed = 3.0
+avoidance_radius = 24.0
+
+[connection signal="post_update" from="BallisticAI" to="." method="_on_ballistic_ai_post_update"]
+[connection signal="pre_update" from="BallisticAI" to="." method="_on_ballistic_ai_pre_update"]

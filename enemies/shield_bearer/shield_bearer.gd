@@ -7,10 +7,9 @@ extends Enemy
 ## Desired distance from player
 @export var base_distance:float = 512
 
-@export var max_thrust:float
-@export var max_torque:float
-
 var fire_timer:CountdownTimer=CountdownTimer.new()
+
+var target:Player
 
 enum{
 	## The shield is closed, and the fire_cooldown hasn't yet elapsed
@@ -27,7 +26,7 @@ func _ready() -> void:
 	fire_timer.time = fire_cooldown
 
 func _physics_process(_delta: float) -> void:
-	var target:Player = Player.find_nearest_player(global_position)
+	target = Player.find_nearest_player(global_position)
 	if(target==null):
 		match(fire_stage):
 			STAGE_COOLDOWN:
@@ -37,13 +36,8 @@ func _physics_process(_delta: float) -> void:
 		
 	else:
 		
-		var desired_position:Vector2 =  ((global_position)-target.global_position).normalized()*base_distance + target.global_position
 		var desired_angle:float = (target.global_position-global_position).angle()
 		
-		var thrust:Vector2 = Ballistics.find_thrust_to_position(global_position,self.linear_velocity,Vector2.ZERO,
-			desired_position, target.linear_velocity, Vector2.ZERO, max_thrust)
-		$'.'.apply_force(thrust)
-		$'.'.apply_torque(Ballistics.find_torque_to_angle(global_rotation, self.angular_velocity, desired_angle, max_torque))
 		
 		# reverse the charging if too far or facing the wrong direction
 		var tdist:float = (target.global_position-global_position).length()
@@ -98,3 +92,25 @@ func fire_projectile()->void:
 func abort_open_stage()->void:
 	fire_stage = STAGE_ABORT
 	fire_timer.time = shield_move_time-fire_timer.time
+
+
+func _on_ballistic_ai_pre_update() -> void:
+	if(is_instance_valid(target)):
+		var desired_position:Vector2 =  ((global_position)-target.global_position).normalized()*base_distance + target.global_position
+		
+		$BallisticAI.linear_velocity = self.linear_velocity
+		$BallisticAI.angular_velocity = self.angular_velocity
+		$BallisticAI.target_position = desired_position
+		$BallisticAI.target_velocity = target.get_average_velocity()
+		$BallisticAI.target_acceleration = target.get_average_acceleration()
+
+func _on_ballistic_ai_post_update() -> void:
+	if(is_instance_valid(target)):
+		
+		var desired_angle:float = (target.global_position-global_position).angle()
+		
+		$'.'.apply_central_force($BallisticAI.force*self.mass)
+		$'.'.apply_torque(Ballistics.find_torque_to_angle(global_rotation, self.angular_velocity, desired_angle, $BallisticAI.max_angular_thrust)*
+			PhysicsServer2D.body_get_param($'.'.get_rid(), PhysicsServer2D.BODY_PARAM_INERTIA))
+	pass # Replace with function body.
+

@@ -1,18 +1,12 @@
 class_name BallisticAI
 extends AI
 
+@export var brake:float = 1
+
 func _update()->void:
 	
-	var relative_position:Vector2 = global_position - target_position
-	var relative_velocity:Vector2 = linear_velocity - target_velocity
-	
-	var brake_time:float = relative_velocity.length()/max_linear_thrust
-	var brake_pos:Vector2 = relative_position + relative_velocity * brake_time/2
-	var desired_speed:float = sqrt(2*relative_position.length()*max_linear_thrust)
-	var desired_velocity:Vector2 = desired_speed * -brake_pos.normalized() + target_velocity
-	
-	desired_velocity = (desired_velocity.limit_length(max_linear_speed))
-	force += (desired_velocity-linear_velocity).normalized()*max_linear_thrust
+	force = Ballistics.find_thrust_to_position(global_position,linear_velocity, Vector2.ZERO, target_position, 
+		target_velocity, target_acceleration, max_linear_thrust,brake)
 	
 	var safe_vel:Vector2 = await make_velocity_safe(linear_velocity)
 	force += (safe_vel-linear_velocity)/get_physics_process_delta_time()

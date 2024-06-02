@@ -22,6 +22,6 @@ func spawn_spiky()->void:
 	var dir:Vector2 = global_transform.basis_xform(Vector2.RIGHT).rotated(randf()*TAU)
 	var spiky:Spiky = preload("res://enemies/spiky/spiky.tscn").instantiate()
 	spiky.position = position + dir * 32
-	spiky.linear_velocity = dir * spiky.max_speed/2
+	spiky.linear_velocity = dir * 200
 	spiky.add_collision_exception_with(self)
 	get_parent().add_child(spiky)

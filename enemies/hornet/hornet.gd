@@ -8,27 +8,16 @@ var fire_timer:CountdownTimer = CountdownTimer.new()
 var charging_shot:Projectile
 var is_charging:bool = false
 
-@export var max_thrust:float
-@export var max_torque:float
-
 ## Desired distance from the target player
 @export var base_distance:float = 512
 
+var target:Player
+
 func _physics_process(delta: float) -> void:
 	
-	var target:Player = Player.find_nearest_player(position)
+	target = Player.find_nearest_player(position)
 	if(is_instance_valid(target)):
-		
-		var desired_position:Vector2 = ((global_position)-target.global_position).normalized()*base_distance + target.global_position + $RandomWalk.position
 		var desired_angle:float = (target.global_position-global_position).angle()
-		
-		var target_vel:Vector2 = target.get_average_velocity()
-		var target_acc:Vector2 = target.get_average_acceleration()
-		var thrust:Vector2 = Ballistics.find_thrust_to_position(global_position, self.linear_velocity, Vector2.ZERO, 
-			desired_position, target_vel, target_acc, max_thrust)
-		$'.'.apply_central_force(thrust)
-		var torque:float = Ballistics.find_torque_to_angle(global_rotation, self.angular_velocity, desired_angle, max_torque)
-		$'.'.apply_torque(torque)
 		
 		# reverse the charging if too far or facing the wrong direction
 		var tdist:float = (target.global_position-global_position).length()
@@ -73,3 +62,21 @@ func _physics_process(delta: float) -> void:
 				charging_shot = null
 				fire_timer.time = fire_delay
 				is_charging = false
+
+
+func _on_ballistic_ai_pre_update() -> void:
+	$BallisticAI.linear_velocity = $'.'.linear_velocity
+	$BallisticAI.angular_velocity = $'.'.angular_velocity
+	if(is_instance_valid(target)):
+		var desired_position:Vector2 = ((global_position)-target.global_position).normalized()*base_distance + target.global_position + $RandomWalk.position
+		$BallisticAI.target_position = desired_position
+		$BallisticAI.target_velocity = target.get_average_velocity()
+		$BallisticAI.target_acceleration = target.get_average_acceleration()
+
+
+func _on_ballistic_ai_post_update() -> void:
+	if(is_instance_valid(target)):
+		var desired_angle:float = (target.global_position-global_position).angle()
+		$'.'.apply_central_force($BallisticAI.force*self.mass)
+		$'.'.apply_torque(Ballistics.find_torque_to_angle(global_rotation,self.angular_velocity, desired_angle, $BallisticAI.max_angular_thrust)*
+			PhysicsServer2D.body_get_param($'.'.get_rid(),PhysicsServer2D.BODY_PARAM_INERTIA))

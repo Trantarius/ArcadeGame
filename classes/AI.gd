@@ -97,6 +97,8 @@ var angular_velocity:float
 var target_position:Vector2
 ## Hints that the [member target_position] will be changing at this rate.
 var target_velocity:Vector2
+## Hints that the [member target_velocity] will be changing at this rate.
+var target_acceleration:Vector2
 
 
 ## The output force to be applied to whatever is obeying this AI.

@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://crwwyc1s55imm" path="res://enemies/broadside/cannon.tscn" id="3_6q3fn"]
 [ext_resource type="PackedScene" uid="uid://c11upr826ghta" path="res://enemies/broadside/engine.tscn" id="4_srbmi"]
 [ext_resource type="Script" path="res://classes/Interpolator.gd" id="5_5wcpo"]
-[ext_resource type="Script" path="res://enemies/broadside/BoatAI.gd" id="6_c4kd0"]
+[ext_resource type="Script" path="res://classes/BoatAI.gd" id="6_c4kd0"]
 
 [node name="Broadside" type="RigidBody2D"]
 mass = 1000.0

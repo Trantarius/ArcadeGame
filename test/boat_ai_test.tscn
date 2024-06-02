@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://buce1v3ucmtcx"]
 
-[ext_resource type="Script" path="res://enemies/broadside/BoatAI.gd" id="1_bhs21"]
+[ext_resource type="Script" path="res://classes/BoatAI.gd" id="1_bhs21"]
 [ext_resource type="Script" path="res://test/grid.gd" id="1_cuwvd"]
 [ext_resource type="Texture2D" uid="uid://bude4na0hnosm" path="res://icon.svg" id="2_shys1"]
 

@@ -1,8 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://blf0t84ei3owm"]
+[gd_scene load_steps=7 format=3 uid="uid://blf0t84ei3owm"]
 
 [ext_resource type="Script" path="res://enemies/shield_bearer/shield_bearer.gd" id="1_hi1cc"]
 [ext_resource type="Script" path="res://classes/HitBox.gd" id="2_2xfry"]
 [ext_resource type="Script" path="res://classes/Interpolator.gd" id="2_bxnop"]
+[ext_resource type="Script" path="res://classes/BallisticAI.gd" id="4_gc82f"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_gkx47"]
 radius = 16.0
@@ -18,8 +19,6 @@ corner_radius_bottom_left = 16
 [node name="ShieldBearer" type="RigidBody2D"]
 collision_mask = 7
 script = ExtResource("1_hi1cc")
-max_thrust = 100.0
-max_torque = 100.0
 point_value = 10.0
 radius = 48.0
 
@@ -92,3 +91,9 @@ offset_top = -16.0
 offset_right = 12.0
 offset_bottom = 16.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_p33fl")
+
+[node name="BallisticAI" type="Node2D" parent="."]
+script = ExtResource("4_gc82f")
+
+[connection signal="post_update" from="BallisticAI" to="." method="_on_ballistic_ai_post_update"]
+[connection signal="pre_update" from="BallisticAI" to="." method="_on_ballistic_ai_pre_update"]
