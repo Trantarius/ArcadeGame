@@ -15,6 +15,7 @@ func _on_hit_box_damage_dealt(_damage: Damage) -> void:
 
 func _on_ballistic_ai_pre_update() -> void:
 	if(is_instance_valid(target)):
+		$BallisticAI.global_transform = global_transform
 		$BallisticAI.linear_velocity = $'.'.linear_velocity
 		$BallisticAI.angular_velocity = $'.'.angular_velocity
 		$BallisticAI.target_position=target.global_position

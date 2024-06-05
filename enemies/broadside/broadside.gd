@@ -13,6 +13,7 @@ const thrust_force:float = 100
 ## Desired distance from the player.
 const desired_distance:float = 500
 
+var target:Player
 
 func _ready() -> void:
 	max_health = 0
@@ -52,15 +53,20 @@ func _physics_process(_delta: float) -> void:
 				cannon.fire()
 			starboard_fire_timer.time = cannon_fire_delay
 	
-	var player:Player = Player.find_nearest_player(global_position)
+	target = Player.find_nearest_player(global_position)
 	
+
+
+func _on_boat_ai_pre_update() -> void:
+	$BoatAI.global_position = global_position
+	$BoatAI.global_rotation = global_rotation + PI
 	$BoatAI.linear_velocity = self.linear_velocity
 	$BoatAI.angular_velocity = self.angular_velocity
-	if(is_instance_valid(player)):
-		$BoatAI.target_position = player.global_position
-		$BoatAI.target_velocity = player.get_average_velocity()
+	if(is_instance_valid(target)):
+		$BoatAI.target_position = target.global_position
+		$BoatAI.target_velocity = target.get_average_velocity()
 
 
-func _on_boat_ai_forces_updated() -> void:
-	$'.'.apply_central_force($BoatAI.force*self.mass)
-	$'.'.apply_torque($BoatAI.torque*PhysicsServer2D.body_get_param($'.'.get_rid(), PhysicsServer2D.BODY_PARAM_INERTIA))
+func _on_boat_ai_post_update() -> void:
+	$'.'.apply_central_force($BoatAI.force * self.mass)
+	$'.'.apply_torque($BoatAI.torque * PhysicsServer2D.body_get_param($'.'.get_rid(),PhysicsServer2D.BODY_PARAM_INERTIA))

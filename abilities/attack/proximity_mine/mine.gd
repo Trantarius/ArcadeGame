@@ -28,6 +28,7 @@ var timer:CountdownTimer = CountdownTimer.new()
 var armed:bool = false
 var detonating:bool = false
 var enemies_detected:int = 0
+var source:Actor
 
 func _ready() -> void:
 	timer.time = arming_time
@@ -65,8 +66,8 @@ func detonate()->void:
 	explosion.radius = explosion_radius
 	explosion.linear_velocity = linear_velocity
 	explosion.position = global_position
-	explosion.source = get_parent()
-	get_parent().add_child(explosion)
+	explosion.source = source
+	get_tree().current_scene.add_child(explosion)
 	queue_free()
 
 func _on_detector_body_entered(body: Node2D) -> void:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://ckygff1jgddng"]
+[gd_scene load_steps=4 format=3 uid="uid://ckygff1jgddng"]
 
 [ext_resource type="PackedScene" uid="uid://d0upt6jghwnyf" path="res://asteroid/asteroid.tscn" id="1_orbyv"]
 
@@ -51,10 +51,17 @@ func _input(event: InputEvent) -> void:
 		$Asteroid.generate()
 "
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_62ws1"]
+resource_local_to_scene = true
+seed = 3871
+frequency = 0.015625
+cellular_return_type = 0
+
 [node name="AsteroidTest" type="Node2D"]
 script = SubResource("GDScript_bg0kd")
 do_sample = true
 
 [node name="Asteroid" parent="." instance=ExtResource("1_orbyv")]
+noise = SubResource("FastNoiseLite_62ws1")
 
 [node name="Camera2D" type="Camera2D" parent="."]

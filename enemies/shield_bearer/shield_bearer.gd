@@ -98,6 +98,8 @@ func _on_ballistic_ai_pre_update() -> void:
 	if(is_instance_valid(target)):
 		var desired_position:Vector2 =  ((global_position)-target.global_position).normalized()*base_distance + target.global_position
 		
+		$BallisticAI.global_position = global_position
+		$BallisticAI.global_rotation = global_rotation
 		$BallisticAI.linear_velocity = self.linear_velocity
 		$BallisticAI.angular_velocity = self.angular_velocity
 		$BallisticAI.target_position = desired_position

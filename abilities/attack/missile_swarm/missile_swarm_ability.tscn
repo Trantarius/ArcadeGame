@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://c2g3s6js6hne"]
+
+[ext_resource type="Script" path="res://abilities/attack/missile_swarm/missile_swarm_ability.gd" id="1_pksai"]
+
+[node name="MissileSwarmAbility" type="Node"]
+script = ExtResource("1_pksai")
+missile_count = 8
+cooldown = 5.0
+ability_name = &"Missile Swarm"
+type = "Attack"
+mod_name = &"attack_ability"
+
+[connection signal="triggered" from="." to="." method="_on_triggered"]

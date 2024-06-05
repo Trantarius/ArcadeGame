@@ -115,7 +115,7 @@ func _on_player_child_removed(node:Node)->void:
 
 func _remove(ability:PlayerAbility)->void:
 	if(is_instance_valid(ability) && ability.is_active):
-		ability.get_parent().remove_modifier(ability.mod_name)
+		ability.queue_free()
 	elif(mod_buttons.has(ability)):
 		mod_buttons[ability].queue_free()
 		mod_buttons.erase(ability)

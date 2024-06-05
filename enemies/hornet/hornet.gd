@@ -65,6 +65,8 @@ func _physics_process(delta: float) -> void:
 
 
 func _on_ballistic_ai_pre_update() -> void:
+	$BallisticAI.global_position = global_position
+	$BallisticAI.global_rotation = global_rotation
 	$BallisticAI.linear_velocity = $'.'.linear_velocity
 	$BallisticAI.angular_velocity = $'.'.angular_velocity
 	if(is_instance_valid(target)):

@@ -1,0 +1,96 @@
+[gd_scene load_steps=14 format=3 uid="uid://cyfnmhhrm5rdf"]
+
+[ext_resource type="Script" path="res://abilities/attack/missile_swarm/swarm_missile.gd" id="1_vflfx"]
+[ext_resource type="Shader" path="res://visual_effects/rocket_particles.gdshader" id="2_h054i"]
+[ext_resource type="Script" path="res://classes/ArcDetector.gd" id="3_ogt5e"]
+[ext_resource type="Script" path="res://classes/MissileAI.gd" id="4_rf2ae"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_yupj2"]
+blend_mode = 1
+
+[sub_resource type="Gradient" id="Gradient_l5qu2"]
+offsets = PackedFloat32Array(0, 0.47619, 1)
+colors = PackedColorArray(1, 0.596078, 0.290196, 1, 0.344076, 0.344076, 0.344076, 0.27451, 0.344076, 0.344076, 0.344076, 0)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_j5kmm"]
+gradient = SubResource("Gradient_l5qu2")
+
+[sub_resource type="Curve" id="Curve_yk23y"]
+max_value = 8.0
+_data = [Vector2(0, 0.363152), 0.0, 0.624833, 0, 1, Vector2(1, 0.987985), 0.624833, 0.0, 1, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_e3600"]
+curve = SubResource("Curve_yk23y")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_vr68g"]
+shader = ExtResource("2_h054i")
+shader_parameter/speed = 150.0
+shader_parameter/spread = Vector2(48, 32)
+shader_parameter/drag = 300.0
+shader_parameter/spark_color = Color(1, 0.607843, 0.282353, 1)
+shader_parameter/spark_chance = 0.0
+shader_parameter/spark_size = 0.185
+shader_parameter/spark_alpha_mult = 3.0
+shader_parameter/base_velocity = null
+shader_parameter/size = SubResource("CurveTexture_e3600")
+shader_parameter/color = SubResource("GradientTexture1D_j5kmm")
+
+[sub_resource type="Gradient" id="Gradient_t3xiv"]
+interpolation_mode = 2
+interpolation_color_space = 2
+colors = PackedColorArray(1, 1, 1, 0.54902, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_da2ao"]
+gradient = SubResource("Gradient_t3xiv")
+width = 16
+height = 16
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+fill_to = Vector2(0.5, 0)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_i6d77"]
+size = Vector2(4, 12)
+
+[node name="SwarmMissile" type="Area2D"]
+collision_layer = 16
+collision_mask = 5
+script = ExtResource("1_vflfx")
+explosion_radius = 128.0
+explosion_damage = 10.0
+explosion_mask = 4
+
+[node name="RocketParticles" type="GPUParticles2D" parent="."]
+material = SubResource("CanvasItemMaterial_yupj2")
+rotation = 1.5708
+amount = 64
+process_material = SubResource("ShaderMaterial_vr68g")
+texture = SubResource("GradientTexture2D_da2ao")
+lifetime = 0.5
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+rotation = 1.5708
+color = Color(0.336608, 0.336608, 0.336608, 1)
+polygon = PackedVector2Array(0, -8, -2, -2, -2, 4, 2, 4, 2, -2)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(2, 0)
+rotation = 1.5708
+shape = SubResource("RectangleShape2D_i6d77")
+
+[node name="ArcDetector" type="Area2D" parent="."]
+collision_layer = 0
+collision_mask = 4
+monitorable = false
+script = ExtResource("3_ogt5e")
+max_range = 512.0
+
+[node name="MissileAI" type="Node2D" parent="."]
+script = ExtResource("4_rf2ae")
+max_linear_thrust = 400.0
+max_angular_speed = 6.0
+avoidance_enabled = false
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="post_update" from="MissileAI" to="." method="_on_missile_ai_post_update"]
+[connection signal="pre_update" from="MissileAI" to="." method="_on_missile_ai_pre_update"]

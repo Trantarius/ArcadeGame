@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://gvye6ccvjd55"]
+[gd_scene load_steps=25 format=3 uid="uid://gvye6ccvjd55"]
 
 [ext_resource type="PackedScene" uid="uid://crylwoyahw6go" path="res://ui/info_panel.tscn" id="2_8k6rt"]
 [ext_resource type="PackedScene" uid="uid://d3ek2vmqvfst3" path="res://abilities/weapon/light_cannon/light_cannon.tscn" id="2_dqgwh"]
@@ -23,6 +23,7 @@
 [ext_resource type="PackedScene" uid="uid://yidbh7wl3t3g" path="res://abilities/weapon/pulse_laser/pulse_laser_pickup.tscn" id="15_byc40"]
 [ext_resource type="PackedScene" uid="uid://cgy3if02alej2" path="res://abilities/weapon/scatter_gun/scatter_gun_pickup.tscn" id="15_c0lh3"]
 [ext_resource type="PackedScene" uid="uid://dhkxc6mxsom3a" path="res://abilities/attack/proximity_mine/proximity_mine_pickup.tscn" id="16_w24yk"]
+[ext_resource type="PackedScene" uid="uid://7eaqj1u8klbj" path="res://abilities/attack/missile_swarm/missile_swarm_pickup.tscn" id="18_qaimk"]
 
 [node name="Main" type="Node"]
 
@@ -44,7 +45,7 @@ despawn_distance = 10000.0
 
 [node name="PickupSpawner" type="Node" parent="."]
 script = ExtResource("6_0lnqi")
-pickup_list = Array[PackedScene]([ExtResource("6_h8vvy"), ExtResource("9_tblqw"), ExtResource("11_oynry"), ExtResource("12_gm13v"), ExtResource("13_nrt7w"), ExtResource("15_c0lh3"), ExtResource("15_byc40"), ExtResource("16_w24yk")])
+pickup_list = Array[PackedScene]([ExtResource("6_h8vvy"), ExtResource("9_tblqw"), ExtResource("11_oynry"), ExtResource("12_gm13v"), ExtResource("13_nrt7w"), ExtResource("15_c0lh3"), ExtResource("15_byc40"), ExtResource("16_w24yk"), ExtResource("18_qaimk")])
 
 [node name="HitNumberSpawner" type="Node" parent="."]
 script = ExtResource("10_mwqnm")

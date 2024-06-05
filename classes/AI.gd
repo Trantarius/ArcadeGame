@@ -143,30 +143,48 @@ func _stop_avoidance()->void:
 func _enter_tree() -> void:
 	if(avoidance_enabled):
 		_start_avoidance()
-	
-	var time:float = Util.game_time
-	await get_tree().physics_frame
-	while(is_inside_tree()):
-		await get_tree().physics_frame
-		if(can_process()):
-			pre_update.emit()
-			await _update()
-			var dtime:float = Util.game_time-time
-			linear_velocity += force * dtime
-			angular_velocity += torque * dtime
-			time=Util.game_time
-			post_update.emit()
-			if(debug_draw):
-				_draw_calls.push_back({'type':'line','start':Vector2.ZERO,'end':force,'color':Color(0.8,0.8,0.1,0.75),'global':false})
-				queue_redraw()
 
 func _exit_tree() -> void:
 	if(avoidance_enabled):
 		_stop_avoidance()
 
+func _ready() -> void:
+	top_level=true
+
+enum{POSITION=0,VELOCITY=1,FORCE=2}
+## Virtual function for subclasses to set how output is determined; if an output isn't used, it is calculated from the result.
+func _control_level()->int:
+	return FORCE
+
+func _physics_process(delta: float) -> void:
+	pre_update.emit()
+	var oldpos:Vector2=global_position
+	var oldrot:float = global_rotation
+	var oldvel:Vector2 = linear_velocity
+	var oldrvel:float = angular_velocity
+	await _update()
+	if(_control_level()>=FORCE):
+		linear_velocity += force * delta
+		angular_velocity += torque * delta
+	else:
+		force = (linear_velocity-oldvel)/delta
+		torque = (angular_velocity-oldrvel)/delta
+	if(_control_level()>=VELOCITY):
+		global_position += linear_velocity * delta
+		global_rotation += angular_velocity * delta
+	else:
+		linear_velocity = (global_position-oldpos)/delta
+		angular_velocity = angle_difference(oldrot,global_rotation)/delta
+	post_update.emit()
+	if(debug_draw):
+		_draw_calls.push_back({'type':'line','start':Vector2.ZERO,'end':force,'color':Color(0.8,0.8,0.1,0.75),'global':false})
+		queue_redraw()
+
+## Virtual function for subclasses to override, to update forces/velocity/position as appropriate.
 func _update()->void:
 	pass
 
+## Helper for subclasses to apply avoidance. should be called exactly once in _update().
 func make_velocity_safe(velocity:Vector2)->Vector2:
 	if(debug_draw):
 		_draw_calls.push_back({'type':'line','start':Vector2.ZERO,'end':velocity,'color':Color(0.8,0.1,0.1,0.75),'global':false})
@@ -195,7 +213,7 @@ func _draw()->void:
 						draw_line(inv * (dcall.start+global_position), inv * (dcall.end+global_position), dcall.color)
 				'arc':
 					if(dcall.global):
-						draw_arc(inv * dcall.position, dcall.radius, 0, TAU, 64, dcall.color)
+						draw_arc(inv * dcall.position, dcall.radius, 0, TAU, 128, dcall.color)
 					else:
 						draw_arc(inv * (dcall.position+global_position), dcall.radius, 0, TAU, 64, dcall.color)
 				'circle':

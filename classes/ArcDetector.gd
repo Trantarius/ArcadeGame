@@ -29,7 +29,7 @@ extends Area2D
 		debug_draw=to
 		queue_redraw()
 
-## The detected nodes in the form of {node:raycast_result}. If [member require_raycast] is false, the value is always {}.
+## The detected nodes in the form of {node:raycast_result}. If [member require_raycast] is false, the result is always {}.
 var detected:Dictionary
 var raycasts_used:int
 
@@ -101,7 +101,10 @@ func update_detected()->void:
 			draw_line(Vector2.ZERO, Vector2.from_angle(ray.angle-global_rotation)*max_range if ray.result.is_empty() else 
 			global_transform.affine_inverse() * ray.result.front().position, Color(0,1,0,0.5) if ray.success else Color(1,0,0,0.5))
 		for det:CollisionObject2D in detected:
-			_draw_target(detected[det].position,Color(1,0,1),8)
+			if(require_raycast):
+				_draw_target(detected[det].position,Color(1,0,1),8)
+			else:
+				_draw_target(det.global_position,Color(1,0,1),8)
 
 func _cmp_rays(a:Dictionary, b:Dictionary)->bool:
 	return angle_difference(a.angle,b.angle)>0

@@ -112,3 +112,6 @@ keel_angular_damp = 1.0
 keel_drag = 4.0
 desired_distance = 1000.0
 avoidance_radius = 600.0
+
+[connection signal="post_update" from="BoatAI" to="." method="_on_boat_ai_post_update"]
+[connection signal="pre_update" from="BoatAI" to="." method="_on_boat_ai_pre_update"]

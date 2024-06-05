@@ -1,0 +1,37 @@
+[gd_scene load_steps=4 format=3 uid="uid://7qu071lo6ysp"]
+
+[ext_resource type="PackedScene" uid="uid://cyfnmhhrm5rdf" path="res://abilities/attack/missile_swarm/swarm_missile.tscn" id="1_j4o6u"]
+[ext_resource type="Texture2D" uid="uid://bude4na0hnosm" path="res://icon.svg" id="2_ster4"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_lhxq1"]
+size = Vector2(64, 64)
+
+[node name="MissileTest" type="Node2D"]
+
+[node name="AnimatableBody2D" type="AnimatableBody2D" parent="."]
+position = Vector2(739, 293)
+collision_layer = 4
+collision_mask = 0
+
+[node name="Sprite2D" type="Sprite2D" parent="AnimatableBody2D"]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_ster4")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AnimatableBody2D"]
+shape = SubResource("RectangleShape2D_lhxq1")
+
+[node name="SwarmMissile" parent="." instance=ExtResource("1_j4o6u")]
+position = Vector2(118, 474)
+
+[node name="ArcDetector" parent="SwarmMissile" index="3"]
+debug_draw = true
+
+[node name="SwarmMissile2" parent="." instance=ExtResource("1_j4o6u")]
+position = Vector2(483, 939)
+rotation = -1.87797
+
+[node name="ArcDetector" parent="SwarmMissile2" index="3"]
+debug_draw = true
+
+[editable path="SwarmMissile"]
+[editable path="SwarmMissile2"]
