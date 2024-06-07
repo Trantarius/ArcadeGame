@@ -1,0 +1,22 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://cq4hon30m3kb4"]
+
+[ext_resource type="Shader" path="res://visual_effects/black_hole.gdshader" id="1_txvox"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_vucjj"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_oq2s2"]
+seamless = true
+noise = SubResource("FastNoiseLite_vucjj")
+
+[resource]
+shader = ExtResource("1_txvox")
+shader_parameter/radius = 512.0
+shader_parameter/horizon = 64.0
+shader_parameter/distortion_pow = 4.0
+shader_parameter/accretion_color = Color(1, 0.537255, 0.27451, 1)
+shader_parameter/accretion_pow = 16.0
+shader_parameter/accretion_orbit_bias = 1.0
+shader_parameter/accretion_emission = 3.0
+shader_parameter/accretion_orbit_speed = 0.0
+shader_parameter/accretion_absorb_speed = 1.0
+shader_parameter/noise_tex = SubResource("NoiseTexture2D_oq2s2")

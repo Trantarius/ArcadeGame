@@ -52,7 +52,7 @@ func _physics_process(_delta: float) -> void:
 
 func spawn_asteroid(locator:Callable)->void:
 		
-	var aster:Asteroid = preload("res://asteroid/asteroid.tscn").instantiate()
+	var aster:Asteroid = preload("res://environment/asteroid.tscn").instantiate()
 	aster.radius = mean_size * (2**randfn(0,size_variation))
 	aster.noise.seed = randi()
 	aster.mass = (aster.radius/50)**3

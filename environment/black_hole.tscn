@@ -1,0 +1,44 @@
+[gd_scene load_steps=7 format=3 uid="uid://httrt0mgp8vf"]
+
+[ext_resource type="Texture2D" uid="uid://bude4na0hnosm" path="res://icon.svg" id="1_vtp8h"]
+[ext_resource type="Shader" path="res://visual_effects/ambientparticles.gdshader" id="2_xssu6"]
+[ext_resource type="Material" uid="uid://cq4hon30m3kb4" path="res://visual_effects/black_hole_material.tres" id="3_8h6wl"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ew3ue"]
+shader = ExtResource("2_xssu6")
+shader_parameter/width = 1024.0
+shader_parameter/height = 1024.0
+shader_parameter/drift_speed = 4.0
+shader_parameter/fade_time = 5.0
+shader_parameter/parallax = 0.5
+
+[sub_resource type="Gradient" id="Gradient_x62rb"]
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_8rj7y"]
+gradient = SubResource("Gradient_x62rb")
+width = 2
+height = 2
+
+[node name="BlackHole" type="Node2D"]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_vtp8h")
+
+[node name="AmbientParticles" type="GPUParticles2D" parent="."]
+z_index = -10
+amount = 1024
+process_material = SubResource("ShaderMaterial_ew3ue")
+texture = SubResource("GradientTexture2D_8rj7y")
+lifetime = 10.0
+preprocess = 10.0
+
+[node name="BackBufferCopy" type="BackBufferCopy" parent="."]
+copy_mode = 2
+
+[node name="ColorRect" type="ColorRect" parent="."]
+material = ExtResource("3_8h6wl")
+offset_left = -373.0
+offset_top = -485.0
+offset_right = 686.0
+offset_bottom = 541.0

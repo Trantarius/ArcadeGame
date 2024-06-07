@@ -1,6 +1,6 @@
 [gd_scene load_steps=7 format=3 uid="uid://d0upt6jghwnyf"]
 
-[ext_resource type="Script" path="res://asteroid/asteroid.gd" id="1_fifpj"]
+[ext_resource type="Script" path="res://environment/asteroid.gd" id="1_fifpj"]
 [ext_resource type="Script" path="res://classes/Interpolator.gd" id="2_f070b"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_sf31h"]
