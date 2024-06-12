@@ -61,6 +61,7 @@ shader_parameter/height = 1024.0
 shader_parameter/drift_speed = 4.0
 shader_parameter/fade_time = 5.0
 shader_parameter/parallax = 0.5
+shader_parameter/particle_size = 1.0
 
 [node name="Player" type="RigidBody2D" groups=["Players"]]
 collision_layer = 2
@@ -97,6 +98,7 @@ script = ExtResource("2_ccbte")
 
 [node name="AmbientParticles" type="GPUParticles2D" parent="Camera2D"]
 z_index = -10
+position = Vector2(52, 4)
 amount = 256
 process_material = SubResource("ShaderMaterial_v1xyb")
 lifetime = 10.0

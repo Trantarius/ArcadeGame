@@ -57,7 +57,7 @@ func _update() -> void:
 		var des_speed:float = sqrt(abs(dist_err)*max_linear_thrust*2)
 		desired_velocity *= des_speed
 	
-	desired_velocity += target_velocity
+	#desired_velocity += target_velocity
 	desired_velocity = desired_velocity.limit_length(max_linear_speed)
 	desired_velocity = await make_velocity_safe(desired_velocity)
 	

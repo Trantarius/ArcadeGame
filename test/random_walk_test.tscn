@@ -1,0 +1,59 @@
+[gd_scene load_steps=4 format=3 uid="uid://do5havp2cwsy2"]
+
+[ext_resource type="Script" path="res://classes/RandomWalk.gd" id="1_vqrrg"]
+
+[sub_resource type="GDScript" id="GDScript_7032m"]
+script/source = "extends Node2D
+
+@export var walk:RandomWalk
+@export var point_count:int
+
+var points:PackedVector2Array
+var vels:PackedVector2Array
+var accs:PackedVector2Array
+
+func _ready() -> void:
+	walk.reset()
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	walk.offset = get_local_mouse_position()
+	walk.step(delta)
+	points.push_back(walk.position)
+	vels.push_back(walk.velocity)
+	accs.push_back(walk.acceleration)
+	if(points.size()>point_count):
+		points = points.slice(points.size()-point_count)
+	if(vels.size()>point_count):
+		vels = vels.slice(vels.size()-point_count)
+	if(accs.size()>point_count):
+		accs = accs.slice(accs.size()-point_count)
+	queue_redraw()
+
+func _draw() -> void:
+	draw_circle(Vector2.ZERO, 2, Color(0.1,0.9,0.9,0.75))
+	draw_arc(get_local_mouse_position(), walk.max_distance, 0, TAU, 128, Color(0.1,0.1,0.9,0.75))
+	draw_arc(get_local_mouse_position(), walk.min_distance, 0, TAU, 128, Color(0.1,0.1,0.9,0.75))
+	draw_polyline([walk.bz_a,walk.bz_b,walk.bz_c], Color(0.9,0.1,0.1,0.75))
+	for n:int in range(points.size()-1):
+		draw_circle(points[n], 1, Color(0.1,0.9,0.1,0.75))
+	for n:int in range(vels.size()-1):
+		draw_circle(vels[n], 1, Color(0.8,0.1,0.8,0.75))
+	for p:Vector2 in accs:
+		draw_circle(p, 1, Color(0.8,0.8,0.1,0.75))
+"
+
+[sub_resource type="Resource" id="Resource_84hhj"]
+script = ExtResource("1_vqrrg")
+max_distance = 256.0
+min_distance = 128.0
+min_step = 16.0
+max_step = 64.0
+speed = 128.0
+bezier_level = 8
+
+[node name="RandomWalkTest" type="Node2D"]
+position = Vector2(512, 512)
+script = SubResource("GDScript_7032m")
+walk = SubResource("Resource_84hhj")
+point_count = 128

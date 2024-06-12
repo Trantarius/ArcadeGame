@@ -5,24 +5,24 @@ uniform float height=1024;
 uniform float drift_speed=8;
 uniform float fade_time=1;
 uniform float parallax=0;
+uniform float particle_size=1;
 
-float randf(uint seed, uint n,uint idx){
-	seed = seed^(n*uint(12345))^(idx*uint(54321));
-	return float(seed%uint(1000))/1000.0;
-}
+#include "random.gdshaderinc"
 
 void start() {
-	TRANSFORM=mat4(1);
+	TRANSFORM=mat4(particle_size);
 	
-	VELOCITY=vec3((randf(RANDOM_SEED,NUMBER,8956)*2.0-1.0)*drift_speed,
-				  (randf(RANDOM_SEED,NUMBER,139)*2.0-1.0)*drift_speed,
-				  (randf(RANDOM_SEED,NUMBER,963)*2.0-1.0)*drift_speed);
+	uint[6] rand = init_rand_state(RANDOM_SEED ^ (NUMBER*uint(1234)+INDEX*uint(4321)));
+	
+	VELOCITY=vec3((randf(rand)*2.0-1.0)*drift_speed,
+				  (randf(rand)*2.0-1.0)*drift_speed,
+				  (randf(rand)*2.0-1.0)*drift_speed);
 	// age
 	CUSTOM.w=0.0;
 	// true position
-	CUSTOM.xyz = vec3((randf(RANDOM_SEED,NUMBER,567)-0.5)*width,
-					  (randf(RANDOM_SEED,NUMBER,4783)-0.5)*height,
-					   randf(RANDOM_SEED,NUMBER,93675) * (width+height)/2.0);
+	CUSTOM.xyz = vec3((randf(rand)-0.5)*width,
+					  (randf(rand)-0.5)*height,
+					   randf(rand) * (width+height)/2.0);
 }
 
 void process() {

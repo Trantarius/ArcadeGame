@@ -1,4 +1,3 @@
-class_name RandomWalk
 extends Node2D
 
 ## Maximum length of the offset

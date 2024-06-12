@@ -11,6 +11,7 @@ shader_parameter/height = 1024.0
 shader_parameter/drift_speed = 4.0
 shader_parameter/fade_time = 5.0
 shader_parameter/parallax = 0.5
+shader_parameter/particle_size = 1.0
 
 [sub_resource type="Gradient" id="Gradient_x62rb"]
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 1)
