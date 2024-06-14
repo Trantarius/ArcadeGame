@@ -38,6 +38,8 @@ shape = SubResource("CircleShape2D_qpxtk")
 script = ExtResource("4_wxnv5")
 max_linear_thrust = 300.0
 max_angular_speed = 6.0
+avoidance_layers = 0
+avoidance_mask = 7
 
 [connection signal="damage_dealt" from="HitBox" to="." method="_on_hit_box_damage_dealt"]
 [connection signal="post_update" from="BallisticAI" to="." method="_on_ballistic_ai_post_update"]

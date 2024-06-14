@@ -108,9 +108,11 @@ polygon = PackedVector2Array(-112, 0, -128, -16, -256, -16, -248, -36, -240, -48
 rotation = 3.14159
 script = ExtResource("6_c4kd0")
 keel_damp = 4.0
-keel_angular_damp = 1.0
 keel_drag = 4.0
 desired_distance = 1000.0
+max_angular_speed = 0.1
+avoidance_layers = 2
+avoidance_mask = 6
 avoidance_radius = 600.0
 
 [connection signal="post_update" from="BoatAI" to="." method="_on_boat_ai_post_update"]

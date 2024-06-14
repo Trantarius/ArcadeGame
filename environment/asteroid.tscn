@@ -30,6 +30,7 @@ noise = SubResource("FastNoiseLite_sf31h")
 noise_strength = 0.102
 radius = 512.0
 resolution = 64.0
+avoidance_layer = 4
 
 [node name="Interpolator" type="Node2D" parent="."]
 script = ExtResource("2_f070b")

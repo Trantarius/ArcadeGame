@@ -3,8 +3,6 @@ extends AI
 
 ## Damps velocity perpendicular to the ship's heading.
 @export var keel_damp:float = 10
-## Damps rotation.
-@export var keel_angular_damp:float = 10
 ## Damps velocity parallel to the ship's heading, proportional to the perpendicular keel force.
 @export var keel_drag:float = 10
 
@@ -16,26 +14,22 @@ extends AI
 
 var _avg_target_velocity:Vector2
 
-func _update() -> void:
-	force = Vector2.ZERO
-	torque = 0
+func _update(delta:float) -> void:
 	
 	var keel_dir:Vector2 = Vector2.from_angle(global_rotation).orthogonal()
 	var keel_vel:float = linear_velocity.dot(keel_dir)
 	var keel_force:Vector2 = keel_dir * -keel_vel * keel_damp
-	var para_vel:float = linear_velocity.dot(keel_dir.orthogonal())
-	keel_force += keel_dir.orthogonal() * -sign(para_vel)*abs(keel_vel) * keel_drag
+	var para_vel:float = -linear_velocity.dot(keel_dir.orthogonal())
+	keel_force += keel_dir.orthogonal() * sign(para_vel)*abs(keel_vel) * keel_drag
 	if(debug_draw):
 		_draw_calls.push_back({'type':'line','start':Vector2.ZERO,'end':keel_force,'color':Color(1,0,0),'global':false})
-	force += keel_force
-	
-	var keel_torque:float = -angular_velocity * keel_angular_damp
-	torque += keel_torque
+	linear_velocity += keel_force*delta
 	
 	var target_relpos:Vector2 = target_position - global_position
 	var target_dist:float = target_relpos.length()
 	
 	if(debug_draw):
+		#print(target_position)
 		_draw_calls.push_back({'type':'arc','position':target_position,'radius':desired_distance,'color':Color(0,0,1),'global':true})
 		_draw_calls.push_back({'type':'circle','position':target_position,'radius':2,'color':Color(0,0,1),'global':true})
 		_draw_calls.push_back({'type':'line','start':target_position,'end':target_position+_avg_target_velocity,'color':Color(0,0,1),'global':true})
@@ -57,23 +51,23 @@ func _update() -> void:
 		var des_speed:float = sqrt(abs(dist_err)*max_linear_thrust*2)
 		desired_velocity *= des_speed
 	
+	
 	#desired_velocity += target_velocity
 	desired_velocity = desired_velocity.limit_length(max_linear_speed)
 	desired_velocity = await make_velocity_safe(desired_velocity)
 	
-	torque += sign(angle_difference(angular_brake_pos,desired_velocity.angle())) * (abs(para_vel)+5) * max_angular_thrust/max_linear_speed
+	if(desired_velocity.length()>0.01):
+		smooth_rotate(desired_velocity.angle(), max_angular_thrust*delta)
+	else:
+		angular_damp(delta*max_angular_thrust)
 	
 	var speed_err:float = linear_velocity.dot(current_direction) - desired_velocity.dot(current_direction)
 	var thrust:Vector2 = -tanh(speed_err/4)*max_linear_thrust * current_direction
 	if(debug_draw):
 		_draw_calls.push_back({'type':'line','start':Vector2.ZERO,'end':thrust,'color':Color(0.8,0.8,0),'global':false})
-	force += thrust
 	
-	force += linear_velocity
-	force = force.limit_length(max_linear_speed)
-	force -= linear_velocity
+	thrust += linear_velocity
+	thrust = thrust.limit_length(max_linear_speed)
+	thrust -= linear_velocity
+	linear_velocity += thrust*delta
 		
-	torque += angular_velocity
-	torque = clamp(torque, -max_angular_speed, max_angular_speed)
-	torque -= angular_velocity
-	

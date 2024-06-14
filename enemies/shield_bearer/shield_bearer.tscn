@@ -94,6 +94,7 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_p33fl")
 
 [node name="BallisticAI" type="Node2D" parent="."]
 script = ExtResource("4_gc82f")
+avoidance_mask = 7
 
 [connection signal="post_update" from="BallisticAI" to="." method="_on_ballistic_ai_post_update"]
 [connection signal="pre_update" from="BallisticAI" to="." method="_on_ballistic_ai_pre_update"]

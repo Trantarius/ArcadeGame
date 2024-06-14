@@ -83,6 +83,10 @@ debug={
 2d_physics/layer_4="Pickup"
 2d_physics/layer_5="PlayerProjectile"
 2d_physics/layer_6="EnemyProjectile"
+avoidance/layer_1="Small Enemies"
+avoidance/layer_2="Large Enemies"
+avoidance/layer_3="Asteroids"
+avoidance/layer_4="Player"
 
 [physics]
 

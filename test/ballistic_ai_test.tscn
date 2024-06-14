@@ -11,6 +11,7 @@ var velocity:Vector2
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	print(sqrt(-1)*0)
 	pass # Replace with function body.
 
 
@@ -42,8 +43,8 @@ func _pre_update()->void:
 	$BallisticAI.target_velocity = $'../Target'.velocity
 
 func _post_update()->void:
-	linear_velocity += $BallisticAI.force * get_physics_process_delta_time()
-	angular_velocity += $BallisticAI.torque * get_physics_process_delta_time()
+	linear_velocity = $BallisticAI.linear_velocity
+	angular_velocity = $BallisticAI.angular_velocity
 	
 	global_position += linear_velocity * get_physics_process_delta_time()
 	global_rotation += angular_velocity * get_physics_process_delta_time()
@@ -78,8 +79,6 @@ polygon = PackedVector2Array(-12, 8, 0, -12, 12, 8)
 [node name="BallisticAI" type="Node2D" parent="Actor"]
 script = ExtResource("3_v44xm")
 debug_draw = true
-avoidance_max_neighbors = 100
-avoidance_time_horizon_obstacles = 100.0
 
 [node name="Actor2" type="Node2D" parent="."]
 position = Vector2(400, -163)

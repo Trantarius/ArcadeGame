@@ -97,14 +97,6 @@ var angular_velocity:float
 var target_position:Vector2
 ## Hints that the [member target_position] will be changing at this rate.
 var target_velocity:Vector2
-## Hints that the [member target_velocity] will be changing at this rate.
-var target_acceleration:Vector2
-
-
-## The output force to be applied to whatever is obeying this AI.
-var force:Vector2
-## The output torque to be applied to whatever is obeying this AI.
-var torque:float
 
 ## Emitted when an update is about to occur
 signal pre_update
@@ -148,9 +140,6 @@ func _exit_tree() -> void:
 	if(avoidance_enabled):
 		_stop_avoidance()
 
-func _ready() -> void:
-	top_level=true
-
 enum{POSITION=0,VELOCITY=1,FORCE=2}
 ## Virtual function for subclasses to set how output is determined; if an output isn't used, it is calculated from the result.
 func _control_level()->int:
@@ -158,30 +147,13 @@ func _control_level()->int:
 
 func _physics_process(delta: float) -> void:
 	pre_update.emit()
-	var oldpos:Vector2=global_position
-	var oldrot:float = global_rotation
-	var oldvel:Vector2 = linear_velocity
-	var oldrvel:float = angular_velocity
-	await _update()
-	if(_control_level()>=FORCE):
-		linear_velocity += force * delta
-		angular_velocity += torque * delta
-	else:
-		force = (linear_velocity-oldvel)/delta
-		torque = (angular_velocity-oldrvel)/delta
-	if(_control_level()>=VELOCITY):
-		global_position += linear_velocity * delta
-		global_rotation += angular_velocity * delta
-	else:
-		linear_velocity = (global_position-oldpos)/delta
-		angular_velocity = angle_difference(oldrot,global_rotation)/delta
+	await _update(delta)
 	post_update.emit()
 	if(debug_draw):
-		_draw_calls.push_back({'type':'line','start':Vector2.ZERO,'end':force,'color':Color(0.8,0.8,0.1,0.75),'global':false})
 		queue_redraw()
 
 ## Virtual function for subclasses to override, to update forces/velocity/position as appropriate.
-func _update()->void:
+func _update(_delta:float)->void:
 	pass
 
 ## Helper for subclasses to apply avoidance. should be called exactly once in _update().
@@ -222,3 +194,24 @@ func _draw()->void:
 					else:
 						draw_circle(inv * (dcall.position+global_position), dcall.radius, dcall.color)
 		_draw_calls.clear()
+
+
+func linear_damp(amount:float)->void:
+	linear_velocity = linear_velocity.move_toward(Vector2.ZERO,amount)
+
+func angular_damp(amount:float)->void:
+	angular_velocity = move_toward(angular_velocity,0,amount)
+
+func smooth_rotate(to:float, by:float)->void:
+	var stop_time:float = abs(angular_velocity)/max_angular_thrust
+	var angular_stop:float = angular_velocity*stop_time/2
+	if(abs(angular_stop)>TAU):
+		angular_damp(by)
+	else:
+		var diff:float = angle_difference(angular_stop + global_rotation, to)
+		# as + d = av**2 / (2 * at)
+		# av = sqrt((as+d)*2*at)
+		var dvel:float = sqrt(abs(angular_stop+diff)*2*max_angular_thrust)*sign(angular_stop+diff)
+		dvel = clamp(dvel,-max_angular_speed,max_angular_speed)
+		angular_velocity = move_toward(angular_velocity, dvel, by)
+	

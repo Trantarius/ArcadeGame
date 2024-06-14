@@ -19,19 +19,17 @@ func _ready()->void:
 	$BoatAI.post_update.connect(_post_update)
 
 func _pre_update()->void:
-	$BoatAI.global_transform = global_transform
 	$BoatAI.linear_velocity = linear_velocity
 	$BoatAI.angular_velocity = angular_velocity
 	$BoatAI.target_position = $'../Target'.global_position
 	$BoatAI.target_velocity = $'../Target'.velocity
 
 func _post_update()->void:
-	global_transform = $BoatAI.global_transform
-	linear_velocity += $BoatAI.force * get_physics_process_delta_time()
-	angular_velocity += $BoatAI.torque * get_physics_process_delta_time()
+	linear_velocity = $BoatAI.linear_velocity
+	angular_velocity = $BoatAI.angular_velocity
 	
-	#global_position += linear_velocity * get_physics_process_delta_time()
-	#global_rotation += angular_velocity * get_physics_process_delta_time()
+	global_position += linear_velocity * get_physics_process_delta_time()
+	global_rotation += angular_velocity * get_physics_process_delta_time()
 "
 
 [sub_resource type="GDScript" id="GDScript_ndaeq"]
@@ -86,7 +84,6 @@ script = ExtResource("1_bhs21")
 desired_distance = 128.0
 approach = 1.0
 debug_draw = true
-avoidance_enabled = false
 avoidance_radius = 18.0
 
 [node name="Boat2" type="Polygon2D" parent="Boats"]
@@ -98,7 +95,6 @@ script = SubResource("GDScript_oec02")
 [node name="BoatAI" type="Node2D" parent="Boats/Boat2"]
 script = ExtResource("1_bhs21")
 keel_damp = 4.0
-keel_angular_damp = 1.0
 keel_drag = 4.0
 desired_distance = 128.0
 debug_draw = true
@@ -115,7 +111,6 @@ script = SubResource("GDScript_oec02")
 [node name="BoatAI" type="Node2D" parent="Boats/Boat3"]
 script = ExtResource("1_bhs21")
 keel_damp = 4.0
-keel_angular_damp = 1.0
 keel_drag = 4.0
 desired_distance = 128.0
 debug_draw = true
@@ -132,7 +127,6 @@ script = SubResource("GDScript_oec02")
 [node name="BoatAI" type="Node2D" parent="Boats/Boat4"]
 script = ExtResource("1_bhs21")
 keel_damp = 4.0
-keel_angular_damp = 1.0
 keel_drag = 4.0
 desired_distance = 128.0
 debug_draw = true
@@ -149,7 +143,6 @@ script = SubResource("GDScript_oec02")
 [node name="BoatAI" type="Node2D" parent="Boats/Boat5"]
 script = ExtResource("1_bhs21")
 keel_damp = 4.0
-keel_angular_damp = 1.0
 keel_drag = 4.0
 desired_distance = 128.0
 debug_draw = true
@@ -166,7 +159,6 @@ script = SubResource("GDScript_oec02")
 [node name="BoatAI" type="Node2D" parent="Boats/Boat6"]
 script = ExtResource("1_bhs21")
 keel_damp = 4.0
-keel_angular_damp = 1.0
 keel_drag = 4.0
 desired_distance = 128.0
 debug_draw = true
@@ -183,7 +175,6 @@ script = SubResource("GDScript_oec02")
 [node name="BoatAI" type="Node2D" parent="Boats/Boat7"]
 script = ExtResource("1_bhs21")
 keel_damp = 4.0
-keel_angular_damp = 1.0
 keel_drag = 4.0
 desired_distance = 128.0
 debug_draw = true
@@ -200,7 +191,6 @@ script = SubResource("GDScript_oec02")
 [node name="BoatAI" type="Node2D" parent="Boats/Boat8"]
 script = ExtResource("1_bhs21")
 keel_damp = 4.0
-keel_angular_damp = 1.0
 keel_drag = 4.0
 desired_distance = 128.0
 debug_draw = true
