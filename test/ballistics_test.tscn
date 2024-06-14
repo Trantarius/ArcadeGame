@@ -1,110 +1,8 @@
 [gd_scene load_steps=4 format=3 uid="uid://1ou2bpdp2log"]
 
-[sub_resource type="GDScript" id="GDScript_sewsl"]
-script/source = "extends Node2D
-
-var points:Array[Vector2]
-var thrusts:Array[Vector2]
-var endpoints:Array[Vector2]
-
-var startpos:Vector2
-var velpos:Vector2
-var vel_enabled:bool
-var accpos:Vector2
-var acc_enabled:bool
-
-var endpos:Vector2
-var endvelpos:Vector2
-var endvel_enabled:bool
-var endaccpos:Vector2
-var endacc_enabled:bool
-
-@export var timestep:float = 0.1:
-	set(to):
-		timestep=to
-		update()
-		queue_redraw()
-@export var duration:float = 5:
-	set(to):
-		duration=to
-		update()
-		queue_redraw()
-@export_range(0,1) var brake:float = 1:
-	set(to):
-		brake=to
-		update()
-		queue_redraw()
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta: float) -> void:
-	var changed:bool = false
-	if(global_position!=startpos):
-		startpos=global_position
-		changed=true
-	if($Vel.global_position!=velpos):
-		velpos=$Vel.global_position
-		changed=true
-	if($Vel.visible!=vel_enabled):
-		vel_enabled=$Vel.visible
-		changed=true
-	if($Acc.global_position!=accpos):
-		accpos=$Acc.global_position
-		changed=true
-	if($Acc.visible!=acc_enabled):
-		acc_enabled=$Acc.visible
-		changed=true
-	if($End.global_position!=endpos):
-		endpos=$End.global_position
-		changed=true
-	if($EndVel.global_position!=endvelpos):
-		endvelpos=$EndVel.global_position
-		changed=true
-	if($EndVel.visible!=endvel_enabled):
-		endvel_enabled=$EndVel.visible
-		changed=true
-	if($EndAcc.global_position!=endaccpos):
-		endaccpos=$EndAcc.global_position
-		changed=true
-	if($EndAcc.visible!=endacc_enabled):
-		endacc_enabled=$EndAcc.visible
-		changed=true
-	if(changed):
-		update()
-		queue_redraw()
-
-func update()->void:
-	points = [startpos]
-	endpoints = [endpos]
-	thrusts = []
-	var time:float = 0
-	var velocity:Vector2 = velpos-startpos if vel_enabled else Vector2.ZERO
-	var acceleration:Vector2 = accpos-startpos if acc_enabled else Vector2.ZERO
-	var end_velocity:Vector2 = endvelpos - endpos if endvel_enabled else Vector2.ZERO
-	var end_acceleration:Vector2 = endaccpos - endpos if endacc_enabled else Vector2.ZERO
-	while(time<duration):
-		var thrust:Vector2 = Ballistics.find_thrust_to_position(points.back(), velocity, acceleration, 
-			endpoints.back(), end_velocity, end_acceleration, 100, brake)
-		thrusts.push_back(thrust)
-		velocity += (thrust + acceleration) * timestep
-		points.push_back(points.back() + velocity*timestep)
-		end_velocity += end_acceleration * timestep
-		endpoints.push_back(endpoints.back() + end_velocity*timestep)
-		time+=timestep
-	thrusts.push_back(Vector2.ZERO)# just to match sizes
-
-func _draw() -> void:
-	
-	for n:int in range(points.size()):
-		draw_circle(points[n]-global_position,2 if n%10==0 else 1,Color.WHITE)
-		draw_circle(endpoints[n]-global_position,2 if n%10==0 else 1,Color.RED)
-		draw_line(points[n]-global_position, points[n]-global_position + thrusts[n]/20, Color.GREEN)
-		if(n%10==0):
-			draw_line(points[n]-global_position, endpoints[n]-global_position, Color.BLUE)
-	
-"
-
 [sub_resource type="GDScript" id="GDScript_v7sbi"]
-script/source = "extends Node2D
+script/source = "@tool
+extends Node2D
 
 @export var timestep:float = 0.1:
 	set(to):
@@ -155,8 +53,8 @@ func update()->void:
 	points = [pos]
 	tpoints = [tpos]
 	var time:float = 0
-	var tvel:Vector2 = (tvelpos - tpos).limit_length(proj_speed*0.95)
-	var intercept:Dictionary = Ballistics.solve_linear_intercept(proj_speed, tpos-pos, tvel)
+	var tvel:Vector2 = (tvelpos - tpos).limit_length(proj_speed)
+	var intercept:Dictionary = Ballistics.solve_linear_intercept(pos,proj_speed,tpos,tvel)
 	hit = intercept.intercept
 	while(time<duration):
 		points.push_back(points.back() + intercept.velocity*timestep)
@@ -165,14 +63,98 @@ func update()->void:
 
 func _draw() -> void:
 	
+	var inv:Transform2D = global_transform.affine_inverse()
+	
 	for n:int in range(points.size()):
-		draw_circle(points[n]-global_position,2 if n%10==0 else 1,Color.WHITE)
-		draw_circle(tpoints[n]-global_position,2 if n%10==0 else 1,Color.RED)
+		draw_circle(inv*points[n],2 if n%10==0 else 1,Color.WHITE)
+		draw_circle(inv*tpoints[n],2 if n%10==0 else 1,Color.RED)
 		if(n%10==0):
-			draw_line(points[n]-global_position, tpoints[n]-global_position, Color.BLUE)
+			draw_line(inv*points[n], inv*tpoints[n], Color.BLUE)
 	
 	if(hit.is_finite()):
-		draw_circle(hit, 3, Color.GREEN)
+		draw_circle(inv*hit, 3, Color.GREEN)
+	
+"
+
+[sub_resource type="GDScript" id="GDScript_vwxwc"]
+script/source = "@tool
+extends Node2D
+
+@export var timestep:float = 0.1:
+	set(to):
+		timestep=to
+		update()
+		queue_redraw()
+@export var duration:float = 5:
+	set(to):
+		duration=to
+		update()
+		queue_redraw()
+@export var proj_speed:float = 100:
+	set(to):
+		proj_speed=to
+		update()
+		queue_redraw()
+
+var pos:Vector2
+var tpos:Vector2
+var tvelpos:Vector2
+var taccpos:Vector2
+
+var points:Array[Vector2]
+var tpoints:Array[Vector2]
+var hit:Vector2
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(_delta: float) -> void:
+	var changed:bool = false
+	if(global_position!=pos):
+		pos=global_position
+		changed=true
+	if($Target.global_position!=tpos):
+		tpos=$Target.global_position
+		changed=true
+	if($Target/TargetVel.global_position!=tvelpos):
+		tvelpos=$Target/TargetVel.global_position
+		changed=true
+	if($Target/TargetVel/TargetAcc.global_position!=taccpos):
+		taccpos=$Target/TargetVel/TargetAcc.global_position
+		changed=true
+	if(changed):
+		update()
+		queue_redraw()
+
+func update()->void:
+	points = [pos]
+	tpoints = [tpos]
+	var time:float = 0
+	var tvel:Vector2 = (tvelpos - tpos)
+	var tacc:Vector2 = (taccpos - tvelpos)
+	var intercept:Dictionary = Ballistics.solve_linear_quadratic_intercept(pos,proj_speed,tpos,tvel,tacc)
+	hit = intercept.intercept
+	while(time<duration):
+		points.push_back(points.back() + intercept.velocity*timestep)
+		tpoints.push_back(tpoints.back() + tvel*timestep)
+		tvel += tacc*timestep
+		time+=timestep
+
+func _draw() -> void:
+	
+	var inv:Transform2D = global_transform.affine_inverse()
+	
+	for n:int in range(points.size()):
+		draw_circle(inv*points[n],2 if n%10==0 else 1,Color.WHITE)
+		draw_circle(inv*tpoints[n],2 if n%10==0 else 1,Color.RED)
+		if(n%10==0):
+			draw_line(inv*points[n], inv*tpoints[n], Color.BLUE)
+	
+	if(hit.is_finite()):
+		draw_circle(inv*hit, 3, Color.GREEN)
 	
 "
 
@@ -230,37 +212,28 @@ func _draw()->void:
 
 [node name="BallisticsTest" type="Node"]
 
-[node name="Trajectory" type="Node2D" parent="."]
-position = Vector2(428, 129)
-script = SubResource("GDScript_sewsl")
-duration = 10.0
-brake = 0.0
-
-[node name="Vel" type="Marker2D" parent="Trajectory"]
-position = Vector2(99, 101)
-
-[node name="Acc" type="Marker2D" parent="Trajectory"]
-visible = false
-position = Vector2(110, 108)
-
-[node name="End" type="Marker2D" parent="Trajectory"]
-position = Vector2(218, -27)
-
-[node name="EndVel" type="Marker2D" parent="Trajectory"]
-position = Vector2(312, 43)
-
-[node name="EndAcc" type="Marker2D" parent="Trajectory"]
-position = Vector2(192, -28)
-
-[node name="LinearShot" type="Node2D" parent="."]
-position = Vector2(40, 192)
+[node name="LinearIntercept" type="Node2D" parent="."]
+position = Vector2(55, 194)
 script = SubResource("GDScript_v7sbi")
 
-[node name="Target" type="Marker2D" parent="LinearShot"]
-position = Vector2(0, 328)
+[node name="Target" type="Marker2D" parent="LinearIntercept"]
+position = Vector2(25, 62)
 
-[node name="TargetVel" type="Marker2D" parent="LinearShot"]
-position = Vector2(68, 292)
+[node name="TargetVel" type="Marker2D" parent="LinearIntercept"]
+position = Vector2(-372, 297)
+
+[node name="LinearQuadIntercept" type="Node2D" parent="."]
+position = Vector2(788, 226)
+script = SubResource("GDScript_vwxwc")
+
+[node name="Target" type="Marker2D" parent="LinearQuadIntercept"]
+position = Vector2(-158, 129)
+
+[node name="TargetVel" type="Marker2D" parent="LinearQuadIntercept/Target"]
+position = Vector2(-18, -10)
+
+[node name="TargetAcc" type="Marker2D" parent="LinearQuadIntercept/Target/TargetVel"]
+position = Vector2(8, -4)
 
 [node name="Torque" type="Node2D" parent="."]
 script = SubResource("GDScript_nah1q")
