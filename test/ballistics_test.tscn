@@ -1,8 +1,312 @@
-[gd_scene load_steps=4 format=3 uid="uid://1ou2bpdp2log"]
+[gd_scene load_steps=11 format=3 uid="uid://1ou2bpdp2log"]
+
+[ext_resource type="Script" path="res://test/Draggable.gd" id="1_fu2jr"]
+[ext_resource type="Script" path="res://test/Viewer.gd" id="2_g81i7"]
+[ext_resource type="Texture2D" uid="uid://bude4na0hnosm" path="res://icon.svg" id="3_q734h"]
+[ext_resource type="Script" path="res://test/Plot.gd" id="4_c622o"]
+
+[sub_resource type="GDScript" id="GDScript_nah1q"]
+script/source = "extends Node2D
+
+var pos:Vector2
+var capos:Vector2
+var dapos:Vector2
+var cvpos:Vector2
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(_delta: float) -> void:
+	if(global_position != pos):
+		pos = global_position
+		queue_redraw()
+	if($CurrentAngle.position != capos):
+		capos = $CurrentAngle.position
+		queue_redraw()
+	if($DesiredAngle.position != dapos):
+		dapos = $DesiredAngle.position
+		queue_redraw()
+	if($CurrentVelocity.position != cvpos):
+		cvpos = $CurrentVelocity.position
+		queue_redraw()
+		
+
+func _draw()->void:
+	
+	var curr_theta:float = capos.angle()
+	var targ_theta:float = dapos.angle()
+	var curr_vel:float = cvpos.angle() - curr_theta
+	var max_torque:float = 1
+	var torque:float
+	
+	var brake_time:float = abs(curr_vel) / max_torque
+	var brake_drift:float = curr_vel*brake_time/2
+	if(brake_drift>TAU):
+		torque = -sign(curr_vel)*max_torque
+	else:
+		var anticipated_position:float = curr_theta + brake_drift
+		draw_line(Vector2.ZERO, Vector2.from_angle(anticipated_position) * capos.length(), Color(1,1,0))
+		torque = sign(angle_difference(anticipated_position,targ_theta))*max_torque
+	
+	draw_line(Vector2.ZERO, capos, Color(0,0,1))
+	draw_line(Vector2.ZERO, dapos, Color(0,1,1))
+	
+	draw_arc(Vector2.ZERO, 50, curr_theta, curr_vel+curr_theta, 64, Color(1,0,0))
+	draw_arc(Vector2.ZERO, 60, curr_theta, torque+curr_theta, 64, Color(0,1,0))"
+
+[sub_resource type="GDScript" id="GDScript_74jfa"]
+script/source = "extends Node2D
+
+@export var timestep:float = 0.1:
+	set(to):
+		timestep=to
+		update()
+		queue_redraw()
+@export var duration:float = 5:
+	set(to):
+		duration=to
+		update()
+		queue_redraw()
+@export var proj_thrust:float = 100:
+	set(to):
+		proj_thrust=to
+		update()
+		queue_redraw()
+
+var pos:Vector2
+var tpos:Vector2
+var tvelpos:Vector2
+var vpos:Vector2
+
+var points:Array[Vector2]
+var tpoints:Array[Vector2]
+var hit:Vector2
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(_delta: float) -> void:
+	var changed:bool = false
+	if(global_position!=pos):
+		pos=global_position
+		changed=true
+	if($Target.global_position!=tpos):
+		tpos=$Target.global_position
+		changed=true
+	if($Target/Vel.global_position!=tvelpos):
+		tvelpos=$Target/Vel.global_position
+		changed=true
+	if($Vel.global_position!=vpos):
+		vpos=$Vel.global_position
+		changed=true
+	if(changed):
+		update()
+		queue_redraw()
+
+func update()->void:
+	points = [pos]
+	tpoints = [tpos]
+	var time:float = 0
+	var tvel:Vector2 = (tvelpos - tpos)
+	var vel:Vector2 = vpos-pos
+	var intercept:Dictionary = Ballistics.solve_quadratic_linear_intercept(pos,vel,proj_thrust,tpos,tvel)
+	hit = intercept.intercept
+	while(time<duration):
+		points.push_back(points.back() + vel*timestep)
+		tpoints.push_back(tpoints.back() + tvel*timestep)
+		vel += intercept.acceleration*timestep
+		time+=timestep
+
+func _draw() -> void:
+	
+	var inv:Transform2D = global_transform.affine_inverse()
+	
+	for n:int in range(points.size()):
+		draw_circle(inv*points[n],2 if n%10==0 else 1,Color.WHITE)
+		draw_circle(inv*tpoints[n],2 if n%10==0 else 1,Color.RED)
+		if(n%10==0):
+			draw_line(inv*points[n], inv*tpoints[n], Color.BLUE)
+	
+	if(hit.is_finite()):
+		draw_circle(inv*hit, 3, Color.GREEN)
+	
+"
+
+[sub_resource type="GDScript" id="GDScript_qp5e6"]
+script/source = "extends Node2D
+
+@export var timestep:float = 0.1:
+	set(to):
+		timestep=to
+		update()
+		queue_redraw()
+@export var duration:float = 5:
+	set(to):
+		duration=to
+		update()
+		queue_redraw()
+@export var proj_thrust:float = 100:
+	set(to):
+		proj_thrust=to
+		update()
+		queue_redraw()
+
+var pos:Vector2
+var tpos:Vector2
+var tvelpos:Vector2
+var vpos:Vector2
+
+var points:Array[Vector2]
+var tpoints:Array[Vector2]
+var hit:Vector2
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(_delta: float) -> void:
+	var changed:bool = false
+	if(global_position!=pos):
+		pos=global_position
+		changed=true
+	if($Target.global_position!=tpos):
+		tpos=$Target.global_position
+		changed=true
+	if($Target/Vel.global_position!=tvelpos):
+		tvelpos=$Target/Vel.global_position
+		changed=true
+	if($Vel.global_position!=vpos):
+		vpos=$Vel.global_position
+		changed=true
+	if(changed):
+		update()
+		queue_redraw()
+
+func update()->void:
+	points = [pos]
+	tpoints = [tpos]
+	var time:float = 0
+	var tvel:Vector2 = (tvelpos - tpos)
+	var vel:Vector2 = vpos-pos
+	while(time<duration):
+		var acc:Vector2 = Ballistics.solve_rendezvous(points.back(),vel,proj_thrust,tpoints.back(),tvel)
+		vel += acc*timestep
+		points.push_back(points.back() + vel*timestep)
+		tpoints.push_back(tpoints.back() + tvel*timestep)
+		time+=timestep
+
+func _draw() -> void:
+	
+	var inv:Transform2D = global_transform.affine_inverse()
+	
+	for n:int in range(points.size()):
+		draw_circle(inv*points[n],2 if n%10==0 else 1,Color.WHITE)
+		draw_circle(inv*tpoints[n],2 if n%10==0 else 1,Color.RED)
+		if(n%10==0):
+			draw_line(inv*points[n], inv*tpoints[n], Color.BLUE)
+	
+	if(hit.is_finite()):
+		draw_circle(inv*hit, 3, Color.GREEN)
+	
+"
+
+[sub_resource type="GDScript" id="GDScript_ghg04"]
+script/source = "extends Node2D
+
+@export var timestep:float = 0.1:
+	set(to):
+		timestep=to
+		update()
+		queue_redraw()
+@export var duration:float = 5:
+	set(to):
+		duration=to
+		update()
+		queue_redraw()
+@export var proj_thrust:float = 100:
+	set(to):
+		proj_thrust=to
+		update()
+		queue_redraw()
+
+var pos:Vector2
+var tpos:Vector2
+var tvelpos:Vector2
+var taccpos:Vector2
+var vpos:Vector2
+
+var points:Array[Vector2]
+var tpoints:Array[Vector2]
+var hit:Vector2
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	pass # Replace with function body.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(_delta: float) -> void:
+	var changed:bool = false
+	if(global_position!=pos):
+		pos=global_position
+		changed=true
+	if($Target.global_position!=tpos):
+		tpos=$Target.global_position
+		changed=true
+	if($Target/Vel.global_position!=tvelpos):
+		tvelpos=$Target/Vel.global_position
+		changed=true
+	if($Target/Vel/Acc.global_position!=taccpos):
+		taccpos=$Target/Vel/Acc.global_position
+		changed=true
+	if($Vel.global_position!=vpos):
+		vpos=$Vel.global_position
+		changed=true
+	if(changed):
+		update()
+		queue_redraw()
+
+func update()->void:
+	points = [pos]
+	tpoints = [tpos]
+	var time:float = 0
+	var tvel:Vector2 = (tvelpos - tpos)
+	var tacc:Vector2 = (taccpos - tvelpos)
+	var vel:Vector2 = vpos-pos
+	var intercept:Dictionary = Ballistics.solve_quadratic_intercept(pos,vel,proj_thrust,tpos,tvel,tacc)
+	hit = intercept.intercept
+	while(time<duration):
+		points.push_back(points.back() + vel*timestep)
+		tpoints.push_back(tpoints.back() + tvel*timestep)
+		vel += intercept.acceleration*timestep
+		tvel += tacc*timestep
+		time+=timestep
+
+func _draw() -> void:
+	
+	var inv:Transform2D = global_transform.affine_inverse()
+	
+	for n:int in range(points.size()):
+		draw_circle(inv*points[n],2 if n%10==0 else 1,Color.WHITE)
+		draw_circle(inv*tpoints[n],2 if n%10==0 else 1,Color.RED)
+		if(n%10==0):
+			draw_line(inv*points[n], inv*tpoints[n], Color.BLUE)
+	
+	if(hit.is_finite()):
+		draw_circle(inv*hit, 3, Color.GREEN)
+	
+"
 
 [sub_resource type="GDScript" id="GDScript_v7sbi"]
-script/source = "@tool
-extends Node2D
+script/source = "extends Node2D
 
 @export var timestep:float = 0.1:
 	set(to):
@@ -42,8 +346,8 @@ func _process(_delta: float) -> void:
 	if($Target.global_position!=tpos):
 		tpos=$Target.global_position
 		changed=true
-	if($TargetVel.global_position!=tvelpos):
-		tvelpos=$TargetVel.global_position
+	if($Target/Vel.global_position!=tvelpos):
+		tvelpos=$Target/Vel.global_position
 		changed=true
 	if(changed):
 		update()
@@ -53,13 +357,27 @@ func update()->void:
 	points = [pos]
 	tpoints = [tpos]
 	var time:float = 0
-	var tvel:Vector2 = (tvelpos - tpos).limit_length(proj_speed)
+	var tvel:Vector2 = (tvelpos - tpos)
 	var intercept:Dictionary = Ballistics.solve_linear_intercept(pos,proj_speed,tpos,tvel)
+	var plot:PackedVector2Array
+	plot.push_back(Vector2(time,(points.back()-tpoints.back()).length()))
 	hit = intercept.intercept
 	while(time<duration):
 		points.push_back(points.back() + intercept.velocity*timestep)
 		tpoints.push_back(tpoints.back() + tvel*timestep)
 		time+=timestep
+		plot.push_back(Vector2(time,(points.back()-tpoints.back()).length()))
+	
+	$'../../Plot'.add_plot('distance to target',{
+		&'type':Plot.LINE,
+		&'color':Color(0.8,0.1,0.1),
+		&'points':plot
+	})
+	$'../../Plot'.add_plot('estimated intercept',{
+		&'type':Plot.VLINE,
+		&'color':Color(0.1,0.8,0.1),
+		&'value':intercept.time
+	})
 
 func _draw() -> void:
 	
@@ -77,8 +395,7 @@ func _draw() -> void:
 "
 
 [sub_resource type="GDScript" id="GDScript_vwxwc"]
-script/source = "@tool
-extends Node2D
+script/source = "extends Node2D
 
 @export var timestep:float = 0.1:
 	set(to):
@@ -136,12 +453,26 @@ func update()->void:
 	var tvel:Vector2 = (tvelpos - tpos)
 	var tacc:Vector2 = (taccpos - tvelpos)
 	var intercept:Dictionary = Ballistics.solve_linear_quadratic_intercept(pos,proj_speed,tpos,tvel,tacc)
+	var plot:PackedVector2Array
+	plot.push_back(Vector2(time,(points.back()-tpoints.back()).length()))
 	hit = intercept.intercept
 	while(time<duration):
 		points.push_back(points.back() + intercept.velocity*timestep)
 		tpoints.push_back(tpoints.back() + tvel*timestep)
 		tvel += tacc*timestep
 		time+=timestep
+		plot.push_back(Vector2(time,(points.back()-tpoints.back()).length()))
+	
+	$'../../Plot'.add_plot('distance to target',{
+		&'type':Plot.LINE,
+		&'color':Color(0.8,0.1,0.1),
+		&'points':plot
+	})
+	$'../../Plot'.add_plot('estimated intercept',{
+		&'type':Plot.VLINE,
+		&'color':Color(0.1,0.8,0.1),
+		&'value':intercept.time
+	})
 
 func _draw() -> void:
 	
@@ -158,84 +489,10 @@ func _draw() -> void:
 	
 "
 
-[sub_resource type="GDScript" id="GDScript_nah1q"]
-script/source = "extends Node2D
-
-var pos:Vector2
-var capos:Vector2
-var dapos:Vector2
-var cvpos:Vector2
-
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta: float) -> void:
-	if(global_position != pos):
-		pos = global_position
-		queue_redraw()
-	if($CurrentAngle.position != capos):
-		capos = $CurrentAngle.position
-		queue_redraw()
-	if($DesiredAngle.position != dapos):
-		dapos = $DesiredAngle.position
-		queue_redraw()
-	if($CurrentVelocity.position != cvpos):
-		cvpos = $CurrentVelocity.position
-		queue_redraw()
-		
-
-func _draw()->void:
-	
-	var curr_theta:float = capos.angle()
-	var targ_theta:float = dapos.angle()
-	var curr_vel:float = cvpos.angle() - curr_theta
-	var max_torque:float = 1
-	var torque:float
-	
-	var brake_time:float = abs(curr_vel) / max_torque
-	var brake_drift:float = curr_vel*brake_time/2
-	if(brake_drift>TAU):
-		torque = -sign(curr_vel)*max_torque
-	else:
-		var anticipated_position:float = curr_theta + brake_drift
-		draw_line(Vector2.ZERO, Vector2.from_angle(anticipated_position) * capos.length(), Color(1,1,0))
-		torque = sign(angle_difference(anticipated_position,targ_theta))*max_torque
-	
-	draw_line(Vector2.ZERO, capos, Color(0,0,1))
-	draw_line(Vector2.ZERO, dapos, Color(0,1,1))
-	
-	draw_arc(Vector2.ZERO, 50, curr_theta, curr_vel+curr_theta, 64, Color(1,0,0))
-	draw_arc(Vector2.ZERO, 60, curr_theta, torque+curr_theta, 64, Color(0,1,0))"
-
 [node name="BallisticsTest" type="Node"]
 
-[node name="LinearIntercept" type="Node2D" parent="."]
-position = Vector2(55, 194)
-script = SubResource("GDScript_v7sbi")
-
-[node name="Target" type="Marker2D" parent="LinearIntercept"]
-position = Vector2(25, 62)
-
-[node name="TargetVel" type="Marker2D" parent="LinearIntercept"]
-position = Vector2(-372, 297)
-
-[node name="LinearQuadIntercept" type="Node2D" parent="."]
-position = Vector2(788, 226)
-script = SubResource("GDScript_vwxwc")
-
-[node name="Target" type="Marker2D" parent="LinearQuadIntercept"]
-position = Vector2(-158, 129)
-
-[node name="TargetVel" type="Marker2D" parent="LinearQuadIntercept/Target"]
-position = Vector2(-18, -10)
-
-[node name="TargetAcc" type="Marker2D" parent="LinearQuadIntercept/Target/TargetVel"]
-position = Vector2(8, -4)
-
 [node name="Torque" type="Node2D" parent="."]
+visible = false
 script = SubResource("GDScript_nah1q")
 
 [node name="CurrentAngle" type="Marker2D" parent="Torque"]
@@ -246,3 +503,169 @@ position = Vector2(159, 47)
 
 [node name="CurrentVelocity" type="Marker2D" parent="Torque"]
 position = Vector2(53, 92)
+
+[node name="QuadLinearIntercept" type="Node2D" parent="."]
+visible = false
+position = Vector2(97, 506)
+script = SubResource("GDScript_74jfa")
+
+[node name="Vel" type="Marker2D" parent="QuadLinearIntercept"]
+position = Vector2(-154, -181)
+
+[node name="Target" type="Marker2D" parent="QuadLinearIntercept"]
+position = Vector2(110, 194)
+
+[node name="Vel" type="Marker2D" parent="QuadLinearIntercept/Target"]
+position = Vector2(-91, -57)
+
+[node name="Rendezvous" type="Node2D" parent="."]
+visible = false
+position = Vector2(1795, 1107)
+script = SubResource("GDScript_qp5e6")
+duration = 10.0
+proj_thrust = 66.765
+
+[node name="Vel" type="Marker2D" parent="Rendezvous"]
+position = Vector2(-121, -177)
+
+[node name="Target" type="Marker2D" parent="Rendezvous"]
+position = Vector2(23, 110)
+
+[node name="Vel" type="Marker2D" parent="Rendezvous/Target"]
+position = Vector2(-78, -36)
+
+[node name="QuadIntercept" type="Node2D" parent="."]
+visible = false
+position = Vector2(655, 891)
+script = SubResource("GDScript_ghg04")
+
+[node name="Vel" type="Marker2D" parent="QuadIntercept"]
+position = Vector2(68, -102)
+
+[node name="Target" type="Marker2D" parent="QuadIntercept"]
+position = Vector2(-371, -162)
+
+[node name="Vel" type="Marker2D" parent="QuadIntercept/Target"]
+position = Vector2(90, -168)
+
+[node name="Acc" type="Marker2D" parent="QuadIntercept/Target/Vel"]
+position = Vector2(-19, 126)
+
+[node name="TabContainer" type="TabContainer" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+current_tab = 1
+
+[node name="LinearIntercept" type="VSplitContainer" parent="TabContainer"]
+visible = false
+layout_mode = 2
+split_offset = 500
+
+[node name="Panel" type="Panel" parent="TabContainer/LinearIntercept"]
+clip_contents = true
+layout_mode = 2
+script = ExtResource("2_g81i7")
+
+[node name="TextureRect" type="TextureRect" parent="TabContainer/LinearIntercept/Panel"]
+layout_mode = 0
+offset_left = 475.0
+offset_top = 221.0
+offset_right = 603.0
+offset_bottom = 349.0
+mouse_filter = 0
+texture = ExtResource("3_q734h")
+
+[node name="LinearIntercept" type="Node2D" parent="TabContainer/LinearIntercept/Panel"]
+position = Vector2(487, 237)
+script = SubResource("GDScript_v7sbi")
+
+[node name="Target" type="ColorRect" parent="TabContainer/LinearIntercept/Panel/LinearIntercept"]
+offset_left = 217.0
+offset_top = 56.0
+offset_right = 223.0
+offset_bottom = 62.0
+script = ExtResource("1_fu2jr")
+
+[node name="Vel" type="ColorRect" parent="TabContainer/LinearIntercept/Panel/LinearIntercept/Target"]
+layout_mode = 0
+offset_left = -46.0
+offset_top = 50.0
+offset_right = -40.0
+offset_bottom = 56.0
+script = ExtResource("1_fu2jr")
+
+[node name="Plot" type="Control" parent="TabContainer/LinearIntercept"]
+layout_mode = 2
+script = ExtResource("4_c622o")
+background_color = Color(0, 0, 0, 0)
+foreground_color = Color(0.501407, 0.501406, 0.501406, 1)
+legend = true
+left_margin = 64.0
+right_margin = 200.0
+top_margin = 32.0
+bottom_margin = 64.0
+axis_margin = 4.0
+x_max = 1.0
+y_max = 1.0
+
+[node name="LinearQuadIntercept" type="VSplitContainer" parent="TabContainer"]
+layout_mode = 2
+split_offset = 500
+
+[node name="Panel" type="Panel" parent="TabContainer/LinearQuadIntercept"]
+clip_contents = true
+layout_mode = 2
+script = ExtResource("2_g81i7")
+
+[node name="TextureRect" type="TextureRect" parent="TabContainer/LinearQuadIntercept/Panel"]
+layout_mode = 0
+offset_left = 475.0
+offset_top = 221.0
+offset_right = 603.0
+offset_bottom = 349.0
+mouse_filter = 0
+texture = ExtResource("3_q734h")
+
+[node name="LinearQuadIntercept" type="Node2D" parent="TabContainer/LinearQuadIntercept/Panel"]
+position = Vector2(637, 234)
+script = SubResource("GDScript_vwxwc")
+
+[node name="Target" type="ColorRect" parent="TabContainer/LinearQuadIntercept/Panel/LinearQuadIntercept"]
+offset_left = 217.0
+offset_top = 56.0
+offset_right = 223.0
+offset_bottom = 62.0
+script = ExtResource("1_fu2jr")
+
+[node name="TargetVel" type="ColorRect" parent="TabContainer/LinearQuadIntercept/Panel/LinearQuadIntercept/Target"]
+layout_mode = 0
+offset_left = -46.0
+offset_top = 50.0
+offset_right = -40.0
+offset_bottom = 56.0
+script = ExtResource("1_fu2jr")
+
+[node name="TargetAcc" type="ColorRect" parent="TabContainer/LinearQuadIntercept/Panel/LinearQuadIntercept/Target/TargetVel"]
+layout_mode = 0
+offset_left = -22.0
+offset_top = -72.0
+offset_right = -16.0
+offset_bottom = -66.0
+script = ExtResource("1_fu2jr")
+
+[node name="Plot" type="Control" parent="TabContainer/LinearQuadIntercept"]
+layout_mode = 2
+script = ExtResource("4_c622o")
+background_color = Color(0, 0, 0, 0)
+foreground_color = Color(0.501407, 0.501406, 0.501406, 1)
+legend = true
+left_margin = 64.0
+right_margin = 200.0
+top_margin = 32.0
+bottom_margin = 64.0
+axis_margin = 4.0
+x_max = 1.0
+y_max = 1.0

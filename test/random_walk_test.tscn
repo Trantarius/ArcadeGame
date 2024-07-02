@@ -47,8 +47,8 @@ func _draw() -> void:
 script = ExtResource("1_vqrrg")
 max_distance = 256.0
 min_distance = 128.0
-min_step = 16.0
-max_step = 64.0
+min_step = 128.0
+max_step = 128.0
 speed = 128.0
 
 [node name="RandomWalkTest" type="Node2D"]
