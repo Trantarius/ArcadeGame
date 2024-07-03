@@ -96,22 +96,34 @@ static func aim_shot_linear(position:Vector2, velocity:Vector2, target_position:
 	else:
 		return solution.velocity
 
-## Iterates a simple rotation simulation to come to rest at a desired rotation. Returns a dict of form {'rotation':float, 'angular_velocity':float, 'torque':float}.
-## Result may be non-kinematic, to prevent overshoot.
+## Iterates a simple rotation simulation to come to rest at a desired rotation. 
+## Returns a dict of form {'rotation':float, 'angular_velocity':float, 'torque':float}.
 static func solve_torque(rotation:float, angular_velocity:float, max_torque:float, target_rotation:float, step:float)->Dictionary:
-	var brake_time:float = abs(angular_velocity) / max_torque
-	var brake_drift:float = angular_velocity*brake_time/2
-	if(brake_drift>TAU):
-		return -sign(angular_velocity)*max_torque
-	var anticipated_position:float = rotation + brake_drift
-	var torque:float = sign(angle_difference(anticipated_position,target_rotation))*max_torque
-	var next_vel:float = angular_velocity+step*torque
+	# xf = xi + vi*t - 1/2 a*t**2
+	# t = vi/a
+	# xf = xi + vi**2 / a - 1/2 vi**2 / a
+	# xf-xi = vi**2 / 2 a
+	# sqrt( 2 a (xf-xi) ) = vi
+	
+	var t_diff:float = angle_difference(rotation+angular_velocity*step/2, target_rotation)
+	var alt_diff:float = t_diff+TAU if t_diff<0 else t_diff-TAU
+	
+	var des_vel:float = sqrt(2*max_torque*abs(t_diff))*sign(t_diff)
+	var alt_vel:float = sqrt(2*max_torque*abs(alt_diff))*sign(alt_diff)
+	if(abs(angular_velocity-alt_vel)<abs(angular_velocity-des_vel)):
+		des_vel = alt_vel
+	
+	var v_corr:float = des_vel - angular_velocity
+	var torque:float = clamp(v_corr/step,-max_torque,max_torque)
+	
+	var imm_vel:float = angle_difference(rotation,target_rotation)/step
+	if(abs(imm_vel) < max_torque*step && abs(imm_vel-angular_velocity)<max_torque*step):
+		torque = (imm_vel-angular_velocity)/step
+	
+	var next_vel:float = angular_velocity + step*torque
 	var next_rot:float = rotation + next_vel*step
-	if(sign(angular_velocity)!=sign(next_vel) && sign(angle_difference(rotation,target_rotation))!=sign(angle_difference(next_rot,target_rotation))):
-		next_vel = 0
-		torque = (-angular_velocity)/step
-		next_rot = target_rotation
-	return {&'rotation':next_rot, &'angular_velocity':next_vel, &'torque':torque}
+	
+	return {&'rotation':angle_difference(0,next_rot), &'angular_velocity':next_vel, &'torque':torque}
 
 ## Finds an acceleration vector for a path to reach a point moving at a velocity, and stay there. This acceleration is not constant.
 static func solve_rendezvous(position:Vector2, velocity:Vector2, thrust:float, target_position:Vector2, target_velocity:Vector2)->Vector2:
@@ -119,13 +131,14 @@ static func solve_rendezvous(position:Vector2, velocity:Vector2, thrust:float, t
 	var tpos:Vector2 = target_position - position
 	var vel:Vector2 = velocity - target_velocity
 	var brake_time:float = vel.length()/thrust
-	var brake_pos:Vector2 = vel*brake_time
+	var brake_pos:Vector2 = vel*brake_time/2
 	var corr:Vector2 = tpos-brake_pos
 	if(corr.is_zero_approx()):
 		if(vel.is_zero_approx()):
 			return Vector2.ZERO
 		return -vel.normalized()*thrust
 	return corr.normalized()*thrust
+
 
 ## Solves the function a*T**4 + b*T**3 + c*T**2 + d*T + e == 0 for T.
 ## Selects the smallest positive solution. 
