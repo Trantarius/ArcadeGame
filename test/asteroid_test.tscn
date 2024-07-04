@@ -9,6 +9,9 @@ script/source = "extends Node2D
 @export var sample_size:int = 100
 
 func _ready() -> void:
+	$Asteroid.noise.seed=randi()
+	$Asteroid.generate()
+	
 	if(do_sample):
 		var sample:Array
 		var time:float = 0
@@ -63,5 +66,6 @@ do_sample = true
 
 [node name="Asteroid" parent="." instance=ExtResource("1_orbyv")]
 noise = SubResource("FastNoiseLite_62ws1")
+resolution = 32.0
 
 [node name="Camera2D" type="Camera2D" parent="."]

@@ -1,9 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://blf0t84ei3owm"]
+[gd_scene load_steps=8 format=3 uid="uid://blf0t84ei3owm"]
 
 [ext_resource type="Script" path="res://enemies/shield_bearer/shield_bearer.gd" id="1_hi1cc"]
 [ext_resource type="Script" path="res://classes/HitBox.gd" id="2_2xfry"]
 [ext_resource type="Script" path="res://classes/Interpolator.gd" id="2_bxnop"]
-[ext_resource type="Script" path="res://classes/BallisticAI.gd" id="4_gc82f"]
+[ext_resource type="Script" path="res://classes/ReversibleTimer.gd" id="5_b31lk"]
+[ext_resource type="Script" path="res://classes/AvoidanceAgent.gd" id="5_m82ic"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_gkx47"]
 radius = 16.0
@@ -92,9 +93,24 @@ offset_right = 12.0
 offset_bottom = 16.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_p33fl")
 
-[node name="BallisticAI" type="Node2D" parent="."]
-script = ExtResource("4_gc82f")
-avoidance_mask = 7
+[node name="CooldownTimer" type="Node" parent="."]
+script = ExtResource("5_b31lk")
+one_shot = true
+duration = 4.0
 
-[connection signal="post_update" from="BallisticAI" to="." method="_on_ballistic_ai_post_update"]
-[connection signal="pre_update" from="BallisticAI" to="." method="_on_ballistic_ai_pre_update"]
+[node name="ShieldTimer" type="Node" parent="."]
+script = ExtResource("5_b31lk")
+one_shot = true
+duration = 2.0
+
+[node name="AvoidanceAgent" type="Node2D" parent="."]
+position = Vector2(5.925, 0)
+script = ExtResource("5_m82ic")
+dv_limit = 200.0
+mask = 7
+radius = 58.475
+
+[connection signal="timeout" from="CooldownTimer" to="." method="_on_cooldown_timer_timeout"]
+[connection signal="timeout" from="ShieldTimer" to="." method="_on_shield_timer_timeout"]
+[connection signal="timeout_reverse" from="ShieldTimer" to="." method="_on_shield_timer_timeout_reverse"]
+[connection signal="pre_update" from="AvoidanceAgent" to="." method="_on_avoidance_agent_pre_update"]

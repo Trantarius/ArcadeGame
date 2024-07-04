@@ -3,7 +3,7 @@
 [ext_resource type="Script" path="res://enemies/spiky/Spiky.gd" id="1_gcqvx"]
 [ext_resource type="Script" path="res://classes/Interpolator.gd" id="2_djdl5"]
 [ext_resource type="Script" path="res://classes/HitBox.gd" id="3_e1fb7"]
-[ext_resource type="Script" path="res://classes/BallisticAI.gd" id="4_wxnv5"]
+[ext_resource type="Script" path="res://classes/AvoidanceAgent.gd" id="4_f00v0"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_qpxtk"]
 
@@ -11,6 +11,7 @@
 collision_layer = 4
 collision_mask = 7
 script = ExtResource("1_gcqvx")
+rarity = 1000.0
 despawn_distance = 5000.0
 max_health = 1.0
 radius = 10.0
@@ -34,13 +35,11 @@ contact_damage_enabled = true
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="HitBox"]
 shape = SubResource("CircleShape2D_qpxtk")
 
-[node name="BallisticAI" type="Node2D" parent="."]
-script = ExtResource("4_wxnv5")
-max_linear_thrust = 300.0
-max_angular_speed = 6.0
-avoidance_layers = 0
-avoidance_mask = 7
+[node name="AvoidanceAgent" type="Node2D" parent="."]
+script = ExtResource("4_f00v0")
+dv_limit = 200.0
+mask = 7
+radius = 15.0
 
 [connection signal="damage_dealt" from="HitBox" to="." method="_on_hit_box_damage_dealt"]
-[connection signal="post_update" from="BallisticAI" to="." method="_on_ballistic_ai_post_update"]
-[connection signal="pre_update" from="BallisticAI" to="." method="_on_ballistic_ai_pre_update"]
+[connection signal="pre_update" from="AvoidanceAgent" to="." method="_on_avoidance_agent_pre_update"]

@@ -5,7 +5,7 @@
 [ext_resource type="PackedScene" uid="uid://crwwyc1s55imm" path="res://enemies/broadside/cannon.tscn" id="3_6q3fn"]
 [ext_resource type="PackedScene" uid="uid://c11upr826ghta" path="res://enemies/broadside/engine.tscn" id="4_srbmi"]
 [ext_resource type="Script" path="res://classes/Interpolator.gd" id="5_5wcpo"]
-[ext_resource type="Script" path="res://classes/BoatAI.gd" id="6_c4kd0"]
+[ext_resource type="Script" path="res://classes/AvoidanceAgent.gd" id="6_iway5"]
 
 [node name="Broadside" type="RigidBody2D"]
 mass = 1000.0
@@ -15,6 +15,7 @@ radius = 300.0
 disable_health_bar = true
 
 [node name="Port" type="Node2D" parent="."]
+rotation = 3.14159
 
 [node name="Turrets" type="Node2D" parent="Port"]
 
@@ -47,6 +48,7 @@ position = Vector2(256, 128)
 position = Vector2(384, 128)
 
 [node name="Starboard" type="Node2D" parent="."]
+rotation = 3.14159
 
 [node name="Turrets" type="Node2D" parent="Starboard"]
 
@@ -85,35 +87,36 @@ position = Vector2(-256, -128)
 rotation = 3.14159
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
-position = Vector2(-208, 0)
+position = Vector2(208, 0)
+rotation = 3.14159
 scale = Vector2(2, 2)
 polygon = PackedVector2Array(-256, 16, -128, 16, -112, 0, -128, -16, -256, -16, -248, -36, -240, -48, -224, -56, -64, -96, -56, -96, -48, -80, -40, -48, -8, -48, 0, -80, 4, -88, 12, -88, 16, -80, 24, -48, 56, -48, 64, -80, 68, -88, 76, -88, 80.1328, -79.7344, 88, -48, 120, -48, 128, -80, 132, -88, 140, -88, 144, -80, 152, -48, 184, -48, 192, -80, 196, -88, 204, -88, 207.704, -80.592, 216, -48, 248, -48, 256, -80, 260, -88, 268, -88, 272, -80, 280, -48, 312, -48, 320, -80, 328, -96, 376, -96, 416, -88, 360, -80, 360, -32, 416, -24, 376, -16, 376, 16, 416, 24, 360, 32, 360, 80, 416, 88, 376, 96, 328, 96, 320, 80, 312, 48, 280, 48, 272, 80, 268, 88, 260, 88, 256.154, 80.3087, 248, 48, 216, 48, 208, 80, 204, 88, 196, 88, 192, 80, 184, 48, 152, 48, 144, 80, 140, 88, 132, 88, 128, 80, 120, 48, 88, 48, 80, 80, 76, 88, 68, 88, 63.9378, 79.8755, 56, 48, 24, 48, 16, 80, 12, 88, 4, 88, 0, 80, -8, 48, -40, 48, -48, 80, -56, 96, -64, 96, -224, 56, -240, 48, -248, 36)
 
 [node name="Engine" parent="." groups=["BroadsidePart"] instance=ExtResource("4_srbmi")]
-position = Vector2(576, 112)
+position = Vector2(-576, 112)
+rotation = 3.14159
 
 [node name="Engine2" parent="." groups=["BroadsidePart"] instance=ExtResource("4_srbmi")]
-position = Vector2(576, -112)
+position = Vector2(-576, -112)
+rotation = 3.14159
 
 [node name="Interpolator" type="Node2D" parent="."]
 script = ExtResource("5_5wcpo")
 
 [node name="Polygon2D" type="Polygon2D" parent="Interpolator"]
-position = Vector2(-208, 0)
+rotation = 3.14159
 scale = Vector2(2, 2)
 color = Color(0.197937, 0.197937, 0.197937, 1)
+offset = Vector2(-104, 0)
 polygon = PackedVector2Array(-112, 0, -128, -16, -256, -16, -248, -36, -240, -48, -224, -56, -64, -96, -56, -96, -48, -80, -40, -48, -8, -48, 0.348869, -80.6977, 4, -88, 12, -88, 16, -80, 24, -48, 56, -48, 64, -80, 68, -88, 76, -88, 80, -80, 88, -48, 120, -48, 128.294, -80.5875, 132, -88, 140, -88, 144, -80, 152, -48, 184, -48, 191.809, -79.6189, 196, -88, 204, -88, 208, -80, 216, -48, 248, -48, 256, -80, 260, -88, 268, -88, 272, -80, 280, -48, 312, -48, 319.677, -79.3531, 328, -96, 376, -96, 416, -88, 360, -80, 360, -32, 416, -24, 376, -16, 376, 16, 416, 24, 360, 32, 360, 80, 416, 88, 376, 96, 328, 96, 320, 80, 312, 48, 280, 48, 272, 80, 268, 88, 260, 88, 256, 80, 248, 48, 216, 48, 208, 80, 204, 88, 196, 88, 192, 80, 184, 48, 152, 48, 144, 80, 140, 88, 132, 88, 128, 80, 120, 48, 88, 48, 80, 80, 76, 88, 68, 88, 63.925, 79.85, 56, 48, 24, 48, 16, 80, 12, 88, 4, 88, 0, 80, -8, 48, -40, 48, -48, 80, -56, 96, -64, 96, -224, 56, -240, 48, -248, 36, -256, 16, -128, 16)
 
-[node name="BoatAI" type="Node2D" parent="."]
-rotation = 3.14159
-script = ExtResource("6_c4kd0")
-keel_damp = 4.0
-keel_drag = 4.0
-desired_distance = 1000.0
-max_angular_speed = 0.1
-avoidance_layers = 2
-avoidance_mask = 6
-avoidance_radius = 600.0
+[node name="AvoidanceAgent" type="Node2D" parent="."]
+script = ExtResource("6_iway5")
+max_speed = 400.0
+layers = 2
+mask = 6
+neighbor_distance = 4000.0
+radius = 729.54
+time_horizon_obstacles = 10.0
 
-[connection signal="post_update" from="BoatAI" to="." method="_on_boat_ai_post_update"]
-[connection signal="pre_update" from="BoatAI" to="." method="_on_boat_ai_pre_update"]
+[connection signal="pre_update" from="AvoidanceAgent" to="." method="_on_avoidance_agent_pre_update"]

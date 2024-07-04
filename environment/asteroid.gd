@@ -209,7 +209,7 @@ func generate()->void:
 			var obs:NavigationObstacle2D = NavigationObstacle2D.new()
 			obs.avoidance_enabled=true
 			obs.avoidance_layers = avoidance_layer
-			obs.radius = chunk.radius
+			obs.radius = chunk.radius + noise_strength*radius
 			obs.position = chunk.position
 			obs.z_index=1
 			add_child(obs,false,Node.INTERNAL_MODE_BACK)

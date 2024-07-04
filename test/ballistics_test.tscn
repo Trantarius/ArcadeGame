@@ -501,7 +501,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-current_tab = 5
+current_tab = 4
 
 [node name="LinearIntercept" type="Panel" parent="TabContainer"]
 visible = false
@@ -632,7 +632,6 @@ offset_bottom = -51.0
 script = ExtResource("1_fu2jr")
 
 [node name="Rendezvous" type="Panel" parent="TabContainer"]
-visible = false
 layout_mode = 2
 script = ExtResource("2_g81i7")
 
@@ -665,6 +664,7 @@ offset_bottom = -6.0
 script = ExtResource("1_fu2jr")
 
 [node name="Torque" type="VSplitContainer" parent="TabContainer"]
+visible = false
 layout_mode = 2
 split_offset = 500
 

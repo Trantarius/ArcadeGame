@@ -1,0 +1,321 @@
+[gd_scene load_steps=6 format=3 uid="uid://checvo1eqc0v8"]
+
+[ext_resource type="Script" path="res://classes/ReversibleTimer.gd" id="1_7cee0"]
+
+[sub_resource type="GDScript" id="GDScript_t17hp"]
+script/source = "extends Control
+
+@export var timer:ReversibleTimer
+
+@export var time_out:Label
+@export var time_in:SpinBox
+@export var duration_out:Label
+@export var duration_in:SpinBox
+@export var one_shot:CheckButton
+@export var autostart:CheckButton
+@export var reverse:CheckButton
+@export var timeout:ColorRect
+@export var timeout_reverse:ColorRect
+@export var running:ColorRect
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	time_in.value = timer.time
+	duration_in.value = timer.duration
+	one_shot.button_pressed = timer.one_shot
+	autostart.button_pressed = timer.autostart
+	reverse.button_pressed = timer.reverse
+	running.color = Color.GREEN if timer.running else Color.RED
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	time_out.text = '%.2f'%[timer.time]
+	duration_out.text = '%.2f'%[timer.duration]
+	timeout.modulate.a = max(0, timeout.modulate.a-delta)
+	timeout_reverse.modulate.a = max(0, timeout_reverse.modulate.a-delta)
+	running.color = Color.GREEN if timer.running else Color.RED
+	
+
+func _on_set_time_pressed() -> void:
+	timer.time = time_in.value
+
+func _on_set_duration_pressed() -> void:
+	timer.duration = duration_in.value
+
+func _on_one_shot_toggled(toggled_on: bool) -> void:
+	timer.one_shot = toggled_on
+
+func _on_auto_start_toggled(toggled_on: bool) -> void:
+	timer.autostart = toggled_on
+
+func _on_reverse_toggled(toggled_on: bool) -> void:
+	timer.reverse = toggled_on
+
+func _on_reversible_timer_timeout() -> void:
+	timeout.modulate.a = 1
+
+func _on_reversible_timer_timeout_reverse() -> void:
+	timeout_reverse.modulate.a=1
+
+func _on_start_pressed() -> void:
+	timer.start()
+
+func _on_stop_pressed() -> void:
+	timer.stop()
+"
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tv1ra"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.231373, 0.231373, 0.258824, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_geqrp"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.231373, 0.231373, 0.258824, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_c6etg"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.231373, 0.231373, 0.258824, 1)
+
+[node name="TimerTest" type="HBoxContainer" node_paths=PackedStringArray("timer", "time_out", "time_in", "duration_out", "duration_in", "one_shot", "autostart", "reverse", "timeout", "timeout_reverse", "running")]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 55.0
+offset_top = 100.0
+offset_right = -476.0
+offset_bottom = -641.0
+grow_horizontal = 2
+grow_vertical = 2
+script = SubResource("GDScript_t17hp")
+timer = NodePath("ReversibleTimer")
+time_out = NodePath("VBoxContainer2/PanelContainer/HBoxContainer/TimeOut")
+time_in = NodePath("VBoxContainer/PanelContainer7/HBoxContainer/TimeIn")
+duration_out = NodePath("VBoxContainer2/PanelContainer9/HBoxContainer/DurationOut")
+duration_in = NodePath("VBoxContainer/PanelContainer3/HBoxContainer/DurationIn")
+one_shot = NodePath("VBoxContainer/PanelContainer4/HBoxContainer/OneShot")
+autostart = NodePath("VBoxContainer/PanelContainer5/HBoxContainer/AutoStart")
+reverse = NodePath("VBoxContainer/PanelContainer6/HBoxContainer/Reverse")
+timeout = NodePath("VBoxContainer2/PanelContainer2/Timeout")
+timeout_reverse = NodePath("VBoxContainer2/PanelContainer8/TimeoutReverse")
+running = NodePath("VBoxContainer2/PanelContainer3/HBoxContainer/Running")
+
+[node name="ReversibleTimer" type="Node" parent="."]
+script = ExtResource("1_7cee0")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PanelContainer7" type="PanelContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tv1ra")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer7"]
+layout_mode = 2
+
+[node name="SetTime" type="Button" parent="VBoxContainer/PanelContainer7/HBoxContainer"]
+layout_mode = 2
+text = "Set Time"
+
+[node name="TimeIn" type="SpinBox" parent="VBoxContainer/PanelContainer7/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+step = 0.0
+value = 5.0
+allow_greater = true
+allow_lesser = true
+
+[node name="PanelContainer3" type="PanelContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tv1ra")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer3"]
+layout_mode = 2
+
+[node name="SetDuration" type="Button" parent="VBoxContainer/PanelContainer3/HBoxContainer"]
+layout_mode = 2
+text = "Set Duration
+"
+
+[node name="DurationIn" type="SpinBox" parent="VBoxContainer/PanelContainer3/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+step = 0.0
+value = 5.0
+allow_greater = true
+allow_lesser = true
+
+[node name="PanelContainer4" type="PanelContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tv1ra")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer4"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer4/HBoxContainer"]
+layout_mode = 2
+text = "OneShot
+"
+
+[node name="OneShot" type="CheckButton" parent="VBoxContainer/PanelContainer4/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+
+[node name="PanelContainer5" type="PanelContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tv1ra")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer5"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer5/HBoxContainer"]
+layout_mode = 2
+text = "AutoStart
+"
+
+[node name="AutoStart" type="CheckButton" parent="VBoxContainer/PanelContainer5/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+
+[node name="PanelContainer6" type="PanelContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tv1ra")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer6"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer6/HBoxContainer"]
+layout_mode = 2
+text = "Reverse
+"
+
+[node name="Reverse" type="CheckButton" parent="VBoxContainer/PanelContainer6/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+
+[node name="PanelContainer10" type="PanelContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tv1ra")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/PanelContainer10"]
+layout_mode = 2
+
+[node name="Start" type="Button" parent="VBoxContainer/PanelContainer10/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Start"
+
+[node name="Stop" type="Button" parent="VBoxContainer/PanelContainer10/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Stop
+"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer2"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_geqrp")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer2/PanelContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer2/PanelContainer/HBoxContainer"]
+layout_mode = 2
+text = "Time"
+
+[node name="TimeOut" type="Label" parent="VBoxContainer2/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "123"
+
+[node name="PanelContainer9" type="PanelContainer" parent="VBoxContainer2"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_c6etg")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer2/PanelContainer9"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer2/PanelContainer9/HBoxContainer"]
+layout_mode = 2
+text = "Duration"
+
+[node name="DurationOut" type="Label" parent="VBoxContainer2/PanelContainer9/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 10
+text = "123"
+
+[node name="PanelContainer8" type="PanelContainer" parent="VBoxContainer2"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tv1ra")
+
+[node name="TimeoutReverse" type="ColorRect" parent="VBoxContainer2/PanelContainer8"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+color = Color(0.0408744, 0.525069, 0.0398268, 1)
+
+[node name="Label" type="Label" parent="VBoxContainer2/PanelContainer8"]
+layout_mode = 2
+text = "Timeout Reverse"
+
+[node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer2"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tv1ra")
+
+[node name="Timeout" type="ColorRect" parent="VBoxContainer2/PanelContainer2"]
+modulate = Color(1, 1, 1, 0)
+layout_mode = 2
+color = Color(0.0408744, 0.525069, 0.0398268, 1)
+
+[node name="Label" type="Label" parent="VBoxContainer2/PanelContainer2"]
+layout_mode = 2
+text = "Timeout"
+
+[node name="PanelContainer3" type="PanelContainer" parent="VBoxContainer2"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tv1ra")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer2/PanelContainer3"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer2/PanelContainer3/HBoxContainer"]
+layout_mode = 2
+text = "Running"
+
+[node name="Running" type="ColorRect" parent="VBoxContainer2/PanelContainer3/HBoxContainer"]
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 2
+size_flags_horizontal = 10
+color = Color(1, 0, 0, 1)
+
+[connection signal="timeout" from="ReversibleTimer" to="." method="_on_reversible_timer_timeout"]
+[connection signal="timeout_reverse" from="ReversibleTimer" to="." method="_on_reversible_timer_timeout_reverse"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer7/HBoxContainer/SetTime" to="." method="_on_set_time_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer3/HBoxContainer/SetDuration" to="." method="_on_set_duration_pressed"]
+[connection signal="toggled" from="VBoxContainer/PanelContainer4/HBoxContainer/OneShot" to="." method="_on_one_shot_toggled"]
+[connection signal="toggled" from="VBoxContainer/PanelContainer5/HBoxContainer/AutoStart" to="." method="_on_auto_start_toggled"]
+[connection signal="toggled" from="VBoxContainer/PanelContainer6/HBoxContainer/Reverse" to="." method="_on_reverse_toggled"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer10/HBoxContainer/Start" to="." method="_on_start_pressed"]

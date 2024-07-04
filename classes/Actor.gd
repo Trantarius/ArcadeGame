@@ -47,7 +47,7 @@ static func _static_init()->void:
 	(Actor as Object).add_user_signal('something_took_damage',[{'name':'damage','type':TYPE_OBJECT}])
 	something_took_damage = Signal(Actor,'something_took_damage')
 
-var _actor_log_maxsize:int = 100
+const _actor_log_maxsize:int = 100
 const _actor_log_duration:float = 0.25
 var _actor_position_log:PackedVector2Array
 var _actor_rotation_log:PackedFloat64Array

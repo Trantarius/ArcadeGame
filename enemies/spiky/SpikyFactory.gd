@@ -1,27 +1,23 @@
 class_name SpikyFactory
 extends Enemy
 
-## Seconds between Spiky spawning events
-@export var spawn_time:float = 3
+const thrust:float = 100
+const rot_speed:float = 1
+const torque:float = 1
 
-## Time until next spawn event
-var spawn_timer:float = 0
+var body:RigidBody2D
 
-func _ready() -> void:
-	$'.'.apply_force(-self.linear_velocity)
-	$'.'.apply_torque(-self.angular_velocity+1)
+func _init()->void:
+	body = $'.'
 
 func _physics_process(delta: float) -> void:
-	
-	spawn_timer-=delta
-	if(spawn_timer<=0):
-		spawn_timer = spawn_time
-		spawn_spiky()
+	body.angular_velocity += clamp(rot_speed-body.angular_velocity, -torque*delta, torque*delta)
+	body.linear_velocity -= body.linear_velocity.limit_length(thrust*delta)
 
-func spawn_spiky()->void:
-	var dir:Vector2 = global_transform.basis_xform(Vector2.RIGHT).rotated(randf()*TAU)
+func _on_spawn_timer_timeout() -> void:
+	var dir:Vector2 = Vector2.from_angle(randf()*TAU)
 	var spiky:Spiky = preload("res://enemies/spiky/spiky.tscn").instantiate()
-	spiky.position = position + dir * 32
+	spiky.global_position = position + dir * 32
 	spiky.linear_velocity = dir * 200
 	spiky.add_collision_exception_with(self)
-	get_parent().add_child(spiky)
+	get_tree().current_scene.add_child(spiky)

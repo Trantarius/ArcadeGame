@@ -1,0 +1,93 @@
+[gd_scene load_steps=25 format=3 uid="uid://dgi2i2rcpew0f"]
+
+[ext_resource type="PackedScene" uid="uid://ccgupredk0a3f" path="res://player/player.tscn" id="1_wyqax"]
+[ext_resource type="Script" path="res://enemies/EnemySpawner.gd" id="3_mithn"]
+[ext_resource type="PackedScene" uid="uid://d4epik40543it" path="res://enemies/hornet/hornet.tscn" id="4_rflj1"]
+[ext_resource type="PackedScene" uid="uid://duw4y42hn6e5i" path="res://enemies/broadside/broadside.tscn" id="5_10v5w"]
+[ext_resource type="PackedScene" uid="uid://b84l7h2qte8nl" path="res://enemies/spiky/spiky_factory.tscn" id="6_5py7p"]
+[ext_resource type="PackedScene" uid="uid://cb3satgchcg1i" path="res://enemies/spiky/spiky.tscn" id="7_g2r1l"]
+[ext_resource type="PackedScene" uid="uid://blf0t84ei3owm" path="res://enemies/shield_bearer/shield_bearer.tscn" id="7_gede4"]
+[ext_resource type="Script" path="res://environment/AsteroidSpawner.gd" id="8_t20lr"]
+[ext_resource type="Script" path="res://pickups/PickupSpawner.gd" id="9_ld0bk"]
+[ext_resource type="PackedScene" uid="uid://c470br5y4agbp" path="res://pickups/health_pickup.tscn" id="10_shm8w"]
+[ext_resource type="PackedScene" uid="uid://caglsq2mpkvoc" path="res://abilities/movement/boost/boost_pickup.tscn" id="11_8ig0n"]
+[ext_resource type="PackedScene" uid="uid://7fxmn5qcukpx" path="res://abilities/movement/handbrake/handbrake_pickup.tscn" id="12_tj1t1"]
+[ext_resource type="PackedScene" uid="uid://dj3sihx7v1ip0" path="res://abilities/movement/sidestep/sidestep_pickup.tscn" id="13_jfhqv"]
+[ext_resource type="PackedScene" uid="uid://cfy8pkp2n4b8d" path="res://abilities/weapon/light_cannon/light_cannon_pickup.tscn" id="14_xlpsp"]
+[ext_resource type="PackedScene" uid="uid://cgy3if02alej2" path="res://abilities/weapon/scatter_gun/scatter_gun_pickup.tscn" id="15_qtx85"]
+[ext_resource type="PackedScene" uid="uid://yidbh7wl3t3g" path="res://abilities/weapon/pulse_laser/pulse_laser_pickup.tscn" id="16_qffew"]
+[ext_resource type="PackedScene" uid="uid://dhkxc6mxsom3a" path="res://abilities/attack/proximity_mine/proximity_mine_pickup.tscn" id="17_pbnca"]
+[ext_resource type="PackedScene" uid="uid://7eaqj1u8klbj" path="res://abilities/attack/missile_swarm/missile_swarm_pickup.tscn" id="18_x63kg"]
+[ext_resource type="Script" path="res://ui/world/HitNumberSpawner.gd" id="19_ynf55"]
+[ext_resource type="Script" path="res://ui/world/HealthBarSpawner.gd" id="20_4nqwg"]
+[ext_resource type="PackedScene" uid="uid://crylwoyahw6go" path="res://ui/info_panel.tscn" id="21_1litg"]
+[ext_resource type="PackedScene" uid="uid://dxv4bwsrldkqn" path="res://ui/minimap.tscn" id="22_14ij0"]
+[ext_resource type="PackedScene" uid="uid://b20pt1kalrhub" path="res://ui/Radar.tscn" id="23_dgw7y"]
+[ext_resource type="PackedScene" uid="uid://b4v2b4cphju7v" path="res://ui/debug_menu.tscn" id="24_i634n"]
+
+[node name="Main" type="Node"]
+
+[node name="Player" parent="." instance=ExtResource("1_wyqax")]
+
+[node name="EnemySpawner" type="Node" parent="."]
+script = ExtResource("3_mithn")
+target_points = 100.0
+enemy_list = Array[PackedScene]([ExtResource("4_rflj1"), ExtResource("5_10v5w"), ExtResource("6_5py7p"), ExtResource("7_gede4"), ExtResource("7_g2r1l")])
+enabled = false
+
+[node name="AsteroidSpawner" type="Node" parent="."]
+script = ExtResource("8_t20lr")
+asteroid_count = 10.0
+max_linear_momentum = 20.0
+spawn_distance = 8000.0
+despawn_distance = 10000.0
+
+[node name="PickupSpawner" type="Node" parent="."]
+script = ExtResource("9_ld0bk")
+pickup_list = Array[PackedScene]([ExtResource("10_shm8w"), ExtResource("11_8ig0n"), ExtResource("12_tj1t1"), ExtResource("13_jfhqv"), ExtResource("14_xlpsp"), ExtResource("15_qtx85"), ExtResource("16_qffew"), ExtResource("17_pbnca"), ExtResource("18_x63kg")])
+enabled = false
+
+[node name="HitNumberSpawner" type="Node" parent="."]
+script = ExtResource("19_ynf55")
+enable_on_player = true
+player_color = Color(1, 0.454902, 0.478431, 1)
+enable_on_enemy = true
+enemy_color = Color(0.517647, 0.513726, 1, 1)
+
+[node name="HealthBarSpawner" type="Node" parent="."]
+script = ExtResource("20_4nqwg")
+
+[node name="UILayer" type="CanvasLayer" parent="." groups=["UILayer"]]
+layer = 2
+
+[node name="InfoPanel" parent="UILayer" instance=ExtResource("21_1litg")]
+
+[node name="Minimap" parent="UILayer" instance=ExtResource("22_14ij0")]
+custom_minimum_size = Vector2(512, 512)
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -512.0
+offset_top = -512.0
+offset_right = 0.0
+offset_bottom = 0.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="Radar" parent="UILayer" instance=ExtResource("23_dgw7y")]
+visible = false
+offset_right = 0.0
+offset_bottom = 0.0
+
+[node name="DebugMenu" parent="UILayer" instance=ExtResource("24_i634n")]
+visible = false
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -332.0
+offset_top = 32.0
+offset_right = -32.0
+offset_bottom = 475.0
+grow_horizontal = 0

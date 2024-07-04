@@ -1,9 +1,8 @@
-[gd_scene load_steps=14 format=3 uid="uid://cyfnmhhrm5rdf"]
+[gd_scene load_steps=13 format=3 uid="uid://cyfnmhhrm5rdf"]
 
 [ext_resource type="Script" path="res://abilities/attack/missile_swarm/swarm_missile.gd" id="1_vflfx"]
 [ext_resource type="Shader" path="res://visual_effects/rocket_particles.gdshader" id="2_h054i"]
 [ext_resource type="Script" path="res://classes/ArcDetector.gd" id="3_ogt5e"]
-[ext_resource type="Script" path="res://classes/MissileAI.gd" id="4_rf2ae"]
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_yupj2"]
 blend_mode = 1
@@ -85,12 +84,4 @@ monitorable = false
 script = ExtResource("3_ogt5e")
 max_range = 512.0
 
-[node name="MissileAI" type="Node2D" parent="."]
-script = ExtResource("4_rf2ae")
-max_linear_thrust = 400.0
-max_angular_speed = 6.0
-avoidance_enabled = false
-
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
-[connection signal="post_update" from="MissileAI" to="." method="_on_missile_ai_post_update"]
-[connection signal="pre_update" from="MissileAI" to="." method="_on_missile_ai_pre_update"]

@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://b84l7h2qte8nl"]
+[gd_scene load_steps=5 format=3 uid="uid://b84l7h2qte8nl"]
 
 [ext_resource type="Script" path="res://enemies/spiky/SpikyFactory.gd" id="1_8hxwo"]
 [ext_resource type="Script" path="res://classes/Interpolator.gd" id="2_2tqk4"]
 [ext_resource type="Script" path="res://classes/HitBox.gd" id="3_2mew6"]
+[ext_resource type="Script" path="res://classes/ReversibleTimer.gd" id="4_p5e7e"]
 
 [node name="SpikyFactory" type="RigidBody2D" groups=["Enemies", "HitBox"]]
 collision_layer = 4
@@ -33,3 +34,14 @@ contact_damage_enabled = true
 
 [node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="HitBox"]
 polygon = PackedVector2Array(64, 0, 30.9096, 8.28221, 41.5692, 24, 22.6274, 22.6274, 32, 55.4256, 8.28221, 30.9096, -2.09815e-06, 48, -8.28221, 30.9096, -32, 55.4256, -22.6274, 22.6274, -41.5692, 24, -30.9096, 8.28221, -64, -5.59506e-06, -30.9096, -8.28221, -41.5692, -24, -22.6274, -22.6274, -32, -55.4256, -8.28221, -30.9096, 5.72394e-07, -48, 8.28221, -30.9096, 32, -55.4256, 22.6274, -22.6274, 41.5692, -24, 30.9096, -8.2822)
+
+[node name="SpawnTimer" type="Node" parent="."]
+script = ExtResource("4_p5e7e")
+autostart = true
+duration = 3.0
+
+[node name="NavigationObstacle2D" type="NavigationObstacle2D" parent="."]
+radius = 64.0
+avoidance_layers = 2
+
+[connection signal="timeout" from="SpawnTimer" to="." method="_on_spawn_timer_timeout"]

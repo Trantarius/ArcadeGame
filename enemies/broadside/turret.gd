@@ -12,9 +12,11 @@ func _physics_process(delta: float) -> void:
 	if(!is_instance_valid(target)):
 		$Barrel.global_rotation = rotate_toward($Barrel.global_rotation, $Detector.global_rotation, turn_rate*delta)
 		return
-		
-	var shot_dir:Vector2 = Ballistics.aim_shot_linear(global_position, get_average_velocity(), 
-		target.global_position, target.get_average_velocity(), shot_speed)
+	
+	var sol:Dictionary = Ballistics.solve_linear_quadratic_intercept(global_position, shot_speed, 
+	target.global_position, target.get_average_velocity()-get_average_velocity(), target.get_average_acceleration())
+	
+	var shot_dir:Vector2 = sol.velocity.normalized()
 	var shot_angle:float = Util.angle_clamp(shot_dir.angle(), global_rotation-$Detector.max_angle, global_rotation+$Detector.max_angle)
 	
 	$Barrel.global_rotation = rotate_toward($Barrel.global_rotation, shot_angle, turn_rate*delta)

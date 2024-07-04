@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" path="res://enemies/hornet/hornet.gd" id="1_ghiqj"]
 [ext_resource type="Script" path="res://classes/Interpolator.gd" id="2_yfdop"]
-[ext_resource type="Script" path="res://enemies/hornet/RandomWalk.gd" id="4_f6jcc"]
 [ext_resource type="Script" path="res://classes/HitBox.gd" id="4_sauan"]
-[ext_resource type="Script" path="res://classes/BallisticAI.gd" id="5_g1cgk"]
+[ext_resource type="Script" path="res://classes/AvoidanceAgent.gd" id="5_3en3k"]
+[ext_resource type="Script" path="res://classes/ReversibleTimer.gd" id="6_r7j4a"]
 
 [node name="Hornet" type="RigidBody2D"]
 collision_layer = 4
@@ -28,10 +28,6 @@ position = Vector2(8, 0)
 rotation = 1.5708
 polygon = PackedVector2Array(-12, -8, -8, 0, 8, 0, 12, -8, 16, 4, 8, 12, 0, 32, -8, 12, -16, 4)
 
-[node name="RandomWalk" type="Node2D" parent="."]
-script = ExtResource("4_f6jcc")
-momentum = 1.0
-
 [node name="Marker2D" type="Marker2D" parent="."]
 position = Vector2(16, 0)
 
@@ -46,8 +42,30 @@ position = Vector2(8, 0)
 rotation = 1.5708
 polygon = PackedVector2Array(-12, -8, -8, 0, 8, 0, 12, -8, 16, 4, 8, 12, 0, 32, -8, 12, -16, 4)
 
-[node name="BallisticAI" type="Node2D" parent="."]
-script = ExtResource("5_g1cgk")
-max_angular_speed = 3.0
-avoidance_mask = 7
-avoidance_radius = 24.0
+[node name="AvoidanceAgent" type="Node2D" parent="."]
+position = Vector2(-2.2, 0)
+script = ExtResource("5_3en3k")
+dv_limit = 200.0
+mask = 7
+max_neighbors = 100
+neighbor_distance = 2000.0
+radius = 22.0
+
+[node name="FireTimer" type="Node" parent="."]
+script = ExtResource("6_r7j4a")
+one_shot = true
+duration = 2.0
+
+[node name="ChargeTimer" type="Node" parent="."]
+script = ExtResource("6_r7j4a")
+one_shot = true
+duration = 2.0
+
+[node name="WanderTimer" type="Node" parent="."]
+script = ExtResource("6_r7j4a")
+reverse = true
+
+[connection signal="pre_update" from="AvoidanceAgent" to="." method="_on_avoidance_agent_pre_update"]
+[connection signal="timeout" from="FireTimer" to="." method="_on_fire_timer_timeout"]
+[connection signal="timeout" from="ChargeTimer" to="." method="_on_charge_timer_timeout"]
+[connection signal="timeout_reverse" from="ChargeTimer" to="." method="_on_charge_timer_timeout_reverse"]
