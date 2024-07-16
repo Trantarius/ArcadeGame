@@ -6,7 +6,7 @@ extends RigidBody2D
 ## How valuable this pickup is, effects drop rate (same unit as [member Enemy.point_value]).
 @export var value:float = 1
 
-var lifetime_timer:CountdownTimer = CountdownTimer.new()
+var lifetime_timer:Timer
 
 signal picked_up(player:Player)
 
@@ -18,7 +18,12 @@ func _init()->void:
 	add_to_group('Pickups')
 
 func _ready()->void:
-	lifetime_timer.time = lifetime
+	lifetime_timer = Timer.new()
+	lifetime_timer.name = 'LifetimeTimer'
+	lifetime_timer.one_shot = true
+	add_child(lifetime_timer)
+	lifetime_timer.timeout.connect(queue_free)
+	lifetime_timer.start(lifetime)
 
 func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 	var target:Player = Player.find_nearest_player(position)
@@ -35,6 +40,4 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 			queue_free()
 			break
 	
-	modulate.a = min(1,lifetime_timer.time)
-	if(lifetime_timer.time<0):
-		queue_free()
+	modulate.a = min(1,lifetime_timer.time_left)

@@ -1,11 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://dqs0njvcsrun8"]
+[gd_scene load_steps=4 format=3 uid="uid://dqs0njvcsrun8"]
 
 [ext_resource type="Script" path="res://abilities/weapon/scatter_gun/scatter_gun.gd" id="1_67ha3"]
 [ext_resource type="Texture2D" uid="uid://ywnuxr3l0rt6" path="res://abilities/weapon/scatter_gun/scatter_gun_icon.png" id="2_frdbm"]
+[ext_resource type="Script" path="res://classes/ReversibleTimer.gd" id="3_ky1kn"]
 
 [node name="ScatterGun" type="Node"]
 script = ExtResource("1_67ha3")
-base_fire_rate = 1.0
 ability_name = &"Scatter Gun"
 texture = ExtResource("2_frdbm")
 type = 2
@@ -17,4 +17,10 @@ Projectile Count: {stat projectile_count %.0f}
 Projectile Speed: {stat projectile_speed %.0f}
 Projectile Size: {stat projectile_size %.1f}"
 
+[node name="FireTimer" type="Node" parent="."]
+script = ExtResource("3_ky1kn")
+loop = true
+auto_update = 2
+
 [connection signal="fired" from="." to="." method="_on_fired"]
+[connection signal="timeout_precise" from="FireTimer" to="." method="_on_fire_timer_timeout_precise"]

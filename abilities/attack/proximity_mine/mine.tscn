@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://6i48nt0aqef8"]
+[gd_scene load_steps=9 format=3 uid="uid://6i48nt0aqef8"]
 
 [ext_resource type="Script" path="res://abilities/attack/proximity_mine/mine.gd" id="1_bumr1"]
 [ext_resource type="Script" path="res://classes/Interpolator.gd" id="2_m4ngs"]
+[ext_resource type="Script" path="res://classes/ReversibleTimer.gd" id="3_voao1"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_g2vna"]
 radius = 9.0
@@ -62,6 +63,12 @@ polygon = PackedVector2Array(-2, -2, 2, -2, 2, 2, -2, 2)
 [node name="Sprite2D" type="Sprite2D" parent="Interpolator/Indicator"]
 material = SubResource("CanvasItemMaterial_b2udl")
 texture = SubResource("GradientTexture2D_bxfru")
+
+[node name="LifetimeTimer" type="Node" parent="."]
+script = ExtResource("3_voao1")
+
+[node name="ArmingTimer" type="Node" parent="."]
+script = ExtResource("3_voao1")
 
 [connection signal="body_entered" from="Detector" to="." method="_on_detector_body_entered"]
 [connection signal="body_exited" from="Detector" to="." method="_on_detector_body_exited"]

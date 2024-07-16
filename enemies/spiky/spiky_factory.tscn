@@ -37,7 +37,8 @@ polygon = PackedVector2Array(64, 0, 30.9096, 8.28221, 41.5692, 24, 22.6274, 22.6
 
 [node name="SpawnTimer" type="Node" parent="."]
 script = ExtResource("4_p5e7e")
-autostart = true
+loop = true
+running = true
 duration = 3.0
 
 [node name="NavigationObstacle2D" type="NavigationObstacle2D" parent="."]

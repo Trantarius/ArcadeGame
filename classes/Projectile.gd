@@ -3,7 +3,7 @@ extends Area2D
 
 ## How long after firing the projectile is destroyed
 @export var lifetime:float = 10
-var lifetime_timer:CountdownTimer = CountdownTimer.new()
+var lifetime_timer:Timer
 
 @export var damage_amount:float = 1
 
@@ -18,13 +18,16 @@ func _init()->void:
 	body_entered.connect(_projectile_body_entered)
 
 func _ready()->void:
-	lifetime_timer.time = lifetime
+	lifetime_timer = Timer.new()
+	lifetime_timer.name = 'LifetimeTimer'
+	lifetime_timer.one_shot = true
+	add_child(lifetime_timer)
+	lifetime_timer.timeout.connect(queue_free)
+	lifetime_timer.start(lifetime)
 
 func _physics_process(delta: float) -> void:
 	
-	modulate.a = clamp(lifetime_timer.time,0,1)
-	if(lifetime_timer.time <= 0):
-		queue_free()
+	modulate.a = clamp(lifetime_timer.time_left,0,1)
 	
 	global_rotation += angular_velocity * delta
 	global_position += linear_velocity * delta

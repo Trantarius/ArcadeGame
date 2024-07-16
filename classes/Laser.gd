@@ -4,7 +4,7 @@ extends Node2D
 
 ## How long the laser stays on screen (the attack itself is instant)
 @export var lifetime:float = 0.25
-var lifetime_timer:CountdownTimer = CountdownTimer.new()
+var lifetime_timer:ReversibleTimer
 
 @export var damage_amount:float = 1
 
@@ -34,6 +34,16 @@ signal damage_dealt(damage:Damage)
 func _ready()->void:
 	if(Engine.is_editor_hint()):
 		fire()
+	else:
+		lifetime_timer = ReversibleTimer.new()
+		lifetime_timer.name = 'LifetimeTimer'
+		lifetime_timer.duration = lifetime
+		lifetime_timer.timeout.connect(func()->void:
+			if(is_instance_valid(line)):
+				line.queue_free()
+			queue_free())
+		add_child(lifetime_timer)
+		lifetime_timer.start()
 
 func fire()->void:
 	
@@ -47,7 +57,6 @@ func fire()->void:
 	gradtex.gradient = gradient
 	line.material.set_shader_parameter('gradient',gradtex)
 	line.width = width
-	lifetime_timer.min_time = 0
 	if(!Engine.is_editor_hint() && is_instance_valid(get_viewport().get_camera_2d())):
 		get_viewport().get_camera_2d().add_child(line)
 		line.global_transform = global_transform
@@ -57,7 +66,6 @@ func fire()->void:
 		line.points = [Vector2.ZERO,Vector2.RIGHT*length]
 	
 	if(!Engine.is_editor_hint()):
-		lifetime_timer.time = lifetime
 		line.material.set_shader_parameter('shade_offset',0)
 		
 		var results:Array[Dictionary] = Util.raycast(global_position, global_position + Vector2.from_angle(global_rotation) * length, collision_mask)
@@ -79,8 +87,4 @@ func fire()->void:
 	
 func _process(_delta: float) -> void:
 	if(!Engine.is_editor_hint()):
-		line.material.set_shader_parameter('shade_offset',(lifetime - lifetime_timer.time)/lifetime)
-		if(lifetime_timer.time<=0):
-			if(is_instance_valid(line)):
-				line.queue_free()
-			queue_free()
+		line.material.set_shader_parameter('shade_offset',(lifetime - $LifetimeTimer.time)/lifetime)

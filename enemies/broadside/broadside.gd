@@ -1,8 +1,6 @@
 extends Enemy
 
 @export var cannon_fire_delay:float = 5
-var port_fire_timer:CountdownTimer = CountdownTimer.new()
-var starboard_fire_timer:CountdownTimer = CountdownTimer.new()
 
 ## The amount of force used in the direction parallel to the ship to move it.
 const max_thrust:float = 100
@@ -25,6 +23,13 @@ func _init()->void:
 	body = $'.'
 
 func _ready() -> void:
+	$PortFireTimer.duration = cannon_fire_delay
+	$PortFireTimer.reset()
+	$PortFireTimer.start()
+	$StarboardFireTimer.duration = cannon_fire_delay
+	$StarboardFireTimer.reset()
+	$StarboardFireTimer.start()
+	
 	max_health = 0
 	for child:Node in ($Port/Turrets.get_children() + $Port/Cannons.get_children() + 
 					   $Starboard/Turrets.get_children() + $Starboard/Cannons.get_children() +
@@ -40,7 +45,7 @@ func _on_part_damaged(damage:Damage)->void:
 
 func _physics_process(_delta: float) -> void:
 	
-	if(port_fire_timer.time<=0):
+	if($PortFireTimer.is_finished()):
 		var fire_port:bool = false
 		for cannon:Enemy in $Port/Cannons.get_children():
 			if(!cannon.get_node(^'Detector').get_overlapping_bodies().is_empty()):
@@ -49,9 +54,10 @@ func _physics_process(_delta: float) -> void:
 		if(fire_port):
 			for cannon:Enemy in $Port/Cannons.get_children():
 				cannon.fire()
-			port_fire_timer.time = cannon_fire_delay
+			$PortFireTimer.reset()
+			$PortFireTimer.start()
 	
-	if(starboard_fire_timer.time<=0):
+	if($StarboardFireTimer.is_finished()):
 		var fire_starboard:bool = false
 		for cannon:Enemy in $Starboard/Cannons.get_children():
 			if(!cannon.get_node(^'Detector').get_overlapping_bodies().is_empty()):
@@ -60,7 +66,8 @@ func _physics_process(_delta: float) -> void:
 		if(fire_starboard):
 			for cannon:Enemy in $Starboard/Cannons.get_children():
 				cannon.fire()
-			starboard_fire_timer.time = cannon_fire_delay
+			$StarboardFireTimer.reset()
+			$StarboardFireTimer.start()
 	
 	target = Player.find_nearest_player(global_position)
 	

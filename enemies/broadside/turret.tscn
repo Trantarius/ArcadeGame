@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://calsi17ho0g4c"]
+[gd_scene load_steps=9 format=3 uid="uid://calsi17ho0g4c"]
 
 [ext_resource type="Script" path="res://enemies/broadside/turret.gd" id="1_w5xny"]
 [ext_resource type="Script" path="res://classes/HitBox.gd" id="2_fvd0i"]
 [ext_resource type="Script" path="res://classes/ArcDetector.gd" id="2_std03"]
 [ext_resource type="Script" path="res://classes/Interpolator.gd" id="4_idxw3"]
+[ext_resource type="Script" path="res://classes/ReversibleTimer.gd" id="5_6sy6v"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_5y8vg"]
 radius = 24.0
@@ -65,6 +66,10 @@ script = ExtResource("4_idxw3")
 [node name="Sprite2D" type="Sprite2D" parent="Interpolator"]
 modulate = Color(0.447059, 0.203922, 0.196078, 1)
 texture = SubResource("GradientTexture2D_3djam")
+
+[node name="FireTimer" type="Node" parent="."]
+script = ExtResource("5_6sy6v")
+running = true
 
 [connection signal="body_entered" from="Detector" to="." method="_on_detector_body_entered"]
 [connection signal="body_exited" from="Detector" to="." method="_on_detector_body_exited"]

@@ -1,11 +1,19 @@
-extends AutoFireAbility
+extends PlayerAbility
 
+var fire_rate:Stat = Stat.new(2, 0, INF)
 var damage:Stat = Stat.new(20, 0, INF)
 var projectile_count:Stat = Stat.new(1, 1, INF, Stat.PERIODIC)
 var laser_range:Stat = Stat.new(1000, 10, INF)
 var auto_aim:Stat = Stat.new(15, 0, 90)
 
-func _on_fired() -> void:
+signal fired
+
+func _ready()->void:
+	$FireTimer.duration = 1.0/fire_rate.get_value()
+	$FireTimer.reset()
+	$FireTimer.start()
+
+func _on_fire_timer_timeout_precise(ago: float) -> void:
 	var muzzle_pos:Vector2 = get_parent().get_muzzle_position()
 	var muzzle_dir:Vector2 = get_parent().get_muzzle_direction()
 	
@@ -39,3 +47,6 @@ func _on_fired() -> void:
 			laser.global_rotation = target_theta
 			laser.length = laser_range.get_value()
 			laser.fire()
+	
+	fired.emit()
+	$FireTimer.duration = 1.0/fire_rate.get_value()

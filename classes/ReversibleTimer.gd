@@ -4,66 +4,58 @@
 class_name ReversibleTimer
 extends Node
 
-## Starts the timer when entering the scene tree, or when calling [method reset].
-@export var autostart:bool = false
-## Stops the timer when it times out.
-@export var one_shot:bool = false
+## Automatically restarts the timer when complete. Also allows multiple activations per update.
+@export var loop:bool = false
+
 ## Makes the time count upwards instead of downwards.
 @export var reverse:bool = false
 
-## Emitted when [member time] reaches [member min_time].
-signal timeout
-## Emitted when [member time] reaches [member max_time].
-signal timeout_reverse
-
-var _running:bool = false
-var running:bool:
-	get:
-		return _running
+## Scales time like Engine.time_scale, but only for this timer.
+@export var time_scale:float = 1.0:
 	set(to):
-		if(is_inside_tree()):
-			_running=to
-			update()
+		time_scale = max(0,to)
 
+## Indicates the timer is enabled. The timer will only run when it is in the scene tree.
+@export var running:bool = false
+
+## Maximum value of [member time].
 @export var duration:float=1:
 	set(to):
-		_dur_ticks = roundi(to*1_000_000)
-		update()
+		_dur_ticks = max(1,roundi(to*1_000_000))
+		_ticks = clamp(_ticks, 0, _dur_ticks)
 	get:
 		return float(_dur_ticks)/1_000_000
 
-## Seconds remaining
+enum{NONE=0, PROCESS=1, PHYSICS=2}
+## Automaticall calls [method update] with a callback. If set to 'None', [method update] will have to be called manually.
+@export_enum('None:0','Process:1','Physics:2') var auto_update:int = 1:
+	set(to):
+		set_process(to==PROCESS)
+		set_physics_process(to==PHYSICS)
+		auto_update=to
+
+## Emitted when [member time] reaches 0, or when it reaches [member duration] when [member reverse] is true.
+signal timeout
+## Like [signal timeout], but includes how long ago the activation took place for more precision.
+signal timeout_precise(ago:float)
+
+## Seconds remaining.
 var time:float:
 	set(to):
-		_ticks = roundi(to*1_000_000)
-		update()
+		_ticks = clamp(roundi(to*1_000_000), 0, _dur_ticks)
 	get:
 		return float(_ticks)/1_000_000
 
-var _dur_ticks:int = 1_000_000:
-	set(to):
-		_dur_ticks=max(1,to)
+var _dur_ticks:int = 1_000_000
 var _ticks:int
-# when <0, (_running && can_process()) was false last update, and the intervening period should be ignored
-var _last_update_tick:int=-1
-
-func _enter_tree() -> void:
-	reset()
-
-func _exit_tree() -> void:
-	_running=false
-	update()
+var _last_update_tick:int = -1
+var _doing_timeout:bool = false
 
 func reset()->void:
-	# discard the last update period
-	_last_update_tick=-1
-	
 	if(reverse):
-		_ticks=0
+		_ticks = 0
 	else:
-		_ticks=_dur_ticks
-	_running = autostart && is_inside_tree()
-	update()
+		_ticks = _dur_ticks
 
 func start()->void:
 	running=true
@@ -71,52 +63,64 @@ func start()->void:
 func stop()->void:
 	running=false
 
-func _process(_delta: float) -> void:
-	update()
+func is_finished()->bool:
+	return reverse && _ticks==_dur_ticks || !reverse && _ticks==0
 
 func update()->void:
-	if(Engine.is_editor_hint()):
-		return
 	var now:int = Time.get_ticks_usec()
-	if(_last_update_tick>=0):
-		var delta:int = now-_last_update_tick
-		if(reverse):
-			_ticks+=delta*Engine.time_scale
-		else:
-			_ticks-=delta*Engine.time_scale
+	var elapsed:int = roundi(Engine.time_scale*time_scale*(now - _last_update_tick))
+	if(_last_update_tick<0):
+		elapsed = 0
+	_last_update_tick = now
 	
-	if(_running && can_process()):
-		_last_update_tick=now
+	var check_once:bool = true
+	while((elapsed>0 || check_once) && running):
+		check_once=false
+		
 		if(reverse):
-			if(_ticks>=_dur_ticks):
-				if(one_shot):
-					_ticks=_dur_ticks
-					_running=false
-				else:
-					_ticks -= _dur_ticks
-				timeout_reverse.emit()
-				if(!one_shot):
-					# recursively update until there is no timeout
-					update()
-					return
-		else:
-			if(_ticks<=0):
-				if(one_shot):
-					_ticks = 0
-					_running=false
-				else:
-					_ticks += _dur_ticks
+			if(_dur_ticks-_ticks<=elapsed):
+				elapsed -= _dur_ticks-_ticks
+				_ticks = _dur_ticks
+				timeout_precise.emit(float(elapsed)/1_000_000)
 				timeout.emit()
-				if(!one_shot):
-					# recursively update until there is no timeout
-					update()
-					return
-	else:
-		_ticks = clamp(_ticks, 0, _dur_ticks)
-		_last_update_tick=-1
+				
+				# redo checks in case a listener modified the timer
+				if(_ticks==_dur_ticks && reverse && running):
+					if(loop):
+						_ticks = 0
+					else:
+						running = false
+			else:
+				_ticks += elapsed
+				elapsed = 0
+		
+		else:
+			if(_ticks<=elapsed):
+				elapsed -= _ticks
+				_ticks = 0
+				timeout_precise.emit(float(elapsed)/1_000_000)
+				timeout.emit()
+				
+				# redo checks in case a listener modified the timer
+				if(_ticks==0 && !reverse && running):
+					if(loop):
+						_ticks = _dur_ticks
+					else:
+						running = false
+			else:
+				_ticks -= elapsed
+				elapsed = 0
 
 func _notification(what: int) -> void:
+	if(Engine.is_editor_hint()):
+		return
 	match what:
-		NOTIFICATION_PAUSED, NOTIFICATION_UNPAUSED, NOTIFICATION_PROCESS:
+		NOTIFICATION_READY:
+			set_process(auto_update==PROCESS)
+			set_physics_process(auto_update==PHYSICS)
+			reset()
+		NOTIFICATION_EXIT_TREE, NOTIFICATION_PAUSED:
+			_last_update_tick = -1
+		NOTIFICATION_PROCESS, NOTIFICATION_PHYSICS_PROCESS:
 			update()
 

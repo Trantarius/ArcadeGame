@@ -23,23 +23,27 @@ extends RigidBody2D
 
 @export_flags_2d_physics var explosion_mask:int
 
-var lifetime_timer:CountdownTimer = CountdownTimer.new()
-var timer:CountdownTimer = CountdownTimer.new()
+@onready var lifetime_timer:ReversibleTimer = $LifetimeTimer
+@onready var timer:ReversibleTimer = $ArmingTimer
 var armed:bool = false
 var detonating:bool = false
 var enemies_detected:int = 0
 var source:Actor
 
 func _ready() -> void:
-	timer.time = arming_time
-	lifetime_timer.time = lifetime
+	timer.duration = arming_time
+	timer.reset()
+	timer.start()
+	lifetime_timer.duration = lifetime
+	lifetime_timer.reset()
+	lifetime_timer.start()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
 	if(armed):
 		if(detonating):
 			$Interpolator/Indicator.modulate = detonate_color
-			if(timer.time<=0):
+			if(timer.is_finished()):
 				detonate()
 		else:
 			$Interpolator/Indicator.modulate = armed_color
@@ -48,14 +52,16 @@ func _process(_delta: float) -> void:
 			$Interpolator/Indicator.modulate = arming_color
 		else:
 			$Interpolator/Indicator.modulate = off_color
-		if(!armed && timer.time<=0):
+		if(!armed && timer.is_finished()):
 			armed = true
 			if(enemies_detected>0):
 				detonating = true
-				timer.time = detonate_time
+				timer.duration = detonate_time
+				timer.reset()
+				timer.start()
 	
 	modulate.a = clamp(lifetime_timer.time,0,1)
-	if(lifetime_timer.time<=0):
+	if(lifetime_timer.is_finished()):
 		queue_free()
 			
 

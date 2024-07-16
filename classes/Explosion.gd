@@ -14,19 +14,28 @@ extends Node2D
 
 var source:Actor
 var duration:float
-var timer:CountdownTimer = CountdownTimer.new()
+var lifetime_timer:Timer
 ## The velocity of the thing that created the explosion
 var linear_velocity:Vector2
 
 signal damage_dealt(damage:Damage)
 
 func _ready()->void:
-	material = preload("res://visual_effects/explosion_material.tres")
+	
+	material = preload("res://visual_effects/explosion_material.tres").duplicate()
 	duration = (material.get_shader_parameter('diffusion_time') + material.get_shader_parameter('activation_time'))
+	
 	if(Engine.is_editor_hint()):
 		material.set_shader_parameter('current_time',-1)
+		
 	else:
-		timer.time = duration
+		
+		lifetime_timer = Timer.new()
+		lifetime_timer.name = 'LifetimeTimer'
+		lifetime_timer.one_shot = true
+		add_child(lifetime_timer)
+		lifetime_timer.timeout.connect(queue_free)
+		lifetime_timer.start(duration)
 		
 		var query:PhysicsShapeQueryParameters2D = PhysicsShapeQueryParameters2D.new()
 		query.collide_with_areas = true
@@ -51,10 +60,8 @@ func _ready()->void:
 func _process(_delta: float) -> void:
 	if(!Engine.is_editor_hint()):
 		queue_redraw()
-		if(timer.time <= 0):
-			queue_free()
 
 func _draw()->void:
 	if(!Engine.is_editor_hint()):
-		material.set_shader_parameter('current_time', (duration-timer.time))
+		material.set_shader_parameter('current_time', (duration-lifetime_timer.time_left))
 	draw_rect(Rect2(-radius,-radius,radius*2,radius*2),Color.WHITE)

@@ -17,17 +17,19 @@ const max_thrust:float = 200
 var linear_velocity:Vector2
 var angular_velocity:float
 
-var lifetime_timer:CountdownTimer = CountdownTimer.new()
+@onready var lifetime_timer:ReversibleTimer = $LifetimeTimer
 var enemies_detected:int = 0
 var source:Actor
 
 func _ready() -> void:
-	lifetime_timer.time = lifetime
+	lifetime_timer.duration = lifetime
+	lifetime_timer.reset()
+	lifetime_timer.start()
 			
 func _physics_process(delta: float) -> void:
 	
 	modulate.a = clamp(lifetime_timer.time,0,1)
-	if(lifetime_timer.time <= 0):
+	if(lifetime_timer.is_finished()):
 		queue_free()
 	
 	var facing:Vector2 = Vector2.from_angle(global_rotation)

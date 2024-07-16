@@ -1,12 +1,12 @@
-[gd_scene load_steps=4 format=3 uid="uid://blpkj5dm1bxh5"]
+[gd_scene load_steps=5 format=3 uid="uid://blpkj5dm1bxh5"]
 
 [ext_resource type="Script" path="res://abilities/weapon/pulse_laser/pulse_laser.gd" id="1_lsk2q"]
 [ext_resource type="Texture2D" uid="uid://d0b1i8dwuq1ah" path="res://abilities/weapon/pulse_laser/pulse_laser_icon.png" id="2_grv64"]
 [ext_resource type="Script" path="res://classes/ArcDetector.gd" id="3_2r0o1"]
+[ext_resource type="Script" path="res://classes/ReversibleTimer.gd" id="4_dupaf"]
 
 [node name="PulseLaser" type="Node2D"]
 script = ExtResource("1_lsk2q")
-base_fire_rate = 2.0
 ability_name = &"Pulse Laser"
 texture = ExtResource("2_grv64")
 type = 2
@@ -27,4 +27,9 @@ script = ExtResource("3_2r0o1")
 require_raycast = true
 raycast_mask = 7
 
-[connection signal="fired" from="." to="." method="_on_fired"]
+[node name="FireTimer" type="Node" parent="."]
+script = ExtResource("4_dupaf")
+loop = true
+auto_update = 2
+
+[connection signal="timeout_precise" from="FireTimer" to="." method="_on_fire_timer_timeout_precise"]

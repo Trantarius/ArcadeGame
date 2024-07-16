@@ -95,12 +95,11 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_p33fl")
 
 [node name="CooldownTimer" type="Node" parent="."]
 script = ExtResource("5_b31lk")
-one_shot = true
+running = true
 duration = 4.0
 
 [node name="ShieldTimer" type="Node" parent="."]
 script = ExtResource("5_b31lk")
-one_shot = true
 duration = 2.0
 
 [node name="AvoidanceAgent" type="Node2D" parent="."]
@@ -112,5 +111,4 @@ radius = 58.475
 
 [connection signal="timeout" from="CooldownTimer" to="." method="_on_cooldown_timer_timeout"]
 [connection signal="timeout" from="ShieldTimer" to="." method="_on_shield_timer_timeout"]
-[connection signal="timeout_reverse" from="ShieldTimer" to="." method="_on_shield_timer_timeout_reverse"]
 [connection signal="pre_update" from="AvoidanceAgent" to="." method="_on_avoidance_agent_pre_update"]

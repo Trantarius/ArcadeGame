@@ -128,12 +128,11 @@ func _on_avoidance_agent_pre_update() -> void:
 
 
 func _on_shield_timer_timeout() -> void:
-	match fire_stage:
-		STAGE_ABORT:
-			fire_stage = STAGE_READY
-		STAGE_CLOSE:
-			fire_stage = STAGE_COOLDOWN
-
-
-func _on_shield_timer_timeout_reverse() -> void:
-	fire_stage = STAGE_FULLY_OPEN
+	if($ShieldTimer.reverse):
+		fire_stage = STAGE_FULLY_OPEN
+	else:
+		match fire_stage:
+			STAGE_ABORT:
+				fire_stage = STAGE_READY
+			STAGE_CLOSE:
+				fire_stage = STAGE_COOLDOWN

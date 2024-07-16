@@ -3,6 +3,7 @@ extends PlayerAbility
 
 ## Number of times [signal fire] is emitted per second.
 var fire_rate:Stat = Stat.new(3, 0.01666, 60)
+var fire_timer:ReversibleTimer
 
 @export var base_fire_rate:float:
 	get:
@@ -11,6 +12,9 @@ var fire_rate:Stat = Stat.new(3, 0.01666, 60)
 		fire_rate.base=to
 
 signal fired
+
+func _ready()->void:
+	pass
 
 func _enter_tree()->void:
 	super()

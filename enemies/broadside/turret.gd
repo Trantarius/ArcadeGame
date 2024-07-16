@@ -1,10 +1,8 @@
 extends Enemy
 
 @export var turn_rate:float = 1
-@export var fire_delay:float = 1
 @export var shot_speed:float = 400
 
-var fire_timer:CountdownTimer = CountdownTimer.new()
 var target:Actor
 
 func _physics_process(delta: float) -> void:
@@ -21,9 +19,10 @@ func _physics_process(delta: float) -> void:
 	
 	$Barrel.global_rotation = rotate_toward($Barrel.global_rotation, shot_angle, turn_rate*delta)
 	
-	if(abs(angle_difference($Barrel.global_rotation,shot_angle))<0.1 && fire_timer.time<=0):
+	if(abs(angle_difference($Barrel.global_rotation,shot_angle))<0.1 && $FireTimer.is_finished()):
 		fire()
-		fire_timer.time = fire_delay
+		$FireTimer.reset()
+		$FireTimer.start()
 
 func fire()->void:
 	var proj:Projectile = preload("res://enemies/broadside/turret_projectile.tscn").instantiate()

@@ -20,7 +20,6 @@ var wander_next:Vector2
 var target:Player
 var body:RigidBody2D
 var charging_shot:Projectile
-var fire_ready:bool = false
 
 func _init()->void:
 	body = $'.'
@@ -34,7 +33,6 @@ func _physics_process(delta: float) -> void:
 		# something happened to the shot, it probably hit something
 		$ChargeTimer.stop()
 		$ChargeTimer.reset()
-		fire_ready=false
 		$FireTimer.reset()
 		$FireTimer.start()
 	
@@ -62,7 +60,7 @@ func _physics_process(delta: float) -> void:
 				$ChargeTimer.reverse=false
 				$ChargeTimer.start()
 		
-		elif(charge && fire_ready && !$ChargeTimer.running):
+		elif(charge && $FireTimer.is_finished() && !$ChargeTimer.running):
 			create_shot()
 			
 	else:
@@ -72,7 +70,7 @@ func _physics_process(delta: float) -> void:
 		charging_shot.global_scale = Vector2.ONE * ($ChargeTimer.duration-$ChargeTimer.time)/$ChargeTimer.duration
 		charging_shot.global_position = $Marker2D.global_position
 	
-	if(!fire_ready && !$FireTimer.running):
+	if(!$FireTimer.is_finished() && !$FireTimer.running):
 		$FireTimer.reset()
 		$FireTimer.start()
 
@@ -100,16 +98,6 @@ func _on_avoidance_agent_pre_update() -> void:
 		await $AvoidanceAgent.post_update
 		body.linear_velocity = $AvoidanceAgent.velocity
 
-
-func _on_fire_timer_timeout() -> void:
-	fire_ready=true
-
-func _on_charge_timer_timeout() -> void:
-	pass
-
-func _on_charge_timer_timeout_reverse() -> void:
-	abort_shot()
-
 func create_shot()->void:
 	charging_shot = preload("res://enemies/hornet/hornet_shot.tscn").instantiate()
 	var interp:Interpolator = charging_shot.get_node(^'Interpolator')
@@ -132,7 +120,6 @@ func shoot()->void:
 		interp.offset_target = null
 		interp.offset = Transform2D.IDENTITY
 	charging_shot = null
-	fire_ready = false
 	$FireTimer.reset()
 	$FireTimer.start()
 
@@ -142,3 +129,8 @@ func abort_shot()->void:
 	$ChargeTimer.reverse = false
 	$ChargeTimer.reset()
 
+
+
+func _on_charge_timer_timeout() -> void:
+	if($ChargeTimer.reverse):
+		abort_shot()

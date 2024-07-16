@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://duw4y42hn6e5i"]
+[gd_scene load_steps=8 format=3 uid="uid://duw4y42hn6e5i"]
 
 [ext_resource type="Script" path="res://enemies/broadside/broadside.gd" id="1_myy4k"]
 [ext_resource type="PackedScene" uid="uid://calsi17ho0g4c" path="res://enemies/broadside/turret.tscn" id="2_qy785"]
@@ -6,6 +6,7 @@
 [ext_resource type="PackedScene" uid="uid://c11upr826ghta" path="res://enemies/broadside/engine.tscn" id="4_srbmi"]
 [ext_resource type="Script" path="res://classes/Interpolator.gd" id="5_5wcpo"]
 [ext_resource type="Script" path="res://classes/AvoidanceAgent.gd" id="6_iway5"]
+[ext_resource type="Script" path="res://classes/ReversibleTimer.gd" id="7_tojox"]
 
 [node name="Broadside" type="RigidBody2D"]
 mass = 1000.0
@@ -118,5 +119,11 @@ mask = 6
 neighbor_distance = 4000.0
 radius = 729.54
 time_horizon_obstacles = 10.0
+
+[node name="PortFireTimer" type="Node" parent="."]
+script = ExtResource("7_tojox")
+
+[node name="StarboardFireTimer" type="Node" parent="."]
+script = ExtResource("7_tojox")
 
 [connection signal="pre_update" from="AvoidanceAgent" to="." method="_on_avoidance_agent_pre_update"]

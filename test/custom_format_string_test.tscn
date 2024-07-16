@@ -85,29 +85,29 @@ text = "[table=2]
 [cell]bad escape type:[/cell] [cell][code][color=red]ERROR unknown escape type 'badEscape'[/color][/code][/cell]s
 [cell]action named ui_accept:[/cell] [cell][code][lb]Enter|Kp Enter|Space[rb][/code][/cell]
 [cell]action with bad name:[/cell] [cell][code][color=red]ERROR nonexistent action 'badAction'[/color][/code][/cell]
-[cell]property named foo:[/cell] [cell]123.321[/cell]
-[cell]property named foo with format:    [/cell] [cell]00123.32[/cell]
+[cell]property named foo:[/cell] [cell][code]123.321[/code][/cell]
+[cell]property named foo with format:    [/cell] [cell][code]00123.32[/code][/cell]
 [cell]property with bad name:[/cell] [cell][code][color=red]ERROR object doesn't have property 'badProp'[/color][/code][/cell]
-[cell]stat named bar:[/cell] [cell]1.23[/cell]
-[cell]buffed stat named better_bar:[/cell] [cell]2.34 ([hint=base: 2.34
+[cell]stat named bar:[/cell] [cell][code]1.23[/code][/cell]
+[cell]buffed stat named better_bar:[/cell] [cell][code]2.34 ([hint=base: 2.34
 +1.10 from sourceOne = 3.44
 ×2.20 from sourceTwo = 7.57
 +3.30 from sourceThree = 10.87
 ×4.40 from sourceFour = 47.82
-][color=green]47.8192[/color][/hint])[/cell]
-[cell]debuffed stat named worse_bar:[/cell] [cell]345.678 ([hint=base: 345.68
+][color=green]47.8192[/color][/hint])[/code][/cell]
+[cell]debuffed stat named worse_bar:[/cell] [cell][code]345.678 ([hint=base: 345.68
 -1.10 from sourceOne = 344.58
 ×0.20 from sourceTwo = 68.92
 -3.30 from sourceThree = 65.62
 ×0.40 from sourceFour = 26.25
-][color=red]26.24624[/color][/hint])[/cell]
+][color=red]26.24624[/color][/hint])[/code][/cell]
 [cell]stat with bad name:[/cell] [cell][code][color=red]ERROR object doesn't have property 'badStat' or it isn't a Stat[/color][/code][/cell]
-[cell]stat with format:[/cell] [cell]2.3% ([hint=base: 2.34
+[cell]stat with format:[/cell] [cell][code]2.3% ([hint=base: 2.34
 +1.10 from sourceOne = 3.44
 ×2.20 from sourceTwo = 7.57
 +3.30 from sourceThree = 10.87
 ×4.40 from sourceFour = 47.82
-][color=green]47.8%[/color][/hint])[/cell]
+][color=green]47.8%[/color][/hint])[/code][/cell]
 [/table]
 "
 
