@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="SceneList" load_steps=7 format=3 uid="uid://cth1tnkhu3ijs"]
+
+[ext_resource type="PackedScene" uid="uid://duw4y42hn6e5i" path="res://enemies/broadside/broadside.tscn" id="1_3mhvl"]
+[ext_resource type="Script" path="res://classes/SceneList.gd" id="1_bxj33"]
+[ext_resource type="PackedScene" uid="uid://d4epik40543it" path="res://enemies/hornet/hornet.tscn" id="2_07ddc"]
+[ext_resource type="PackedScene" uid="uid://blf0t84ei3owm" path="res://enemies/shield_bearer/shield_bearer.tscn" id="3_qp2xk"]
+[ext_resource type="PackedScene" uid="uid://cb3satgchcg1i" path="res://enemies/spiky/spiky.tscn" id="4_ne0vy"]
+[ext_resource type="PackedScene" uid="uid://b84l7h2qte8nl" path="res://enemies/spiky/spiky_factory.tscn" id="5_5lihx"]
+
+[resource]
+script = ExtResource("1_bxj33")
+list = Array[PackedScene]([ExtResource("1_3mhvl"), ExtResource("2_07ddc"), ExtResource("3_qp2xk"), ExtResource("4_ne0vy"), ExtResource("5_5lihx")])

@@ -1,13 +1,19 @@
-[gd_scene load_steps=2 format=3 uid="uid://c2g3s6js6hne"]
+[gd_scene load_steps=3 format=3 uid="uid://c2g3s6js6hne"]
 
 [ext_resource type="Script" path="res://abilities/attack/missile_swarm/missile_swarm_ability.gd" id="1_pksai"]
+[ext_resource type="Texture2D" uid="uid://b7phyligmqe2" path="res://abilities/attack/missile_swarm/missile_swarm_icon.png" id="2_f4tvj"]
 
 [node name="MissileSwarmAbility" type="Node"]
 script = ExtResource("1_pksai")
-missile_count = 8
-cooldown = 5.0
+base_cooldown = 5.0
 ability_name = &"Missile Swarm"
-type = "Attack"
-mod_name = &"attack_ability"
+texture = ExtResource("2_f4tvj")
+type = 1
+description = "Press {action attack_ability} to fire a swarm of heat-seeking missiles to obliterate everything in front of you.
+
+Cooldown: {stat cooldown %.2fs}
+Damage: {stat damage %.2f}
+Missile Count: {stat projectile_count %.0f}
+Explosion Size: {stat explosion_size %.0f}"
 
 [connection signal="triggered" from="." to="." method="_on_triggered"]

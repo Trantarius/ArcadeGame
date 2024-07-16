@@ -17,48 +17,30 @@ var score:float:
 
 signal score_changed(to:float)
 
+# emitting when a new ability is considered (before choice screen)
+signal new_ability(ability:PlayerAbility)
+
+# emitted when an ability is finalized (after choice screen)
+signal added_ability(ability:PlayerAbility)
+signal removed_ability(ability:PlayerAbility)
+
+var abilities:Dictionary
+
+func add_ability(ability:PlayerAbility)->void:
+	add_child(ability)
+
+func remove_ability(ability:PlayerAbility)->void:
+	assert(ability.is_inside_tree())
+	assert(ability.get_parent()==self)
+	assert(abilities[ability.type]==ability)
+	removed_ability.emit(ability)
+	abilities.erase(ability.type)
+	ability.queue_free()
+
 func get_muzzle_position()->Vector2:
 	return $Interpolator/Muzzle.global_position
 func get_muzzle_direction()->Vector2:
 	return Vector2.UP.rotated($Interpolator/Muzzle.global_rotation)
-
-var _add_ability_queue:Array[PlayerAbility]
-var _is_adding_ability:bool = false
-
-## Adds an ability to the player. If the ability conflicts with an existing ability, the player
-## is given the option to keep the old one or switch to the new one.
-func add_ability(ability:PlayerAbility):
-	if(_is_adding_ability):
-		# since _add_ability is async, use a queue to make sure the next call waits for the last to finish
-		_add_ability_queue.push_back(ability)
-	else:
-		_is_adding_ability=true
-		await _add_ability(ability)
-		_is_adding_ability=false
-		if(!_add_ability_queue.is_empty()):
-			var next:PlayerAbility = _add_ability_queue.pop_front()
-			add_ability(next)
-
-func _add_ability(ability:PlayerAbility):
-	if(modifiers.has(ability.mod_name)):
-		if(modifiers[ability.mod_name] is PlayerAbility && 
-			modifiers[ability.mod_name].ability_name==ability.ability_name):
-			# if the existing ability is the same thing, just refresh it without asking
-			add_child(ability)
-		else:
-			var uilayer:CanvasLayer = get_tree().get_first_node_in_group('UILayer')
-			var chooser:Control = load('res://ui/ability_choice_screen.tscn').instantiate()
-			chooser.left_ability = modifiers[ability.mod_name]
-			chooser.right_ability = ability
-			uilayer.add_child(chooser)
-			var selected:PlayerAbility = await chooser.select_finished
-			if(selected==ability):
-				add_child(ability)
-			else:
-				ability.queue_free()
-	else:
-		# if player doesn't have this type of ability, just add it
-		add_child(ability)
 
 func _on_death(_damage:Damage)->void:
 	# ensure camera stays around after player dies

@@ -6,20 +6,17 @@
 
 [node name="PulseLaser" type="Node2D"]
 script = ExtResource("1_lsk2q")
-fire_rate = 1.0
-damage_amount = 20.0
-projectile_speed = 1000.0
+base_fire_rate = 2.0
 ability_name = &"Pulse Laser"
 texture = ExtResource("2_grv64")
-type = "Weapon"
+type = 2
 description = "A repeating laser gun. Onboard AI is able track and hit targets in front of you. Mostly effective at long range.
 
-Damage: {property damage_amount}
-Fire Rate: {property fire_rate}/s
-Laser Count: {property projectile_count}
-Range: {property projectile_speed}
-Auto Aim: {property projectile_size}°"
-mod_name = &"weapon"
+Damage: {stat damage %.1f}
+Fire Rate: {stat fire_rate %.2f}
+Laser Count: {stat projectile_count %.0f}
+Range: {stat laser_range %.0f}
+Auto Aim: {stat auto_aim %.2f°}"
 
 [node name="ArcDetector" type="Area2D" parent="."]
 rotation = -1.5708
@@ -30,4 +27,4 @@ script = ExtResource("3_2r0o1")
 require_raycast = true
 raycast_mask = 7
 
-[connection signal="fire" from="." to="." method="_on_fire"]
+[connection signal="fired" from="." to="." method="_on_fired"]

@@ -55,8 +55,6 @@ size = Vector2(4, 12)
 collision_layer = 16
 collision_mask = 5
 script = ExtResource("1_vflfx")
-explosion_radius = 128.0
-explosion_damage = 10.0
 explosion_mask = 4
 
 [node name="RocketParticles" type="GPUParticles2D" parent="."]

@@ -1,0 +1,115 @@
+[gd_scene load_steps=4 format=3 uid="uid://djyoebuvlh6e7"]
+
+[ext_resource type="Theme" uid="uid://d0ifc4kse0sbj" path="res://ui/theme/theme.tres" id="1_s4jml"]
+
+[sub_resource type="GDScript" id="GDScript_ponul"]
+script/source = "@tool
+extends Control
+
+@export var object:Node:
+	set(to):
+		object=to
+		if(is_inside_tree()):
+			$PanelContainer/RichTextLabel.text = Util.custom_format_string(text,object)
+
+@export_multiline var text:String:
+	set(to):
+		text = to
+		if(is_inside_tree()):
+			$PanelContainer/RichTextLabel.text = Util.custom_format_string(text,object)
+
+func _ready()->void:
+	$PanelContainer/RichTextLabel.text = Util.custom_format_string(text,object)
+"
+
+[sub_resource type="GDScript" id="GDScript_vxwrk"]
+script/source = "@tool
+extends Node
+
+
+@export var foo:float = 123.321
+
+var bar:Stat = Stat.new(1.23, -INF, INF)
+
+var better_bar:Stat = Stat.new(2.34, -INF, INF)
+
+var worse_bar:Stat = Stat.new(345.678, -INF, INF)
+
+func _enter_tree()->void:
+	better_bar.pre_add_effects['sourceOne']=1.1
+	better_bar.mul_effects['sourceTwo']=2.2
+	better_bar.add_effects['sourceThree']=3.3
+	better_bar.post_mul_effects['sourceFour']=4.4
+	
+	worse_bar.pre_add_effects['sourceOne']=-1.1
+	worse_bar.mul_effects['sourceTwo']=0.2
+	worse_bar.add_effects['sourceThree']=-3.3
+	worse_bar.post_mul_effects['sourceFour']=0.4
+	
+"
+
+[node name="CustomFormatStringTest" type="Control" node_paths=PackedStringArray("object")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_s4jml")
+script = SubResource("GDScript_ponul")
+object = NodePath("Node")
+text = "[table=2]
+[cell]bad escape type:[/cell] [cell]{badEscape}[/cell]s
+[cell]action named ui_accept:[/cell] [cell]{action ui_accept}[/cell]
+[cell]action with bad name:[/cell] [cell]{action badAction}[/cell]
+[cell]property named foo:[/cell] [cell]{property foo}[/cell]
+[cell]property named foo with format:    [/cell] [cell]{property foo %08.2f}[/cell]
+[cell]property with bad name:[/cell] [cell]{property badProp}[/cell]
+[cell]stat named bar:[/cell] [cell]{stat bar}[/cell]
+[cell]buffed stat named better_bar:[/cell] [cell]{stat better_bar}[/cell]
+[cell]debuffed stat named worse_bar:[/cell] [cell]{stat worse_bar}[/cell]
+[cell]stat with bad name:[/cell] [cell]{stat badStat}[/cell]
+[cell]stat with format:[/cell] [cell]{stat better_bar %.1f%%}[/cell]
+[/table]
+"
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 0
+offset_right = 988.0
+offset_bottom = 368.0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="PanelContainer"]
+layout_mode = 2
+bbcode_enabled = true
+text = "[table=2]
+[cell]bad escape type:[/cell] [cell][code][color=red]ERROR unknown escape type 'badEscape'[/color][/code][/cell]s
+[cell]action named ui_accept:[/cell] [cell][code][lb]Enter|Kp Enter|Space[rb][/code][/cell]
+[cell]action with bad name:[/cell] [cell][code][color=red]ERROR nonexistent action 'badAction'[/color][/code][/cell]
+[cell]property named foo:[/cell] [cell]123.321[/cell]
+[cell]property named foo with format:    [/cell] [cell]00123.32[/cell]
+[cell]property with bad name:[/cell] [cell][code][color=red]ERROR object doesn't have property 'badProp'[/color][/code][/cell]
+[cell]stat named bar:[/cell] [cell]1.23[/cell]
+[cell]buffed stat named better_bar:[/cell] [cell]2.34 ([hint=base: 2.34
++1.10 from sourceOne = 3.44
+×2.20 from sourceTwo = 7.57
++3.30 from sourceThree = 10.87
+×4.40 from sourceFour = 47.82
+][color=green]47.8192[/color][/hint])[/cell]
+[cell]debuffed stat named worse_bar:[/cell] [cell]345.678 ([hint=base: 345.68
+-1.10 from sourceOne = 344.58
+×0.20 from sourceTwo = 68.92
+-3.30 from sourceThree = 65.62
+×0.40 from sourceFour = 26.25
+][color=red]26.24624[/color][/hint])[/cell]
+[cell]stat with bad name:[/cell] [cell][code][color=red]ERROR object doesn't have property 'badStat' or it isn't a Stat[/color][/code][/cell]
+[cell]stat with format:[/cell] [cell]2.3% ([hint=base: 2.34
++1.10 from sourceOne = 3.44
+×2.20 from sourceTwo = 7.57
++3.30 from sourceThree = 10.87
+×4.40 from sourceFour = 47.82
+][color=green]47.8%[/color][/hint])[/cell]
+[/table]
+"
+
+[node name="Node" type="Node" parent="."]
+script = SubResource("GDScript_vxwrk")

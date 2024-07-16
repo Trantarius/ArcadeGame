@@ -2,13 +2,13 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://bud378x0sfmv1"
-path="res://.godot/imported/ShareTechMono-Regular.ttf-dacced1e007c6b6f54c2c45e8ad0c6e9.fontdata"
+uid="uid://bx86rrrouq7o4"
+path="res://.godot/imported/CourierPrime-Regular.ttf-7b49b5c4b7b75e780ad6c23280c3ceab.fontdata"
 
 [deps]
 
-source_file="res://ui/theme/ShareTechMono-Regular.ttf"
-dest_files=["res://.godot/imported/ShareTechMono-Regular.ttf-dacced1e007c6b6f54c2c45e8ad0c6e9.fontdata"]
+source_file="res://ui/theme/CourierPrime-Regular.ttf"
+dest_files=["res://.godot/imported/CourierPrime-Regular.ttf-7b49b5c4b7b75e780ad6c23280c3ceab.fontdata"]
 
 [params]
 

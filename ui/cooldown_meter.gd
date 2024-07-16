@@ -9,9 +9,10 @@ var text:String:
 var ability:CooldownAbility
 
 func _process(_delta: float) -> void:
-	$ProgressBar.max_value = ability.cooldown
-	$ProgressBar.value = ability.cooldown - ability.cooldown_timer.time
-	if($ProgressBar.value>=$ProgressBar.max_value):
-		$Panel.show()
-	else:
-		$Panel.hide()
+	if(is_instance_valid(ability)):
+		$ProgressBar.max_value = ability.last_cooldown
+		$ProgressBar.value = ability.last_cooldown-ability.time_left()
+		if($ProgressBar.value>=$ProgressBar.max_value):
+			$Panel.show()
+		else:
+			$Panel.hide()

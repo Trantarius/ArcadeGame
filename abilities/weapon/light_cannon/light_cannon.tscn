@@ -5,19 +5,16 @@
 
 [node name="LightCannon" type="Node"]
 script = ExtResource("1_i0mqr")
-damage_amount = 10.0
-projectile_speed = 1000.0
-projectile_size = 8.0
+base_fire_rate = 3.0
 ability_name = &"Light Cannon"
 texture = ExtResource("2_p5xmy")
-type = "Weapon"
+type = 2
 description = "Fires low damage, high velocity projectiles at a moderate rate. An all-around decent weapon, but could use an upgrade.
 
-Damage: {property damage_amount}
-Fire Rate: {property fire_rate}/s
-Projectile Count: {property projectile_count}
-Projectile Speed: {property projectile_speed}
-Projectile Size: {property projectile_size}"
-mod_name = &"weapon"
+Damage: {stat damage %.1f}
+Fire Rate: {stat fire_rate %.1f}
+Projectile Count: {stat projectile_count %.0f}
+Projectile Speed: {stat projectile_speed %.0f}
+Projectile Size: {stat projectile_size %.1f}"
 
-[connection signal="fire" from="." to="." method="_on_fire"]
+[connection signal="fired" from="." to="." method="_on_fired"]

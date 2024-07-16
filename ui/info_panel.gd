@@ -1,4 +1,3 @@
-@tool
 class_name InfoPanel
 extends Control
 
@@ -66,8 +65,8 @@ func update_abilities()->void:
 			lbl.fit_content = true
 			ability_list.add_child(lbl)
 			abilities[&'Thrust']=lbl
-		abilities[&'Rotate'].text = get_controls_string(&'left')+' '+get_controls_string(&'right')+' Rotate'
-		abilities[&'Thrust'].text = get_controls_string(&'forward')+' Thrust'
+		abilities[&'Rotate'].text = Util.get_controls_string(&'left')+' '+Util.get_controls_string(&'right')+' Rotate'
+		abilities[&'Thrust'].text = Util.get_controls_string(&'forward')+' Thrust'
 		
 	else:
 		if(abilities.has(&'Rotate')):
@@ -93,7 +92,7 @@ func make_ability_entry(ability:PlayerAbility)->Control:
 		ability_list.add_child(cdm)
 		cdm.ability = ability
 		if(include_controls_in_abilities):
-			cdm.text = get_controls_string(ability.mod_name)
+			cdm.text = Util.get_controls_string(ability.get_action_name())
 			cdm.text += ' ' + ability.ability_name
 		else:
 			cdm.text = ability.ability_name
@@ -117,42 +116,28 @@ func _ready() -> void:
 	if(!Engine.is_editor_hint()):
 		var player:Player = get_tree().get_first_node_in_group('Players')
 		if(is_instance_valid(player)):
+			score = player.score
+			for ability:PlayerAbility in player.abilities.values():
+				abilities[ability] = make_ability_entry(ability)
+			max_health = player.max_health
+			health = player.health
 			player.score_changed.connect(_on_player_score_changed)
-			_on_player_score_changed(player.score)
-			player.child_entered_tree.connect(_on_player_child_added)
-			for child:Node in player.get_children():
-				_on_player_child_added(child)
-			player.child_exiting_tree.connect(_on_player_child_removed)
+			player.added_ability.connect(_on_player_added_ability)
+			player.removed_ability.connect(_on_player_removed_ability)
 			player.health_changed.connect(_on_player_health_changed)
-			_on_player_health_changed(player.health,player.max_health)
 
 
 func _on_player_score_changed(to:float)->void:
 	score=to
 
-func _on_player_child_added(child:Node)->void:
-	if(child is PlayerAbility):
-		abilities[child]=make_ability_entry(child)
+func _on_player_added_ability(ability:PlayerAbility)->void:
+	abilities[ability]=make_ability_entry(ability)
 
-func _on_player_child_removed(child:Node)->void:
-	if(child is PlayerAbility && abilities.has(child)):
-		abilities[child].queue_free()
-		abilities.erase(child)
+func _on_player_removed_ability(ability:PlayerAbility)->void:
+	if(abilities.has(ability)):
+		abilities[ability].queue_free()
+		abilities.erase(ability)
 
 func _on_player_health_changed(current:float, maximum:float)->void:
 	max_health = maximum
 	health = current
-
-## Gets a string describing the controls bound to an InputAction.
-func get_controls_string(action:StringName)->String:
-	var ret:String
-	var events:Array[InputEvent] = InputMap.action_get_events(action)
-	if(events.is_empty()):
-		ret = '[lb][rb]'
-	else:
-		ret = '[lb]'
-		ret += events[0].as_text().trim_suffix(' (Physical)')
-		for i:int in range(1,events.size()):
-			ret += '|' + events[i].as_text().trim_suffix(' (Physical)')
-		ret += '[rb]'
-	return '[code]'+ret+'[/code]'

@@ -1,9 +1,9 @@
 extends Area2D
 
 ## Size of the resulting explosion
-@export var explosion_radius:float = 256
+var explosion_radius:float = 128
 ## Damage of the resulting explosion
-@export var explosion_damage:float = 50
+var explosion_damage:float = 10
 
 ## Time until deletion
 @export var lifetime:float = 10

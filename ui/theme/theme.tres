@@ -10,7 +10,7 @@
 [ext_resource type="StyleBox" uid="uid://dtoai367c0ae5" path="res://ui/theme/medium_fat_panel.tres" id="6_gv00j"]
 [ext_resource type="FontFile" uid="uid://coqijjw0cefwc" path="res://ui/theme/Montserrat-BoldItalic.ttf" id="7_b6hmb"]
 [ext_resource type="FontFile" uid="uid://bf4qo700sf6q8" path="res://ui/theme/Montserrat-Italic.ttf" id="8_n74k1"]
-[ext_resource type="FontFile" uid="uid://bud378x0sfmv1" path="res://ui/theme/ShareTechMono-Regular.ttf" id="9_7d7ro"]
+[ext_resource type="FontFile" uid="uid://bx86rrrouq7o4" path="res://ui/theme/CourierPrime-Regular.ttf" id="10_w0f7f"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i3bcs"]
 
@@ -147,5 +147,5 @@ PanelContainer/styles/panel = ExtResource("2_pmoym")
 RichTextLabel/fonts/bold_font = ExtResource("6_4xgec")
 RichTextLabel/fonts/bold_italics_font = ExtResource("7_b6hmb")
 RichTextLabel/fonts/italics_font = ExtResource("8_n74k1")
-RichTextLabel/fonts/mono_font = ExtResource("9_7d7ro")
+RichTextLabel/fonts/mono_font = ExtResource("10_w0f7f")
 RichTextLabel/fonts/normal_font = ExtResource("6_0eoas")

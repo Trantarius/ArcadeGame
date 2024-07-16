@@ -5,13 +5,11 @@
 
 [node name="BoostAbility" type="Node"]
 script = ExtResource("1_uo0u2")
-cooldown = 5.0
+base_cooldown = 5.0
 ability_name = &"Boost"
 texture = ExtResource("2_0lilt")
-type = "Movement"
 description = "Press {action movement_ability} to get a speed boost in the currently faced direction.
 
-Cooldown: {property cooldown}s"
-mod_name = &"movement_ability"
+Cooldown: {stat cooldown %.2fs}"
 
 [connection signal="triggered" from="." to="." method="_on_triggered"]

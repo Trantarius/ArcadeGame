@@ -5,13 +5,11 @@
 
 [node name="HandbrakeAbility" type="Node"]
 script = ExtResource("1_2d20b")
-cooldown = 5.0
+base_cooldown = 5.0
 ability_name = &"Handbrake"
 texture = ExtResource("2_684tr")
-type = "Movement"
 description = "Press {action movement_ability} to come to an immediate stop.
 
-Cooldown: {property cooldown}s"
-mod_name = &"movement_ability"
+Cooldown: {stat cooldown %.2fs}"
 
 [connection signal="triggered" from="." to="." method="_on_triggered"]

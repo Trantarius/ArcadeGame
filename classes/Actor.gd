@@ -27,9 +27,6 @@ var health:float = max_health:
 ## Forcibly disables showing a health bar.
 @export var disable_health_bar:bool = false
 
-## Map of StringName:Modifier
-var modifiers:Dictionary
-
 signal death(damage:Damage)
 signal kill(damage:Damage)
 signal damage_taken(damage:Damage)

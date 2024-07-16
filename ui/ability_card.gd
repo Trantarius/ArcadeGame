@@ -56,26 +56,28 @@ const _type_suffix:String='[/i][/center]'
 func build_from(ability:PlayerAbility)->void:
 	title = ability.ability_name
 	texture = ability.texture
-	type = ability.type
-	description = AbilityCard.format_description(ability)
-	if(ability.is_active):
+	type = ability.get_type_name()
+	description = Util.custom_format_string(ability.description, ability)
+	if(ability.get_parent().abilities.has(ability.type) && ability.get_parent().abilities[ability.type]==ability):
 		state = 'Equipped'
 	else:
 		state = 'New'
 
 ## Handles some special escapes and turns them into BBCode. [br]
 ## [code]{action <actionname>}[/code] will insert the current keybind for the input action with name [code]actionname[/code].[br]
-## [code]{property <propname>}[/code] will retrieve a property named [code]propname[/code] from the ability node.
+## [code]{property <propname> <format?>}[/code] will retrieve a property named [code]propname[/code] from the ability node.[br]
+## [code]{stat <statname> <format?>}[/code] will describe a stat, using the given unit if present.
 static func format_description(ability:PlayerAbility)->String:
 	var input:String = ability.description
-	var escape_rex:RegEx = RegEx.create_from_string("\\{\\s*(\\w+)\\s*(\\S+)?\\s*\\}")
+	var escape_rex:RegEx = RegEx.create_from_string("\\{\\s*(\\w+)\\s*(\\S+)?\\s*(\\S+)?\\s*\\}")
 	var found:RegExMatch = escape_rex.search(input)
 	while(is_instance_valid(found)):
 		input = input.erase(found.get_start(),found.get_end()-found.get_start())
 		match found.get_string(1):
 			'action':
-				if(found.get_group_count()<2):
+				if(found.get_group_count()!=2):
 					push_error("bad description string escape '",found.get_string(),"'")
+					input = input.insert(found.get_start(),'[color=red]ERROR[/color]')
 				else:
 					var action:String = found.get_string(2)
 					
@@ -96,11 +98,44 @@ static func format_description(ability:PlayerAbility)->String:
 			'property':
 				if(found.get_group_count()<2):
 					push_error("bad description string escape '",found.get_string(),"'")
+					input = input.insert(found.get_start(),'[color=red]ERROR[/color]')
 				else:
 					var prop:String = found.get_string(2)
 					var value:Variant = ability.get(prop)
-					input = input.insert(found.get_start(),str(value))
+					var vstr:String
+					if(found.get_group_count()>=3):
+						vstr = found.get_string(3)%[value]
+					else:
+						vstr = str(value)
+					input = input.insert(found.get_start(),vstr)
+			
+			'stat':
+				if(found.get_group_count()<2):
+					push_error("bad description string escape '",found.get_string(),"'")
+					input = input.insert(found.get_start(),'[color=red]ERROR[/color]')
+				else:
+					var prop:String = found.get_string(2)
+					var stat:Stat = ability.get(prop)
+					var base_str:String
+					var value_str:String
+					if(found.get_group_count()>=3):
+						base_str = found.get_string(3)%[stat.base]
+						value_str = found.get_string(3)%[stat.get_value()]
+					else:
+						base_str = str(stat.base)
+						value_str = str(stat.get_value())
+					
+					var desc:String = base_str
+					if(is_equal_approx(stat.get_value(),stat.base)):
+						pass
+					elif(stat.get_value()>stat.base):
+						desc += ' ([color=green]'+value_str+'[/color])'
+					else:
+						desc += ' ([color=red]'+value_str+'[/color])'
+						
+					input = input.insert(found.get_start(),desc)
 			_:
 				push_error("bad description string escape '",found.get_string(),"'")
+				input = input.insert(found.get_start(),'[color=red]ERROR[/color]')
 		found = escape_rex.search(input)
 	return input
