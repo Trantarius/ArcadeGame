@@ -19,8 +19,11 @@ func _ready()->void:
 func _on_fire_timer_timeout_precise(ago: float) -> void:
 	var proj_count:int = projectile_count.get_value()
 	
-	var mpos:Vector2 = get_parent().get_muzzle_position()
-	var mdir:Vector2 = get_parent().get_muzzle_direction()
+	var lin_err:Vector2 = -get_parent().linear_velocity * ago
+	var ang_err:float = -get_parent().angular_velocity * ago
+	var mpos:Vector2 = (get_parent().get_muzzle_position() - get_parent().global_position
+		).rotated(ang_err) + get_parent().global_position + lin_err
+	var mdir:Vector2 = get_parent().get_muzzle_direction().rotated(ang_err)
 	
 	var tot_width:float = proj_count * projectile_size.get_value() + (proj_count-1) * projectile_size.get_value() * proj_spacing
 	var p0:Vector2 = mpos - mdir.orthogonal() * (tot_width/2 - projectile_size.get_value()/2)
@@ -34,6 +37,7 @@ func _on_fire_timer_timeout_precise(ago: float) -> void:
 		bullet.source = get_parent()
 		bullet.damage_amount = damage.get_value()
 		bullet.scale = Vector2.ONE * projectile_size.get_value()/8
+		bullet.global_position += bullet.linear_velocity * ago
 		get_tree().current_scene.add_child(bullet)
 	
 	fired.emit()

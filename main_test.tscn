@@ -1,6 +1,7 @@
-[gd_scene load_steps=25 format=3 uid="uid://dgi2i2rcpew0f"]
+[gd_scene load_steps=26 format=3 uid="uid://dgi2i2rcpew0f"]
 
 [ext_resource type="PackedScene" uid="uid://ccgupredk0a3f" path="res://player/player.tscn" id="1_wyqax"]
+[ext_resource type="Script" path="res://classes/AbilityStatMod.gd" id="2_x81yb"]
 [ext_resource type="Script" path="res://enemies/EnemySpawner.gd" id="3_mithn"]
 [ext_resource type="PackedScene" uid="uid://d4epik40543it" path="res://enemies/hornet/hornet.tscn" id="4_rflj1"]
 [ext_resource type="PackedScene" uid="uid://duw4y42hn6e5i" path="res://enemies/broadside/broadside.tscn" id="5_10v5w"]
@@ -28,6 +29,13 @@
 [node name="Main" type="Node"]
 
 [node name="Player" parent="." instance=ExtResource("1_wyqax")]
+
+[node name="AbilityStatMod" type="Node" parent="Player"]
+script = ExtResource("2_x81yb")
+stat_name = &"fire_rate"
+stage = "mul"
+strength = 10.0
+ability_type = 2
 
 [node name="EnemySpawner" type="Node" parent="."]
 script = ExtResource("3_mithn")

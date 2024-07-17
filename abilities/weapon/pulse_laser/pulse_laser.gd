@@ -14,8 +14,11 @@ func _ready()->void:
 	$FireTimer.start()
 
 func _on_fire_timer_timeout_precise(ago: float) -> void:
-	var muzzle_pos:Vector2 = get_parent().get_muzzle_position()
-	var muzzle_dir:Vector2 = get_parent().get_muzzle_direction()
+	var lin_err:Vector2 = -get_parent().linear_velocity * ago
+	var ang_err:float = -get_parent().angular_velocity * ago
+	var muzzle_pos:Vector2 = (get_parent().get_muzzle_position() - get_parent().global_position
+		).rotated(ang_err) + get_parent().global_position + lin_err
+	var muzzle_dir:Vector2 = get_parent().get_muzzle_direction().rotated(ang_err)
 	
 	$ArcDetector.max_angle = deg_to_rad(auto_aim.get_value())
 	$ArcDetector.max_range = laser_range.get_value()
