@@ -26,6 +26,30 @@ signal removed_ability(ability:PlayerAbility)
 
 var abilities:Dictionary
 
+var movement_ability:PlayerAbility:
+	get:
+		if(!abilities.has(PlayerAbility.MOVEMENT)):
+			return null
+		return abilities[PlayerAbility.MOVEMENT]
+	set(to):
+		add_ability(to)
+		
+var attack_ability:PlayerAbility:
+	get:
+		if(!abilities.has(PlayerAbility.ATTACK)):
+			return null
+		return abilities[PlayerAbility.ATTACK]
+	set(to):
+		add_ability(to)
+
+var weapon:PlayerAbility:
+	get:
+		if(!abilities.has(PlayerAbility.WEAPON)):
+			return null
+		return abilities[PlayerAbility.WEAPON]
+	set(to):
+		add_ability(to)
+
 func add_ability(ability:PlayerAbility)->void:
 	add_child(ability)
 

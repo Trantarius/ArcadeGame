@@ -1,10 +1,20 @@
-[gd_scene load_steps=8 format=3 uid="uid://blf0t84ei3owm"]
+[gd_scene load_steps=10 format=3 uid="uid://blf0t84ei3owm"]
 
 [ext_resource type="Script" path="res://enemies/shield_bearer/shield_bearer.gd" id="1_hi1cc"]
 [ext_resource type="Script" path="res://classes/HitBox.gd" id="2_2xfry"]
+[ext_resource type="Script" path="res://classes/Stat.gd" id="2_b2mt3"]
 [ext_resource type="Script" path="res://classes/Interpolator.gd" id="2_bxnop"]
 [ext_resource type="Script" path="res://classes/ReversibleTimer.gd" id="5_b31lk"]
 [ext_resource type="Script" path="res://classes/AvoidanceAgent.gd" id="5_m82ic"]
+
+[sub_resource type="Resource" id="Resource_fvgby"]
+resource_local_to_scene = true
+script = ExtResource("2_b2mt3")
+use_min_value = true
+use_max_value = false
+base = 30.0
+round_mode = 0
+min_value = 1.0
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_gkx47"]
 radius = 16.0
@@ -21,6 +31,7 @@ corner_radius_bottom_left = 16
 collision_mask = 7
 script = ExtResource("1_hi1cc")
 point_value = 10.0
+max_health = SubResource("Resource_fvgby")
 radius = 48.0
 
 [node name="LeftShield" type="CollisionPolygon2D" parent="."]

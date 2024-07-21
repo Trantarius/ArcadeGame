@@ -1,11 +1,21 @@
-[gd_scene load_steps=3 format=3 uid="uid://8506rbhgwm4s"]
+[gd_scene load_steps=5 format=3 uid="uid://8506rbhgwm4s"]
 
 [ext_resource type="Script" path="res://abilities/movement/boost/boost_ability.gd" id="1_uo0u2"]
 [ext_resource type="Texture2D" uid="uid://dm5wdak66jwi" path="res://abilities/movement/boost/boost_icon.png" id="2_0lilt"]
+[ext_resource type="Script" path="res://classes/Stat.gd" id="2_4yivc"]
+
+[sub_resource type="Resource" id="Resource_mnr54"]
+resource_local_to_scene = true
+script = ExtResource("2_4yivc")
+use_min_value = true
+use_max_value = false
+base = 5.0
+round_mode = 0
+min_value = 0.0
 
 [node name="BoostAbility" type="Node"]
 script = ExtResource("1_uo0u2")
-base_cooldown = 5.0
+cooldown = SubResource("Resource_mnr54")
 ability_name = &"Boost"
 texture = ExtResource("2_0lilt")
 description = "Press {action movement_ability} to get a speed boost in the currently faced direction.

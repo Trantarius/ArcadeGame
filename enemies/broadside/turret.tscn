@@ -1,10 +1,20 @@
-[gd_scene load_steps=9 format=3 uid="uid://calsi17ho0g4c"]
+[gd_scene load_steps=11 format=3 uid="uid://calsi17ho0g4c"]
 
 [ext_resource type="Script" path="res://enemies/broadside/turret.gd" id="1_w5xny"]
+[ext_resource type="Script" path="res://classes/Stat.gd" id="2_3u81m"]
 [ext_resource type="Script" path="res://classes/HitBox.gd" id="2_fvd0i"]
 [ext_resource type="Script" path="res://classes/ArcDetector.gd" id="2_std03"]
 [ext_resource type="Script" path="res://classes/Interpolator.gd" id="4_idxw3"]
 [ext_resource type="Script" path="res://classes/ReversibleTimer.gd" id="5_6sy6v"]
+
+[sub_resource type="Resource" id="Resource_dkprd"]
+resource_local_to_scene = true
+script = ExtResource("2_3u81m")
+use_min_value = true
+use_max_value = false
+base = 100.0
+round_mode = 0
+min_value = 1.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_5y8vg"]
 radius = 24.0
@@ -26,6 +36,7 @@ collision_layer = 4
 collision_mask = 0
 sync_to_physics = false
 script = ExtResource("1_w5xny")
+max_health = SubResource("Resource_dkprd")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_5y8vg")

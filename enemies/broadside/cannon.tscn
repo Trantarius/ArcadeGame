@@ -1,8 +1,18 @@
-[gd_scene load_steps=5 format=3 uid="uid://crwwyc1s55imm"]
+[gd_scene load_steps=7 format=3 uid="uid://crwwyc1s55imm"]
 
 [ext_resource type="Script" path="res://enemies/broadside/cannon.gd" id="1_bxy2k"]
 [ext_resource type="Script" path="res://classes/HitBox.gd" id="2_hofhh"]
+[ext_resource type="Script" path="res://classes/Stat.gd" id="2_p42vj"]
 [ext_resource type="Script" path="res://classes/Interpolator.gd" id="3_brp2e"]
+
+[sub_resource type="Resource" id="Resource_rlow1"]
+resource_local_to_scene = true
+script = ExtResource("2_p42vj")
+use_min_value = true
+use_max_value = false
+base = 200.0
+round_mode = 0
+min_value = 1.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_o75hj"]
 size = Vector2(128, 768)
@@ -13,6 +23,7 @@ collision_mask = 0
 sync_to_physics = false
 script = ExtResource("1_bxy2k")
 despawn_distance = -1.0
+max_health = SubResource("Resource_rlow1")
 radius = 45.0
 
 [node name="Muzzle" type="Marker2D" parent="."]

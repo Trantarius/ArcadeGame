@@ -1,11 +1,51 @@
-[gd_scene load_steps=3 format=3 uid="uid://c2g3s6js6hne"]
+[gd_scene load_steps=8 format=3 uid="uid://c2g3s6js6hne"]
 
 [ext_resource type="Script" path="res://abilities/attack/missile_swarm/missile_swarm_ability.gd" id="1_pksai"]
 [ext_resource type="Texture2D" uid="uid://b7phyligmqe2" path="res://abilities/attack/missile_swarm/missile_swarm_icon.png" id="2_f4tvj"]
+[ext_resource type="Script" path="res://classes/Stat.gd" id="2_kcr8s"]
+
+[sub_resource type="Resource" id="Resource_wam7m"]
+resource_local_to_scene = true
+script = ExtResource("2_kcr8s")
+use_min_value = true
+use_max_value = false
+base = 8.0
+round_mode = 4
+min_value = 1.0
+
+[sub_resource type="Resource" id="Resource_c2wye"]
+resource_local_to_scene = true
+script = ExtResource("2_kcr8s")
+use_min_value = true
+use_max_value = false
+base = 10.0
+round_mode = 0
+min_value = 0.0
+
+[sub_resource type="Resource" id="Resource_4lncc"]
+resource_local_to_scene = true
+script = ExtResource("2_kcr8s")
+use_min_value = true
+use_max_value = false
+base = 128.0
+round_mode = 0
+min_value = 4.0
+
+[sub_resource type="Resource" id="Resource_twp7e"]
+resource_local_to_scene = true
+script = ExtResource("2_kcr8s")
+use_min_value = true
+use_max_value = false
+base = 5.0
+round_mode = 0
+min_value = 0.0
 
 [node name="MissileSwarmAbility" type="Node"]
 script = ExtResource("1_pksai")
-base_cooldown = 5.0
+projectile_count = SubResource("Resource_wam7m")
+damage = SubResource("Resource_c2wye")
+explosion_size = SubResource("Resource_4lncc")
+cooldown = SubResource("Resource_twp7e")
 ability_name = &"Missile Swarm"
 texture = ExtResource("2_f4tvj")
 type = 1

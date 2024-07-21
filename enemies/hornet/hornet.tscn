@@ -1,17 +1,27 @@
-[gd_scene load_steps=6 format=3 uid="uid://d4epik40543it"]
+[gd_scene load_steps=8 format=3 uid="uid://d4epik40543it"]
 
 [ext_resource type="Script" path="res://enemies/hornet/hornet.gd" id="1_ghiqj"]
+[ext_resource type="Script" path="res://classes/Stat.gd" id="2_5x8ro"]
 [ext_resource type="Script" path="res://classes/Interpolator.gd" id="2_yfdop"]
 [ext_resource type="Script" path="res://classes/HitBox.gd" id="4_sauan"]
 [ext_resource type="Script" path="res://classes/AvoidanceAgent.gd" id="5_3en3k"]
 [ext_resource type="Script" path="res://classes/ReversibleTimer.gd" id="6_r7j4a"]
+
+[sub_resource type="Resource" id="Resource_eahi0"]
+resource_local_to_scene = true
+script = ExtResource("2_5x8ro")
+use_min_value = true
+use_max_value = false
+base = 50.0
+round_mode = 0
+min_value = 0.0
 
 [node name="Hornet" type="RigidBody2D"]
 collision_layer = 4
 collision_mask = 7
 script = ExtResource("1_ghiqj")
 point_value = 5.0
-max_health = 30.0
+max_health = SubResource("Resource_eahi0")
 radius = 18.0
 
 [node name="Interpolator" type="Node2D" parent="."]

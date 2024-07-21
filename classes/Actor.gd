@@ -1,21 +1,12 @@
 class_name Actor
 extends Node2D
 
-@export var max_health:float = 10:
-	set(to):
-		set_block_signals(true)
-		if(is_inside_tree()):
-			health = to * health/max_health
-		else:
-			health = max_health
-		max_health = to
-		set_block_signals(false)
-		health_changed.emit(health,max_health)
+@export var max_health:Stat
 
-var health:float = max_health:
+var health:float:
 	set(to):
-		health = clamp(to,0,max_health)
-		health_changed.emit(health,max_health)
+		health = clamp(to,0,max_health.get_value())
+		health_changed.emit(health,max_health.get_value())
 
 ## Disables death. Can still take damage, but health never goes below 0.
 @export var immortal:bool = false
@@ -113,8 +104,12 @@ func _init()->void:
 	tree_exiting.connect(_actor_exit_tree)
 	
 func _actor_ready()->void:
-	health = max_health
+	health = max_health.get_value()
+	max_health.value_changed.connect(_actor_on_max_health_changed)
 	something_spawned.emit(self)
+
+func _actor_on_max_health_changed()->void:
+	health = clamp(health, 0, max_health.get_value())
 
 func _actor_enter_tree()->void:
 	get_tree().physics_frame.connect(_actor_physics_process)

@@ -1,11 +1,21 @@
-[gd_scene load_steps=3 format=3 uid="uid://j7ojgjiy4k3i"]
+[gd_scene load_steps=5 format=3 uid="uid://j7ojgjiy4k3i"]
 
 [ext_resource type="Script" path="res://abilities/movement/sidestep/sidestep_ability.gd" id="1_gtb6l"]
+[ext_resource type="Script" path="res://classes/Stat.gd" id="2_fkkaj"]
 [ext_resource type="Texture2D" uid="uid://idsavjhcaaub" path="res://abilities/movement/sidestep/sidestep_icon.png" id="2_lx4xg"]
+
+[sub_resource type="Resource" id="Resource_pylv6"]
+resource_local_to_scene = true
+script = ExtResource("2_fkkaj")
+use_min_value = true
+use_max_value = false
+base = 5.0
+round_mode = 0
+min_value = 0.0
 
 [node name="SidestepAbility" type="Node"]
 script = ExtResource("1_gtb6l")
-base_cooldown = 5.0
+cooldown = SubResource("Resource_pylv6")
 ability_name = &"Sidestep"
 texture = ExtResource("2_lx4xg")
 description = "Press {action movement_ability} to jump sideways a short distance. Press {action left} or {action right} at the same time to control the direction.

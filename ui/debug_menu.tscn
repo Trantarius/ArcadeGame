@@ -1,6 +1,7 @@
-[gd_scene load_steps=13 format=3 uid="uid://b4v2b4cphju7v"]
+[gd_scene load_steps=14 format=3 uid="uid://b4v2b4cphju7v"]
 
 [ext_resource type="Theme" uid="uid://d0ifc4kse0sbj" path="res://ui/theme/theme.tres" id="1_8pghh"]
+[ext_resource type="PackedScene" uid="uid://bj2sxi1blpt13" path="res://ui/debug_stat_mod_adder.tscn" id="2_d11um"]
 
 [sub_resource type="GDScript" id="GDScript_2tfo1"]
 script/source = "extends PanelContainer
@@ -248,44 +249,60 @@ func _on_button_pressed() -> void:
 	$VBoxContainer/PanelContainer.visible = ! $VBoxContainer/PanelContainer.visible
 "
 
-[node name="DebugMenu" type="PanelContainer"]
+[node name="DebugMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+
+[node name="DebugMenu" type="PanelContainer" parent="."]
 process_mode = 3
 custom_minimum_size = Vector2(300, 300)
-offset_right = 300.0
-offset_bottom = 300.0
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -324.0
+offset_top = 24.0
+offset_right = -24.0
+offset_bottom = 623.0
+grow_horizontal = 0
 theme = ExtResource("1_8pghh")
 script = SubResource("GDScript_2tfo1")
 
-[node name="PanelContainer" type="PanelContainer" parent="."]
+[node name="PanelContainer" type="PanelContainer" parent="DebugMenu"]
 layout_mode = 2
 theme_type_variation = &"DarkPanel"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="DebugMenu/PanelContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="GameSpeed" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
+[node name="GameSpeed" type="PanelContainer" parent="DebugMenu/PanelContainer/VBoxContainer"]
 layout_mode = 2
 script = SubResource("GDScript_msjy0")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/GameSpeed"]
+[node name="HBoxContainer" type="HBoxContainer" parent="DebugMenu/PanelContainer/VBoxContainer/GameSpeed"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/GameSpeed/HBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="DebugMenu/PanelContainer/VBoxContainer/GameSpeed/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/GameSpeed/HBoxContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="DebugMenu/PanelContainer/VBoxContainer/GameSpeed/HBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 2
 text = "Game Speed:"
 
-[node name="Label2" type="Label" parent="PanelContainer/VBoxContainer/GameSpeed/HBoxContainer/HBoxContainer"]
+[node name="Label2" type="Label" parent="DebugMenu/PanelContainer/VBoxContainer/GameSpeed/HBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 10
 text = "1x"
 
-[node name="HSlider" type="HSlider" parent="PanelContainer/VBoxContainer/GameSpeed/HBoxContainer"]
+[node name="HSlider" type="HSlider" parent="DebugMenu/PanelContainer/VBoxContainer/GameSpeed/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
@@ -293,33 +310,33 @@ min_value = -3.0
 max_value = 3.0
 step = 0.0
 
-[node name="Reset" type="Button" parent="PanelContainer/VBoxContainer/GameSpeed/HBoxContainer"]
+[node name="Reset" type="Button" parent="DebugMenu/PanelContainer/VBoxContainer/GameSpeed/HBoxContainer"]
 layout_mode = 2
 disabled = true
 text = "X"
 
-[node name="Zoom" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
+[node name="Zoom" type="PanelContainer" parent="DebugMenu/PanelContainer/VBoxContainer"]
 layout_mode = 2
 script = SubResource("GDScript_vxf4s")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Zoom"]
+[node name="HBoxContainer" type="HBoxContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Zoom"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Zoom/HBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Zoom/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/Zoom/HBoxContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="DebugMenu/PanelContainer/VBoxContainer/Zoom/HBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 2
 text = "Zoom:"
 
-[node name="Label2" type="Label" parent="PanelContainer/VBoxContainer/Zoom/HBoxContainer/HBoxContainer"]
+[node name="Label2" type="Label" parent="DebugMenu/PanelContainer/VBoxContainer/Zoom/HBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 10
 text = "1x"
 
-[node name="HSlider" type="HSlider" parent="PanelContainer/VBoxContainer/Zoom/HBoxContainer"]
+[node name="HSlider" type="HSlider" parent="DebugMenu/PanelContainer/VBoxContainer/Zoom/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
@@ -327,213 +344,228 @@ min_value = -4.0
 max_value = 4.0
 step = 0.0
 
-[node name="Reset" type="Button" parent="PanelContainer/VBoxContainer/Zoom/HBoxContainer"]
+[node name="Reset" type="Button" parent="DebugMenu/PanelContainer/VBoxContainer/Zoom/HBoxContainer"]
 layout_mode = 2
 disabled = true
 text = "X"
 
-[node name="Player" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
+[node name="Player" type="PanelContainer" parent="DebugMenu/PanelContainer/VBoxContainer"]
 layout_mode = 2
 script = SubResource("GDScript_k1et7")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Player"]
+[node name="VBoxContainer" type="VBoxContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Player"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="Button" type="Button" parent="PanelContainer/VBoxContainer/Player/VBoxContainer"]
+[node name="Button" type="Button" parent="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer"]
 layout_mode = 2
 toggle_mode = true
 text = "Player"
 flat = true
 
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Player/VBoxContainer"]
-visible = false
+[node name="PanelContainer" type="PanelContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer"]
 layout_mode = 2
 theme_type_variation = &"DarkPanel"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer"]
 layout_mode = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Immortal" type="CheckButton" parent="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/PanelContainer"]
+[node name="Immortal" type="CheckButton" parent="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/PanelContainer"]
 layout_mode = 2
 text = "Immortal"
 script = SubResource("GDScript_6krc4")
 
-[node name="Add" type="PanelContainer" parent="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer"]
+[node name="Add" type="PanelContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
 script = SubResource("GDScript_7qte2")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Add"]
+[node name="VBoxContainer" type="VBoxContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Add"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="Button" type="Button" parent="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Add/VBoxContainer"]
+[node name="Button" type="Button" parent="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Add/VBoxContainer"]
 layout_mode = 2
 toggle_mode = true
 text = "Add"
 flat = true
 
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Add/VBoxContainer"]
-visible = false
+[node name="PanelContainer" type="PanelContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Add/VBoxContainer"]
 layout_mode = 2
 theme_type_variation = &"DarkPanel"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Add/VBoxContainer/PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Add/VBoxContainer/PanelContainer"]
 layout_mode = 2
 
-[node name="Remove" type="PanelContainer" parent="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer"]
+[node name="StatMod" type="Button" parent="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Add/VBoxContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "StatMod"
+
+[node name="Remove" type="PanelContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
 script = SubResource("GDScript_k4h56")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Remove"]
+[node name="VBoxContainer" type="VBoxContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Remove"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="Button" type="Button" parent="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Remove/VBoxContainer"]
+[node name="Button" type="Button" parent="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Remove/VBoxContainer"]
 layout_mode = 2
 toggle_mode = true
 text = "Remove"
 flat = true
 
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Remove/VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Remove/VBoxContainer"]
 visible = false
 layout_mode = 2
 theme_type_variation = &"DarkPanel"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Remove/VBoxContainer/PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Remove/VBoxContainer/PanelContainer"]
 layout_mode = 2
 
-[node name="Enemies" type="PanelContainer" parent="PanelContainer/VBoxContainer" node_paths=PackedStringArray("allow_spawn_button")]
+[node name="Enemies" type="PanelContainer" parent="DebugMenu/PanelContainer/VBoxContainer" node_paths=PackedStringArray("allow_spawn_button")]
 layout_mode = 2
 script = SubResource("GDScript_okadf")
 allow_spawn_button = NodePath("VBoxContainer/PanelContainer/VBoxContainer/PanelContainer/AllowSpawnButton")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Enemies"]
+[node name="VBoxContainer" type="VBoxContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Enemies"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="Button" type="Button" parent="PanelContainer/VBoxContainer/Enemies/VBoxContainer"]
+[node name="Button" type="Button" parent="DebugMenu/PanelContainer/VBoxContainer/Enemies/VBoxContainer"]
 layout_mode = 2
 toggle_mode = true
 text = "Enemies"
 flat = true
 
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Enemies/VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Enemies/VBoxContainer"]
 layout_mode = 2
 theme_type_variation = &"DarkPanel"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer"]
 layout_mode = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="AllowSpawnButton" type="CheckButton" parent="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/PanelContainer"]
+[node name="AllowSpawnButton" type="CheckButton" parent="DebugMenu/PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/PanelContainer"]
 layout_mode = 2
 button_pressed = true
 text = "Allow Spawning"
 
-[node name="Clear" type="Button" parent="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer"]
+[node name="Clear" type="Button" parent="DebugMenu/PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
 text = "Clear All"
 
-[node name="Spawn" type="PanelContainer" parent="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer"]
+[node name="Spawn" type="PanelContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
 script = SubResource("GDScript_kwtx0")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn"]
+[node name="VBoxContainer" type="VBoxContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer"]
 layout_mode = 2
 
-[node name="Button" type="Button" parent="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer/HBoxContainer"]
+[node name="Button" type="Button" parent="DebugMenu/PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Spawn"
 flat = true
 
-[node name="Nearby" type="CheckBox" parent="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer/HBoxContainer"]
+[node name="Nearby" type="CheckBox" parent="DebugMenu/PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 text = "Nearby"
 
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer"]
 visible = false
 layout_mode = 2
 theme_type_variation = &"DarkPanel"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer/PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer/PanelContainer"]
 layout_mode = 2
 
-[node name="Pickups" type="PanelContainer" parent="PanelContainer/VBoxContainer"]
+[node name="Pickups" type="PanelContainer" parent="DebugMenu/PanelContainer/VBoxContainer"]
 layout_mode = 2
 script = SubResource("GDScript_oqi4g")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Pickups"]
+[node name="VBoxContainer" type="VBoxContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Pickups"]
 layout_mode = 2
 
-[node name="Button" type="Button" parent="PanelContainer/VBoxContainer/Pickups/VBoxContainer"]
+[node name="Button" type="Button" parent="DebugMenu/PanelContainer/VBoxContainer/Pickups/VBoxContainer"]
 layout_mode = 2
 text = "Pickups"
 flat = true
 
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Pickups/VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Pickups/VBoxContainer"]
 layout_mode = 2
 theme_type_variation = &"DarkPanel"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer"]
 layout_mode = 2
 
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="AllowDrops" type="CheckButton" parent="PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/PanelContainer"]
+[node name="AllowDrops" type="CheckButton" parent="DebugMenu/PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/PanelContainer"]
 layout_mode = 2
 button_pressed = true
 text = "Allow Drops"
 
-[node name="Clear" type="Button" parent="PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer"]
+[node name="Clear" type="Button" parent="DebugMenu/PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
 text = "Clear All"
 
-[node name="Spawn" type="PanelContainer" parent="PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer"]
+[node name="Spawn" type="PanelContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
 script = SubResource("GDScript_gkksp")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Spawn"]
+[node name="VBoxContainer" type="VBoxContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Spawn"]
 layout_mode = 2
 
-[node name="Button" type="Button" parent="PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer"]
+[node name="Button" type="Button" parent="DebugMenu/PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Spawn"
 flat = true
 
-[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer"]
 visible = false
 layout_mode = 2
 theme_type_variation = &"DarkPanel"
 
-[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer/PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer/PanelContainer"]
 layout_mode = 2
 
-[connection signal="value_changed" from="PanelContainer/VBoxContainer/GameSpeed/HBoxContainer/HSlider" to="PanelContainer/VBoxContainer/GameSpeed" method="_on_h_slider_value_changed"]
-[connection signal="pressed" from="PanelContainer/VBoxContainer/GameSpeed/HBoxContainer/Reset" to="PanelContainer/VBoxContainer/GameSpeed" method="_on_reset_pressed"]
-[connection signal="value_changed" from="PanelContainer/VBoxContainer/Zoom/HBoxContainer/HSlider" to="PanelContainer/VBoxContainer/Zoom" method="_on_h_slider_value_changed"]
-[connection signal="pressed" from="PanelContainer/VBoxContainer/Zoom/HBoxContainer/Reset" to="PanelContainer/VBoxContainer/Zoom" method="_on_reset_pressed"]
-[connection signal="pressed" from="PanelContainer/VBoxContainer/Player/VBoxContainer/Button" to="PanelContainer/VBoxContainer/Player" method="_on_button_pressed"]
-[connection signal="toggled" from="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/PanelContainer/Immortal" to="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/PanelContainer/Immortal" method="_on_toggled"]
-[connection signal="pressed" from="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Add/VBoxContainer/Button" to="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Add" method="_on_button_pressed"]
-[connection signal="pressed" from="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Remove/VBoxContainer/Button" to="PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Remove" method="_on_button_pressed"]
-[connection signal="pressed" from="PanelContainer/VBoxContainer/Enemies/VBoxContainer/Button" to="PanelContainer/VBoxContainer/Enemies" method="_on_button_pressed"]
-[connection signal="toggled" from="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/PanelContainer/AllowSpawnButton" to="PanelContainer/VBoxContainer/Enemies" method="_on_allow_spawn_button_toggled"]
-[connection signal="pressed" from="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Clear" to="PanelContainer/VBoxContainer/Enemies" method="_on_clear_pressed"]
-[connection signal="pressed" from="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer/HBoxContainer/Button" to="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn" method="_on_button_pressed"]
-[connection signal="toggled" from="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer/HBoxContainer/Nearby" to="PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn" method="_on_nearby_toggled"]
-[connection signal="pressed" from="PanelContainer/VBoxContainer/Pickups/VBoxContainer/Button" to="PanelContainer/VBoxContainer/Pickups" method="_on_button_pressed"]
-[connection signal="toggled" from="PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/PanelContainer/AllowDrops" to="PanelContainer/VBoxContainer/Pickups" method="_on_allow_drops_toggled"]
-[connection signal="pressed" from="PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Clear" to="PanelContainer/VBoxContainer/Pickups" method="_on_clear_pressed"]
-[connection signal="pressed" from="PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer/Button" to="PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Spawn" method="_on_button_pressed"]
+[node name="DebugStatModAdder" parent="." instance=ExtResource("2_d11um")]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_bottom = 0.0
+offset_left = -654.0
+offset_top = 24.0
+offset_right = -337.0
+offset_bottom = 340.0
+grow_horizontal = 0
+grow_vertical = 1
+
+[connection signal="value_changed" from="DebugMenu/PanelContainer/VBoxContainer/GameSpeed/HBoxContainer/HSlider" to="DebugMenu/PanelContainer/VBoxContainer/GameSpeed" method="_on_h_slider_value_changed"]
+[connection signal="pressed" from="DebugMenu/PanelContainer/VBoxContainer/GameSpeed/HBoxContainer/Reset" to="DebugMenu/PanelContainer/VBoxContainer/GameSpeed" method="_on_reset_pressed"]
+[connection signal="value_changed" from="DebugMenu/PanelContainer/VBoxContainer/Zoom/HBoxContainer/HSlider" to="DebugMenu/PanelContainer/VBoxContainer/Zoom" method="_on_h_slider_value_changed"]
+[connection signal="pressed" from="DebugMenu/PanelContainer/VBoxContainer/Zoom/HBoxContainer/Reset" to="DebugMenu/PanelContainer/VBoxContainer/Zoom" method="_on_reset_pressed"]
+[connection signal="pressed" from="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/Button" to="DebugMenu/PanelContainer/VBoxContainer/Player" method="_on_button_pressed"]
+[connection signal="toggled" from="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/PanelContainer/Immortal" to="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/PanelContainer/Immortal" method="_on_toggled"]
+[connection signal="pressed" from="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Add/VBoxContainer/Button" to="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Add" method="_on_button_pressed"]
+[connection signal="pressed" from="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Add/VBoxContainer/PanelContainer/VBoxContainer/StatMod" to="DebugStatModAdder" method="show"]
+[connection signal="pressed" from="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Remove/VBoxContainer/Button" to="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Remove" method="_on_button_pressed"]
+[connection signal="pressed" from="DebugMenu/PanelContainer/VBoxContainer/Enemies/VBoxContainer/Button" to="DebugMenu/PanelContainer/VBoxContainer/Enemies" method="_on_button_pressed"]
+[connection signal="toggled" from="DebugMenu/PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/PanelContainer/AllowSpawnButton" to="DebugMenu/PanelContainer/VBoxContainer/Enemies" method="_on_allow_spawn_button_toggled"]
+[connection signal="pressed" from="DebugMenu/PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Clear" to="DebugMenu/PanelContainer/VBoxContainer/Enemies" method="_on_clear_pressed"]
+[connection signal="pressed" from="DebugMenu/PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer/HBoxContainer/Button" to="DebugMenu/PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn" method="_on_button_pressed"]
+[connection signal="toggled" from="DebugMenu/PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer/HBoxContainer/Nearby" to="DebugMenu/PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn" method="_on_nearby_toggled"]
+[connection signal="pressed" from="DebugMenu/PanelContainer/VBoxContainer/Pickups/VBoxContainer/Button" to="DebugMenu/PanelContainer/VBoxContainer/Pickups" method="_on_button_pressed"]
+[connection signal="toggled" from="DebugMenu/PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/PanelContainer/AllowDrops" to="DebugMenu/PanelContainer/VBoxContainer/Pickups" method="_on_allow_drops_toggled"]
+[connection signal="pressed" from="DebugMenu/PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Clear" to="DebugMenu/PanelContainer/VBoxContainer/Pickups" method="_on_clear_pressed"]
+[connection signal="pressed" from="DebugMenu/PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer/Button" to="DebugMenu/PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Spawn" method="_on_button_pressed"]

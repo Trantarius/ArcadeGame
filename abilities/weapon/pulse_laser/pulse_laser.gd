@@ -1,10 +1,10 @@
 extends PlayerAbility
 
-var fire_rate:Stat = Stat.new(2, 0, INF)
-var damage:Stat = Stat.new(20, 0, INF)
-var projectile_count:Stat = Stat.new(1, 1, INF, Stat.PERIODIC)
-var laser_range:Stat = Stat.new(1000, 10, INF)
-var auto_aim:Stat = Stat.new(15, 0, 90)
+@export var fire_rate:Stat
+@export var damage:Stat
+@export var projectile_count:Stat
+@export var laser_range:Stat
+@export var auto_aim:Stat
 
 signal fired
 

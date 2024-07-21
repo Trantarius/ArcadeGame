@@ -1,12 +1,64 @@
-[gd_scene load_steps=5 format=3 uid="uid://blpkj5dm1bxh5"]
+[gd_scene load_steps=11 format=3 uid="uid://blpkj5dm1bxh5"]
 
 [ext_resource type="Script" path="res://abilities/weapon/pulse_laser/pulse_laser.gd" id="1_lsk2q"]
+[ext_resource type="Script" path="res://classes/Stat.gd" id="2_6lfis"]
 [ext_resource type="Texture2D" uid="uid://d0b1i8dwuq1ah" path="res://abilities/weapon/pulse_laser/pulse_laser_icon.png" id="2_grv64"]
 [ext_resource type="Script" path="res://classes/ArcDetector.gd" id="3_2r0o1"]
 [ext_resource type="Script" path="res://classes/ReversibleTimer.gd" id="4_dupaf"]
 
+[sub_resource type="Resource" id="Resource_hhd45"]
+resource_local_to_scene = true
+script = ExtResource("2_6lfis")
+use_min_value = true
+use_max_value = false
+base = 2.0
+round_mode = 0
+min_value = 0.0
+
+[sub_resource type="Resource" id="Resource_1wiwq"]
+resource_local_to_scene = true
+script = ExtResource("2_6lfis")
+use_min_value = true
+use_max_value = false
+base = 20.0
+round_mode = 0
+min_value = 0.0
+
+[sub_resource type="Resource" id="Resource_u4qpc"]
+resource_local_to_scene = true
+script = ExtResource("2_6lfis")
+use_min_value = true
+use_max_value = false
+base = 1.0
+round_mode = 4
+min_value = 1.0
+
+[sub_resource type="Resource" id="Resource_c6j1r"]
+resource_local_to_scene = true
+script = ExtResource("2_6lfis")
+use_min_value = true
+use_max_value = false
+base = 1000.0
+round_mode = 0
+min_value = 10.0
+
+[sub_resource type="Resource" id="Resource_beskl"]
+resource_local_to_scene = true
+script = ExtResource("2_6lfis")
+use_min_value = true
+use_max_value = true
+base = 15.0
+round_mode = 0
+min_value = 0.0
+max_value = 90.0
+
 [node name="PulseLaser" type="Node2D"]
 script = ExtResource("1_lsk2q")
+fire_rate = SubResource("Resource_hhd45")
+damage = SubResource("Resource_1wiwq")
+projectile_count = SubResource("Resource_u4qpc")
+laser_range = SubResource("Resource_c6j1r")
+auto_aim = SubResource("Resource_beskl")
 ability_name = &"Pulse Laser"
 texture = ExtResource("2_grv64")
 type = 2

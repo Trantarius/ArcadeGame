@@ -30,14 +30,14 @@ func _ready() -> void:
 	$StarboardFireTimer.reset()
 	$StarboardFireTimer.start()
 	
-	max_health = 0
+	max_health.base = 0
 	for child:Node in ($Port/Turrets.get_children() + $Port/Cannons.get_children() + 
 					   $Starboard/Turrets.get_children() + $Starboard/Cannons.get_children() +
 					   [$Engine, $Engine2]):
 		$'.'.add_collision_exception_with(child)
 		child.add_collision_exception_with(self)
 		child.damage_taken.connect(_on_part_damaged, CONNECT_DEFERRED)
-		max_health += child.max_health
+		max_health.base += child.max_health
 
 func _on_part_damaged(damage:Damage)->void:
 	damage.silent=true

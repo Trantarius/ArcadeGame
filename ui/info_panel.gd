@@ -119,7 +119,7 @@ func _ready() -> void:
 			score = player.score
 			for ability:PlayerAbility in player.abilities.values():
 				abilities[ability] = make_ability_entry(ability)
-			max_health = player.max_health
+			max_health = player.max_health.get_value()
 			health = player.health
 			player.score_changed.connect(_on_player_score_changed)
 			player.added_ability.connect(_on_player_added_ability)

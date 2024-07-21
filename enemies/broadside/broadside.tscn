@@ -1,17 +1,189 @@
-[gd_scene load_steps=8 format=3 uid="uid://duw4y42hn6e5i"]
+[gd_scene load_steps=28 format=3 uid="uid://duw4y42hn6e5i"]
 
 [ext_resource type="Script" path="res://enemies/broadside/broadside.gd" id="1_myy4k"]
 [ext_resource type="PackedScene" uid="uid://calsi17ho0g4c" path="res://enemies/broadside/turret.tscn" id="2_qy785"]
+[ext_resource type="Script" path="res://classes/Stat.gd" id="2_taaha"]
 [ext_resource type="PackedScene" uid="uid://crwwyc1s55imm" path="res://enemies/broadside/cannon.tscn" id="3_6q3fn"]
 [ext_resource type="PackedScene" uid="uid://c11upr826ghta" path="res://enemies/broadside/engine.tscn" id="4_srbmi"]
 [ext_resource type="Script" path="res://classes/Interpolator.gd" id="5_5wcpo"]
 [ext_resource type="Script" path="res://classes/AvoidanceAgent.gd" id="6_iway5"]
 [ext_resource type="Script" path="res://classes/ReversibleTimer.gd" id="7_tojox"]
 
+[sub_resource type="Resource" id="Resource_h1e33"]
+resource_local_to_scene = true
+script = ExtResource("2_taaha")
+use_min_value = false
+use_max_value = false
+base = 0.0
+round_mode = 0
+
+[sub_resource type="Resource" id="Resource_xdlb7"]
+resource_local_to_scene = true
+script = ExtResource("2_taaha")
+use_min_value = true
+use_max_value = false
+base = 100.0
+round_mode = 0
+min_value = 1.0
+
+[sub_resource type="Resource" id="Resource_67hwx"]
+resource_local_to_scene = true
+script = ExtResource("2_taaha")
+use_min_value = true
+use_max_value = false
+base = 100.0
+round_mode = 0
+min_value = 1.0
+
+[sub_resource type="Resource" id="Resource_g2txw"]
+resource_local_to_scene = true
+script = ExtResource("2_taaha")
+use_min_value = true
+use_max_value = false
+base = 200.0
+round_mode = 0
+min_value = 1.0
+
+[sub_resource type="Resource" id="Resource_7ujfh"]
+resource_local_to_scene = true
+script = ExtResource("2_taaha")
+use_min_value = true
+use_max_value = false
+base = 200.0
+round_mode = 0
+min_value = 1.0
+
+[sub_resource type="Resource" id="Resource_bvji3"]
+resource_local_to_scene = true
+script = ExtResource("2_taaha")
+use_min_value = true
+use_max_value = false
+base = 200.0
+round_mode = 0
+min_value = 1.0
+
+[sub_resource type="Resource" id="Resource_8g3li"]
+resource_local_to_scene = true
+script = ExtResource("2_taaha")
+use_min_value = true
+use_max_value = false
+base = 200.0
+round_mode = 0
+min_value = 1.0
+
+[sub_resource type="Resource" id="Resource_1icpu"]
+resource_local_to_scene = true
+script = ExtResource("2_taaha")
+use_min_value = true
+use_max_value = false
+base = 200.0
+round_mode = 0
+min_value = 1.0
+
+[sub_resource type="Resource" id="Resource_0wwyx"]
+resource_local_to_scene = true
+script = ExtResource("2_taaha")
+use_min_value = true
+use_max_value = false
+base = 200.0
+round_mode = 0
+min_value = 1.0
+
+[sub_resource type="Resource" id="Resource_buj1k"]
+resource_local_to_scene = true
+script = ExtResource("2_taaha")
+use_min_value = true
+use_max_value = false
+base = 100.0
+round_mode = 0
+min_value = 1.0
+
+[sub_resource type="Resource" id="Resource_a4e1w"]
+resource_local_to_scene = true
+script = ExtResource("2_taaha")
+use_min_value = true
+use_max_value = false
+base = 100.0
+round_mode = 0
+min_value = 1.0
+
+[sub_resource type="Resource" id="Resource_utfxn"]
+resource_local_to_scene = true
+script = ExtResource("2_taaha")
+use_min_value = true
+use_max_value = false
+base = 200.0
+round_mode = 0
+min_value = 1.0
+
+[sub_resource type="Resource" id="Resource_vfd8b"]
+resource_local_to_scene = true
+script = ExtResource("2_taaha")
+use_min_value = true
+use_max_value = false
+base = 200.0
+round_mode = 0
+min_value = 1.0
+
+[sub_resource type="Resource" id="Resource_pow1p"]
+resource_local_to_scene = true
+script = ExtResource("2_taaha")
+use_min_value = true
+use_max_value = false
+base = 200.0
+round_mode = 0
+min_value = 1.0
+
+[sub_resource type="Resource" id="Resource_uoqoc"]
+resource_local_to_scene = true
+script = ExtResource("2_taaha")
+use_min_value = true
+use_max_value = false
+base = 200.0
+round_mode = 0
+min_value = 1.0
+
+[sub_resource type="Resource" id="Resource_hu4a2"]
+resource_local_to_scene = true
+script = ExtResource("2_taaha")
+use_min_value = true
+use_max_value = false
+base = 200.0
+round_mode = 0
+min_value = 1.0
+
+[sub_resource type="Resource" id="Resource_05r0i"]
+resource_local_to_scene = true
+script = ExtResource("2_taaha")
+use_min_value = true
+use_max_value = false
+base = 200.0
+round_mode = 0
+min_value = 1.0
+
+[sub_resource type="Resource" id="Resource_8fbue"]
+resource_local_to_scene = true
+script = ExtResource("2_taaha")
+use_min_value = true
+use_max_value = false
+base = 500.0
+round_mode = 0
+min_value = 1.0
+
+[sub_resource type="Resource" id="Resource_n21hx"]
+resource_local_to_scene = true
+script = ExtResource("2_taaha")
+use_min_value = true
+use_max_value = false
+base = 500.0
+round_mode = 0
+min_value = 1.0
+
 [node name="Broadside" type="RigidBody2D"]
 mass = 1000.0
 script = ExtResource("1_myy4k")
 point_value = 100.0
+max_health = SubResource("Resource_h1e33")
 radius = 300.0
 disable_health_bar = true
 
@@ -23,30 +195,38 @@ rotation = 3.14159
 [node name="Turret" parent="Port/Turrets" groups=["BroadsidePart"] instance=ExtResource("2_qy785")]
 position = Vector2(-592, 128)
 rotation = 1.8326
+max_health = SubResource("Resource_xdlb7")
 
 [node name="Turret2" parent="Port/Turrets" groups=["BroadsidePart"] instance=ExtResource("2_qy785")]
 position = Vector2(-400, 176)
 rotation = 1.8326
+max_health = SubResource("Resource_67hwx")
 
 [node name="Cannons" type="Node2D" parent="Port"]
 
 [node name="Cannon" parent="Port/Cannons" groups=["BroadsidePart"] instance=ExtResource("3_6q3fn")]
 position = Vector2(-256, 128)
+max_health = SubResource("Resource_g2txw")
 
 [node name="Cannon2" parent="Port/Cannons" groups=["BroadsidePart"] instance=ExtResource("3_6q3fn")]
 position = Vector2(-128, 128)
+max_health = SubResource("Resource_7ujfh")
 
 [node name="Cannon3" parent="Port/Cannons" groups=["BroadsidePart"] instance=ExtResource("3_6q3fn")]
 position = Vector2(0, 128)
+max_health = SubResource("Resource_bvji3")
 
 [node name="Cannon4" parent="Port/Cannons" groups=["BroadsidePart"] instance=ExtResource("3_6q3fn")]
 position = Vector2(128, 128)
+max_health = SubResource("Resource_8g3li")
 
 [node name="Cannon5" parent="Port/Cannons" groups=["BroadsidePart"] instance=ExtResource("3_6q3fn")]
 position = Vector2(256, 128)
+max_health = SubResource("Resource_1icpu")
 
 [node name="Cannon6" parent="Port/Cannons" groups=["BroadsidePart"] instance=ExtResource("3_6q3fn")]
 position = Vector2(384, 128)
+max_health = SubResource("Resource_0wwyx")
 
 [node name="Starboard" type="Node2D" parent="."]
 rotation = 3.14159
@@ -56,36 +236,44 @@ rotation = 3.14159
 [node name="Turret3" parent="Starboard/Turrets" groups=["BroadsidePart"] instance=ExtResource("2_qy785")]
 position = Vector2(-592, -128)
 rotation = -1.8326
+max_health = SubResource("Resource_buj1k")
 
 [node name="Turret4" parent="Starboard/Turrets" groups=["BroadsidePart"] instance=ExtResource("2_qy785")]
 position = Vector2(-400, -176)
 rotation = -1.8326
+max_health = SubResource("Resource_a4e1w")
 
 [node name="Cannons" type="Node2D" parent="Starboard"]
 
 [node name="Cannon7" parent="Starboard/Cannons" groups=["BroadsidePart"] instance=ExtResource("3_6q3fn")]
 position = Vector2(384, -128)
 rotation = 3.14159
+max_health = SubResource("Resource_utfxn")
 
 [node name="Cannon8" parent="Starboard/Cannons" groups=["BroadsidePart"] instance=ExtResource("3_6q3fn")]
 position = Vector2(256, -128)
 rotation = 3.14159
+max_health = SubResource("Resource_vfd8b")
 
 [node name="Cannon9" parent="Starboard/Cannons" groups=["BroadsidePart"] instance=ExtResource("3_6q3fn")]
 position = Vector2(128, -128)
 rotation = 3.14159
+max_health = SubResource("Resource_pow1p")
 
 [node name="Cannon10" parent="Starboard/Cannons" groups=["BroadsidePart"] instance=ExtResource("3_6q3fn")]
 position = Vector2(0, -128)
 rotation = 3.14159
+max_health = SubResource("Resource_uoqoc")
 
 [node name="Cannon11" parent="Starboard/Cannons" groups=["BroadsidePart"] instance=ExtResource("3_6q3fn")]
 position = Vector2(-128, -128)
 rotation = 3.14159
+max_health = SubResource("Resource_hu4a2")
 
 [node name="Cannon12" parent="Starboard/Cannons" groups=["BroadsidePart"] instance=ExtResource("3_6q3fn")]
 position = Vector2(-256, -128)
 rotation = 3.14159
+max_health = SubResource("Resource_05r0i")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
 position = Vector2(208, 0)
@@ -96,10 +284,12 @@ polygon = PackedVector2Array(-256, 16, -128, 16, -112, 0, -128, -16, -256, -16, 
 [node name="Engine" parent="." groups=["BroadsidePart"] instance=ExtResource("4_srbmi")]
 position = Vector2(-576, 112)
 rotation = 3.14159
+max_health = SubResource("Resource_8fbue")
 
 [node name="Engine2" parent="." groups=["BroadsidePart"] instance=ExtResource("4_srbmi")]
 position = Vector2(-576, -112)
 rotation = 3.14159
+max_health = SubResource("Resource_n21hx")
 
 [node name="Interpolator" type="Node2D" parent="."]
 script = ExtResource("5_5wcpo")

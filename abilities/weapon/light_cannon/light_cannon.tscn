@@ -1,11 +1,62 @@
-[gd_scene load_steps=4 format=3 uid="uid://d3ek2vmqvfst3"]
+[gd_scene load_steps=10 format=3 uid="uid://d3ek2vmqvfst3"]
 
 [ext_resource type="Script" path="res://abilities/weapon/light_cannon/light_cannon.gd" id="1_i0mqr"]
+[ext_resource type="Script" path="res://classes/Stat.gd" id="2_1fpji"]
 [ext_resource type="Texture2D" uid="uid://bqutew3hdet82" path="res://abilities/weapon/light_cannon/light_cannon_icon.png" id="2_p5xmy"]
 [ext_resource type="Script" path="res://classes/ReversibleTimer.gd" id="3_360it"]
 
+[sub_resource type="Resource" id="Resource_0ns4k"]
+resource_local_to_scene = true
+script = ExtResource("2_1fpji")
+use_min_value = true
+use_max_value = false
+base = 3.0
+round_mode = 0
+min_value = 0.0
+
+[sub_resource type="Resource" id="Resource_0vvcj"]
+resource_local_to_scene = true
+script = ExtResource("2_1fpji")
+use_min_value = true
+use_max_value = false
+base = 10.0
+round_mode = 0
+min_value = 0.0
+
+[sub_resource type="Resource" id="Resource_7qlki"]
+resource_local_to_scene = true
+script = ExtResource("2_1fpji")
+use_min_value = true
+use_max_value = false
+base = 1.0
+round_mode = 4
+min_value = 1.0
+
+[sub_resource type="Resource" id="Resource_kkui5"]
+resource_local_to_scene = true
+script = ExtResource("2_1fpji")
+use_min_value = true
+use_max_value = false
+base = 1000.0
+round_mode = 0
+min_value = 0.0
+
+[sub_resource type="Resource" id="Resource_6oeoy"]
+resource_local_to_scene = true
+script = ExtResource("2_1fpji")
+use_min_value = true
+use_max_value = false
+base = 8.0
+round_mode = 0
+min_value = 1.0
+
 [node name="LightCannon" type="Node"]
 script = ExtResource("1_i0mqr")
+fire_rate = SubResource("Resource_0ns4k")
+damage = SubResource("Resource_0vvcj")
+projectile_count = SubResource("Resource_7qlki")
+projectile_speed = SubResource("Resource_kkui5")
+projectile_size = SubResource("Resource_6oeoy")
 ability_name = &"Light Cannon"
 texture = ExtResource("2_p5xmy")
 type = 2

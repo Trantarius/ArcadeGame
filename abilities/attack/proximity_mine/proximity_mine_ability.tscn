@@ -1,11 +1,51 @@
-[gd_scene load_steps=3 format=3 uid="uid://c1abqegxiegd0"]
+[gd_scene load_steps=8 format=3 uid="uid://c1abqegxiegd0"]
 
 [ext_resource type="Script" path="res://abilities/attack/proximity_mine/proximity_mine_ability.gd" id="1_p3mmb"]
+[ext_resource type="Script" path="res://classes/Stat.gd" id="2_4icqy"]
 [ext_resource type="Texture2D" uid="uid://ce5syo2jakiqr" path="res://abilities/attack/proximity_mine/proximity_mine_icon.png" id="2_pnufd"]
+
+[sub_resource type="Resource" id="Resource_qtels"]
+resource_local_to_scene = true
+script = ExtResource("2_4icqy")
+use_min_value = true
+use_max_value = false
+base = 50.0
+round_mode = 0
+min_value = 0.0
+
+[sub_resource type="Resource" id="Resource_ml8og"]
+resource_local_to_scene = true
+script = ExtResource("2_4icqy")
+use_min_value = true
+use_max_value = false
+base = 256.0
+round_mode = 0
+min_value = 4.0
+
+[sub_resource type="Resource" id="Resource_yeica"]
+resource_local_to_scene = true
+script = ExtResource("2_4icqy")
+use_min_value = true
+use_max_value = false
+base = 3.0
+round_mode = 0
+min_value = 0.0
+
+[sub_resource type="Resource" id="Resource_yqdxl"]
+resource_local_to_scene = true
+script = ExtResource("2_4icqy")
+use_min_value = true
+use_max_value = false
+base = 5.0
+round_mode = 0
+min_value = 0.0
 
 [node name="ProximityMineAbility" type="Node"]
 script = ExtResource("1_p3mmb")
-base_cooldown = 5.0
+damage = SubResource("Resource_qtels")
+explosion_size = SubResource("Resource_ml8og")
+arming_time = SubResource("Resource_yeica")
+cooldown = SubResource("Resource_yqdxl")
 ability_name = &"Proximity Mine"
 texture = ExtResource("2_pnufd")
 type = 1

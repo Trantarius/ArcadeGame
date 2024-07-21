@@ -1,10 +1,10 @@
 extends PlayerAbility
 
-var fire_rate:Stat = Stat.new(1, 0, INF)
-var damage:Stat = Stat.new(5, 0, INF)
-var projectile_count:Stat = Stat.new(8, 1, INF, Stat.PERIODIC)
-var projectile_speed:Stat = Stat.new(600, 0, INF)
-var projectile_size:Stat = Stat.new(8, 1, INF)
+@export var fire_rate:Stat
+@export var damage:Stat
+@export var projectile_count:Stat
+@export var projectile_speed:Stat
+@export var projectile_size:Stat
 
 const proj_spread:float = PI/6
 signal fired

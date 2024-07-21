@@ -1,8 +1,8 @@
 extends CooldownAbility
 
-var projectile_count:Stat = Stat.new(8,1,INF,Stat.RANDOM)
-var damage:Stat = Stat.new(10,0,INF)
-var explosion_size:Stat = Stat.new(128, 4, INF)
+@export var projectile_count:Stat # = Stat.new(8,1,INF,Stat.RANDOM)
+@export var damage:Stat # = Stat.new(10,0,INF)
+@export var explosion_size:Stat # = Stat.new(128, 4, INF)
 @export var fire_angle:float = 0.5
 
 func _on_triggered() -> void:
