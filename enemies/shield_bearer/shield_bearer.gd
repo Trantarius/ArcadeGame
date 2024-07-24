@@ -31,6 +31,7 @@ enum{
 var fire_stage:int = STAGE_COOLDOWN
 
 func _init()->void:
+	super()
 	body = $'.'
 
 func _ready()->void:

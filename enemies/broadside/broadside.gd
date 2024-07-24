@@ -20,6 +20,7 @@ var target:Player
 var body:RigidBody2D
 
 func _init()->void:
+	super()
 	body = $'.'
 
 func _ready() -> void:

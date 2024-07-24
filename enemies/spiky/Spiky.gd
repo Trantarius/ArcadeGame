@@ -9,6 +9,7 @@ const max_rot_speed:float = 6
 const max_thrust:float = 200
 
 func _init()->void:
+	super()
 	body = $'.'
 
 func _ready()->void:

@@ -22,6 +22,7 @@ var body:RigidBody2D
 var charging_shot:Projectile
 
 func _init()->void:
+	super()
 	body = $'.'
 
 func _ready()->void:

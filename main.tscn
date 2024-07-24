@@ -1,6 +1,7 @@
-[gd_scene load_steps=25 format=3 uid="uid://gvye6ccvjd55"]
+[gd_scene load_steps=32 format=3 uid="uid://gvye6ccvjd55"]
 
 [ext_resource type="PackedScene" uid="uid://crylwoyahw6go" path="res://ui/info_panel.tscn" id="2_8k6rt"]
+[ext_resource type="Script" path="res://classes/Stat.gd" id="2_bfb8h"]
 [ext_resource type="PackedScene" uid="uid://d3ek2vmqvfst3" path="res://abilities/weapon/light_cannon/light_cannon.tscn" id="2_dqgwh"]
 [ext_resource type="PackedScene" uid="uid://b4v2b4cphju7v" path="res://ui/debug_menu.tscn" id="3_bx4mw"]
 [ext_resource type="PackedScene" uid="uid://ccgupredk0a3f" path="res://player/player.tscn" id="3_d6lla"]
@@ -25,11 +26,71 @@
 [ext_resource type="PackedScene" uid="uid://dhkxc6mxsom3a" path="res://abilities/attack/proximity_mine/proximity_mine_pickup.tscn" id="16_w24yk"]
 [ext_resource type="PackedScene" uid="uid://7eaqj1u8klbj" path="res://abilities/attack/missile_swarm/missile_swarm_pickup.tscn" id="18_qaimk"]
 
+[sub_resource type="Resource" id="Resource_6krrj"]
+resource_local_to_scene = true
+script = ExtResource("2_bfb8h")
+use_min_value = true
+use_max_value = false
+base = 100.0
+round_mode = 0
+min_value = 1.0
+
+[sub_resource type="Resource" id="Resource_14si3"]
+resource_local_to_scene = true
+script = ExtResource("2_bfb8h")
+use_min_value = true
+use_max_value = false
+base = 3.0
+round_mode = 0
+min_value = 0.0
+
+[sub_resource type="Resource" id="Resource_qbk6m"]
+resource_local_to_scene = true
+script = ExtResource("2_bfb8h")
+use_min_value = true
+use_max_value = false
+base = 10.0
+round_mode = 0
+min_value = 0.0
+
+[sub_resource type="Resource" id="Resource_vfmdl"]
+resource_local_to_scene = true
+script = ExtResource("2_bfb8h")
+use_min_value = true
+use_max_value = false
+base = 1.0
+round_mode = 4
+min_value = 1.0
+
+[sub_resource type="Resource" id="Resource_tvbhd"]
+resource_local_to_scene = true
+script = ExtResource("2_bfb8h")
+use_min_value = true
+use_max_value = false
+base = 1000.0
+round_mode = 0
+min_value = 0.0
+
+[sub_resource type="Resource" id="Resource_l81r3"]
+resource_local_to_scene = true
+script = ExtResource("2_bfb8h")
+use_min_value = true
+use_max_value = false
+base = 8.0
+round_mode = 0
+min_value = 1.0
+
 [node name="Main" type="Node"]
 
 [node name="Player" parent="." instance=ExtResource("3_d6lla")]
+max_health = SubResource("Resource_6krrj")
 
 [node name="LightCannon" parent="Player" instance=ExtResource("2_dqgwh")]
+fire_rate = SubResource("Resource_14si3")
+damage = SubResource("Resource_qbk6m")
+projectile_count = SubResource("Resource_vfmdl")
+projectile_speed = SubResource("Resource_tvbhd")
+projectile_size = SubResource("Resource_l81r3")
 
 [node name="EnemySpawner" type="Node" parent="."]
 script = ExtResource("6_xg0x2")
@@ -82,12 +143,3 @@ offset_right = 0.0
 offset_bottom = 0.0
 
 [node name="DebugMenu" parent="UILayer" instance=ExtResource("3_bx4mw")]
-visible = false
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -332.0
-offset_top = 32.0
-offset_right = -32.0
-offset_bottom = 475.0
-grow_horizontal = 0
