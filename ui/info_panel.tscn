@@ -1,18 +1,18 @@
-[gd_scene load_steps=3 format=3 uid="uid://crylwoyahw6go"]
+[gd_scene load_steps=4 format=3 uid="uid://crylwoyahw6go"]
 
 [ext_resource type="Script" path="res://ui/info_panel.gd" id="1_40lju"]
 [ext_resource type="Theme" uid="uid://d0ifc4kse0sbj" path="res://ui/theme/theme.tres" id="1_rornq"]
+[ext_resource type="Script" path="res://ui/health_bar.gd" id="3_b7q7p"]
 
-[node name="InfoPanel" type="PanelContainer"]
+[node name="InfoPanel" type="PanelContainer" node_paths=PackedStringArray("score_label", "health_bar", "ability_list")]
 offset_left = 32.0
 offset_top = 32.0
 theme = ExtResource("1_rornq")
 theme_type_variation = &"FatPanel"
 script = ExtResource("1_40lju")
-score = 26.155
-health = 10.57
-max_health = 13.025
-include_basic_controls_in_abilities = true
+score_label = NodePath("VBoxContainer/ScoreLabel")
+health_bar = NodePath("VBoxContainer/HealthBar")
+ability_list = NodePath("VBoxContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -23,25 +23,14 @@ layout_mode = 2
 text = "Score: 26"
 
 [node name="HealthBar" type="ProgressBar" parent="VBoxContainer"]
-custom_minimum_size = Vector2(0, 29.205)
+custom_minimum_size = Vector2(48, 19)
 layout_mode = 2
 theme_type_variation = &"HealthBar"
-max_value = 13.025
-value = 10.57
+max_value = 68.09
+value = 11.01
 show_percentage = false
-
-[node name="Label" type="Label" parent="VBoxContainer/HealthBar"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 4
-text = "11 / 14"
-horizontal_alignment = 1
-vertical_alignment = 1
+script = ExtResource("3_b7q7p")
+show_text = true
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2

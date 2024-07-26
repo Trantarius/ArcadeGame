@@ -2,140 +2,41 @@
 class_name AbilityCard
 extends Control
 
-@export var title:String:
+@export var title_node:Label
+@export var texture_node:TextureRect
+@export var type_node:RichTextLabel
+@export var description_node:RichTextLabel
+@export var state_node:Label
+@export var focus_node:Control
+
+@export var ability:PlayerAbility:
 	set(to):
-		if(has_node(^'MarginContainer/VBoxContainer/Title')):
-			$MarginContainer/VBoxContainer/Title.text = to
-	get:
-		if(has_node(^'MarginContainer/VBoxContainer/Title')):
-			return $MarginContainer/VBoxContainer/Title.text
+		ability = to
+		if(is_instance_valid(ability)):
+			title_node.text = ability.ability_name
+			texture_node.texture = ability.texture
+			type_node.text = '[center][i]%s[/i][/center]'%[ability.get_type_name()]
+			description_node.text = Util.custom_format_string(ability.description, ability)
+			state_node.text = 'Equipped' if ability.is_inside_tree() else 'New'
 		else:
-			return ''
+			title_node.text = 'Name'
+			texture_node.texture = preload('res://icon.svg')
+			type_node.text = '[center][i]%s[/i][/center]'%['Type']
+			description_node.text = 'Description'
+			state_node.text = 'State'
 
-@export var texture:Texture2D:
-	set(to):
-		if(has_node(^'MarginContainer/VBoxContainer/TextureRect')):
-			$MarginContainer/VBoxContainer/TextureRect.texture = to
-	get:
-		if(has_node(^'MarginContainer/VBoxContainer/TextureRect')):
-			return $MarginContainer/VBoxContainer/TextureRect.texture
-		else:
-			return null
+signal pressed
 
-const _type_prefix:String='[center][i]'
-const _type_suffix:String='[/i][/center]'
-@export var type:String:
-	set(to):
-		if(has_node(^'MarginContainer/VBoxContainer/Type')):
-			$MarginContainer/VBoxContainer/Type.text = _type_prefix + to + _type_suffix
-	get:
-		if(has_node(^'MarginContainer/VBoxContainer/Type')):
-			return $MarginContainer/VBoxContainer/Type.text.trim_prefix(_type_prefix).trim_suffix(_type_suffix)
-		return ''
+func _ready() -> void:
+	if(!is_instance_valid(ability)):
+		ability=null
 
-@export_multiline var description:String:
-	set(to):
-		if(has_node(^'MarginContainer/VBoxContainer/Description')):
-			$MarginContainer/VBoxContainer/Description.text = to
-	get:
-		if(has_node(^'MarginContainer/VBoxContainer/Description')):
-			return $MarginContainer/VBoxContainer/Description.text
-		else:
-			return ''
+func _on_focus_entered() -> void:
+	focus_node.show()
 
-@export var state:String:
-	set(to):
-		if(has_node(^'MarginContainer/VBoxContainer/State')):
-			$MarginContainer/VBoxContainer/State.text = to
-	get:
-		if(has_node(^'MarginContainer/VBoxContainer/State')):
-			return $MarginContainer/VBoxContainer/State.text
-		else:
-			return ''
+func _on_focus_exited() -> void:
+	focus_node.hide()
 
-func build_from(ability:PlayerAbility)->void:
-	title = ability.ability_name
-	texture = ability.texture
-	type = ability.get_type_name()
-	description = Util.custom_format_string(ability.description, ability)
-	if(ability.get_parent().abilities.has(ability.type) && ability.get_parent().abilities[ability.type]==ability):
-		state = 'Equipped'
-	else:
-		state = 'New'
-
-## Handles some special escapes and turns them into BBCode. [br]
-## [code]{action <actionname>}[/code] will insert the current keybind for the input action with name [code]actionname[/code].[br]
-## [code]{property <propname> <format?>}[/code] will retrieve a property named [code]propname[/code] from the ability node.[br]
-## [code]{stat <statname> <format?>}[/code] will describe a stat, using the given unit if present.
-static func format_description(ability:PlayerAbility)->String:
-	var input:String = ability.description
-	var escape_rex:RegEx = RegEx.create_from_string("\\{\\s*(\\w+)\\s*(\\S+)?\\s*(\\S+)?\\s*\\}")
-	var found:RegExMatch = escape_rex.search(input)
-	while(is_instance_valid(found)):
-		input = input.erase(found.get_start(),found.get_end()-found.get_start())
-		match found.get_string(1):
-			'action':
-				if(found.get_group_count()!=2):
-					push_error("bad description string escape '",found.get_string(),"'")
-					input = input.insert(found.get_start(),'[color=red]ERROR[/color]')
-				else:
-					var action:String = found.get_string(2)
-					
-					var repl:String
-					var events:Array[InputEvent] = InputMap.action_get_events(action)
-					if(events.is_empty()):
-						repl = '[lb][rb]'
-					else:
-						repl = '[lb]'
-						repl += events[0].as_text().trim_suffix(' (Physical)')
-						for i:int in range(1,events.size()):
-							repl += '|' + events[i].as_text().trim_suffix(' (Physical)')
-						repl += '[rb]'
-						
-					repl = '[code]'+repl+'[/code]'
-					input = input.insert(found.get_start(),repl)
-			
-			'property':
-				if(found.get_group_count()<2):
-					push_error("bad description string escape '",found.get_string(),"'")
-					input = input.insert(found.get_start(),'[color=red]ERROR[/color]')
-				else:
-					var prop:String = found.get_string(2)
-					var value:Variant = ability.get(prop)
-					var vstr:String
-					if(found.get_group_count()>=3):
-						vstr = found.get_string(3)%[value]
-					else:
-						vstr = str(value)
-					input = input.insert(found.get_start(),vstr)
-			
-			'stat':
-				if(found.get_group_count()<2):
-					push_error("bad description string escape '",found.get_string(),"'")
-					input = input.insert(found.get_start(),'[color=red]ERROR[/color]')
-				else:
-					var prop:String = found.get_string(2)
-					var stat:Stat = ability.get(prop)
-					var base_str:String
-					var value_str:String
-					if(found.get_group_count()>=3):
-						base_str = found.get_string(3)%[stat.base]
-						value_str = found.get_string(3)%[stat.get_value()]
-					else:
-						base_str = str(stat.base)
-						value_str = str(stat.get_value())
-					
-					var desc:String = base_str
-					if(is_equal_approx(stat.get_value(),stat.base)):
-						pass
-					elif(stat.get_value()>stat.base):
-						desc += ' ([color=green]'+value_str+'[/color])'
-					else:
-						desc += ' ([color=red]'+value_str+'[/color])'
-						
-					input = input.insert(found.get_start(),desc)
-			_:
-				push_error("bad description string escape '",found.get_string(),"'")
-				input = input.insert(found.get_start(),'[color=red]ERROR[/color]')
-		found = escape_rex.search(input)
-	return input
+func _gui_input(event: InputEvent) -> void:
+	if(event.is_action('ui_accept') || (event is InputEventMouseButton && event.button_index==MOUSE_BUTTON_LEFT)):
+		pressed.emit()

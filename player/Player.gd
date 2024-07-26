@@ -26,39 +26,44 @@ signal removed_ability(ability:PlayerAbility)
 
 var abilities:Dictionary
 
-var movement_ability:PlayerAbility:
-	get:
-		if(!abilities.has(PlayerAbility.MOVEMENT)):
-			return null
-		return abilities[PlayerAbility.MOVEMENT]
-	set(to):
-		add_ability(to)
-		
-var attack_ability:PlayerAbility:
-	get:
-		if(!abilities.has(PlayerAbility.ATTACK)):
-			return null
-		return abilities[PlayerAbility.ATTACK]
-	set(to):
-		add_ability(to)
-
-var weapon:PlayerAbility:
-	get:
-		if(!abilities.has(PlayerAbility.WEAPON)):
-			return null
-		return abilities[PlayerAbility.WEAPON]
-	set(to):
-		add_ability(to)
+var _ability_choice_screen:AbilityChoiceScreen
 
 func add_ability(ability:PlayerAbility)->void:
-	add_child(ability)
+	while(is_instance_valid(_ability_choice_screen)):
+		await _ability_choice_screen.select_finished
+	
+	if(abilities.has(ability.type) && abilities[ability.type].ability_name == ability.ability_name):
+		# if the new ability is the same as the one already possessed, ignore it
+		ability.queue_free()
+		return
+	
+	new_ability.emit(ability)
+	var uilayer:CanvasLayer = get_tree().get_first_node_in_group('UILayer')
+	_ability_choice_screen = preload('res://ui/ability_choice_screen.tscn').instantiate()
+	uilayer.add_child(_ability_choice_screen)
+	_ability_choice_screen.add_ability(ability)
+	if(abilities.has(ability.type)):
+		_ability_choice_screen.add_ability(abilities[ability.type])
+	_ability_choice_screen.begin_selection()
+	var selected:PlayerAbility = await _ability_choice_screen.select_finished
+	_ability_choice_screen=null
+	
+	if(selected.is_inside_tree()):
+		ability.queue_free()
+	else:
+		if(abilities.has(ability.type)):
+			remove_ability(abilities[ability.type])
+		ability.ability_initialized=true
+		abilities[ability.type]=ability
+		add_child(ability)
+		added_ability.emit(ability)
 
 func remove_ability(ability:PlayerAbility)->void:
 	assert(ability.is_inside_tree())
 	assert(ability.get_parent()==self)
 	assert(abilities[ability.type]==ability)
-	removed_ability.emit(ability)
 	abilities.erase(ability.type)
+	removed_ability.emit(ability)
 	ability.queue_free()
 
 func get_muzzle_position()->Vector2:

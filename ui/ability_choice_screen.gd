@@ -1,36 +1,32 @@
+class_name AbilityChoiceScreen
 extends Control
 
-var left_ability:PlayerAbility:
-	set(to):
-		left_ability=to
-		if(is_inside_tree()):
-			left_card.build_from(left_ability)
-var right_ability:PlayerAbility:
-	set(to):
-		right_ability=to
-		if(is_inside_tree()):
-			right_card.build_from(right_ability)
+@export var card_container:HBoxContainer
+@export var controls_label:RichTextLabel
 
-@onready var left_card:Control = $PanelContainer/PanelContainer/HBoxContainer/MarginContainer/AbilityCard
-@onready var right_card:Control = $PanelContainer/PanelContainer/HBoxContainer/MarginContainer2/AbilityCard
+const ability_card_scene:PackedScene = preload("res://ui/ability_card.tscn")
 
 signal select_finished(ability:PlayerAbility)
 
-func _ready()->void:
+func add_ability(ability:PlayerAbility)->void:
+	var card:AbilityCard = ability_card_scene.instantiate()
+	card.ability = ability
+	card_container.add_child(card)
+	card.pressed.connect(_on_card_selected.bind(card))
+	
+func begin_selection()->void:
+	assert(card_container.get_child_count()>0)
 	get_tree().paused = true
-	if(is_instance_valid(left_ability)):
-		left_card.build_from(left_ability)
-	if(is_instance_valid(right_ability)):
-		right_card.build_from(right_ability)
-	grab_focus.call_deferred()
+	if(card_container.get_child_count()==1):
+		card_container.get_child(0).grab_focus.call_deferred()
+		controls_label.text = Util.custom_format_string('[center]{action ui_accept} confirm[/center]',null)
+	else:
+		focus_neighbor_left = card_container.get_child(0).get_path()
+		focus_neighbor_right = card_container.get_child(card_container.get_child_count()-1).get_path()
+		grab_focus.call_deferred()
+		controls_label.text = Util.custom_format_string('[center]{action left}/{action right} select    {action ui_accept} confirm[/center]',null)
 
-
-func _on_left_card_button_pressed() -> void:
-	get_tree().paused = false
-	select_finished.emit(left_ability)
-	queue_free()
-
-func _on_right_card_button_pressed() -> void:
-	get_tree().paused = false
-	select_finished.emit(right_ability)
+func _on_card_selected(card:AbilityCard)->void:
+	get_tree().paused=false
+	select_finished.emit(card.ability)
 	queue_free()

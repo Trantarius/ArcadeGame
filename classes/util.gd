@@ -179,7 +179,7 @@ static func get_controls_string(action:StringName)->String:
 ## [code]{property <propname> <format?>}[/code] will retrieve a property named [code]propname[/code] from the given object.[br]
 ## [code]{stat <statname> <format?>}[/code] will describe a [Stat], using the given unit if present.
 static func custom_format_string(input:String, obj:Object)->String:
-	var escape_rex:RegEx = RegEx.create_from_string("\\{\\s*(\\w+)\\s*(\\S+)?\\s*(\\S+)?\\s*\\}")
+	var escape_rex:RegEx = RegEx.create_from_string("\\{\\s*(\\w+?)(?:\\s+(\\S+?))?(?:\\s+(\\S+?))?\\s*\\}")
 	var found:RegExMatch = escape_rex.search(input)
 	while(is_instance_valid(found)):
 		input = input.erase(found.get_start(),found.get_end()-found.get_start())

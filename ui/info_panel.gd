@@ -1,134 +1,77 @@
+@tool
 class_name InfoPanel
 extends Control
 
-@onready var score_label:Label = $VBoxContainer/ScoreLabel
+@export var score_label:Label
+@export var health_bar:HealthBar
+@export var ability_list:VBoxContainer
 
-@export var score:float:
+@export var player:Player:
 	set(to):
-		score = to
-		if(is_inside_tree()):
-			update_score()
+		if(is_instance_valid(player)):
+			player.score_changed.disconnect(_on_player_score_changed)
+			player.health_changed.disconnect(health_bar._on_health_changed)
+			player.added_ability.disconnect(_on_player_added_ability)
+			player.removed_ability.disconnect(_on_player_removed_ability)
+			for child:Node in ability_list.get_children():
+				ability_list.remove_child(child)
+			abilities.clear()
+		player=to
+		if(is_instance_valid(player)):
+			score_label.text = 'Score: %d'%[player.score]
+			player.score_changed.connect(_on_player_score_changed)
+			health_bar.max_value = player.max_health.get_value()
+			health_bar.value = player.health
+			player.health_changed.connect(health_bar._on_health_changed)
+			player.added_ability.connect(_on_player_added_ability)
+			player.removed_ability.connect(_on_player_removed_ability)
+			_add_controls()
+			for ability:PlayerAbility in player.abilities.values():
+				_on_player_added_ability(ability)
 
-func update_score()->void:
-	score_label.text = "Score: " + str(floori(score))
 
-@onready var health_bar:ProgressBar = $VBoxContainer/HealthBar
-@onready var health_bar_label:Label = $VBoxContainer/HealthBar/Label
-
-@export var health:float:
-	set(to):
-		health = to
-		if(is_inside_tree()):
-			update_health()
-
-@export var max_health:float:
-	set(to):
-		max_health = to
-		if(is_inside_tree()):
-			update_health()
-
-func update_health()->void:
-	health_bar.max_value = max_health
-	health_bar.value = health
-	health_bar_label.text = str(ceili(health)) + ' / ' + str(ceili(max_health))
-
-@onready var ability_list:VBoxContainer = $VBoxContainer/PanelContainer/VBoxContainer/MarginContainer/VBoxContainer
-
-@export var include_controls_in_abilities:bool = true:
-	set(to):
-		include_controls_in_abilities = to
-		if(is_inside_tree()):
-			update_abilities()
-
-@export var include_basic_controls_in_abilities:bool = false:
-	set(to):
-		include_basic_controls_in_abilities = to
-		if(is_inside_tree()):
-			update_abilities()
+func _on_player_score_changed(to:float)->void:
+	score_label.text = 'Score: %d'%[player.score]
 
 var abilities:Dictionary
 
-func update_abilities()->void:
+func _add_controls()->void:
 	
-	if(include_basic_controls_in_abilities && include_controls_in_abilities):
-		if(!abilities.has(&'Rotate')):
-			var lbl:RichTextLabel = RichTextLabel.new()
-			lbl.bbcode_enabled = true
-			lbl.autowrap_mode = TextServer.AUTOWRAP_OFF
-			lbl.fit_content = true
-			ability_list.add_child(lbl)
-			abilities[&'Rotate']=lbl
-		if(!abilities.has(&'Thrust')):
-			var lbl:RichTextLabel = RichTextLabel.new()
-			lbl.bbcode_enabled = true
-			lbl.autowrap_mode = TextServer.AUTOWRAP_OFF
-			lbl.fit_content = true
-			ability_list.add_child(lbl)
-			abilities[&'Thrust']=lbl
-		abilities[&'Rotate'].text = Util.get_controls_string(&'left')+' '+Util.get_controls_string(&'right')+' Rotate'
-		abilities[&'Thrust'].text = Util.get_controls_string(&'forward')+' Thrust'
+	var rlbl:RichTextLabel = RichTextLabel.new()
+	rlbl.bbcode_enabled = true
+	rlbl.autowrap_mode = TextServer.AUTOWRAP_OFF
+	rlbl.fit_content = true
+	ability_list.add_child(rlbl)
+	abilities[&'Rotate']=rlbl
+	abilities[&'Rotate'].text = Util.get_controls_string(&'left')+' '+Util.get_controls_string(&'right')+' Rotate'
 		
-	else:
-		if(abilities.has(&'Rotate')):
-			abilities[&'Rotate'].queue_free()
-			abilities.erase(&'Rotate')
-		if(!abilities.has(&'Thrust')):
-			abilities[&'Thrust'].queue_free()
-			abilities.erase(&'Thrust')
-			
-	var keys:Array = abilities.keys()
-	for key:Variant in keys:
-		if(!(key is PlayerAbility)):
-			continue
-		abilities[key].queue_free()
-		if(!is_instance_valid(key)):
-			abilities.erase(key)
-			continue
-		abilities[key]=make_ability_entry(key)
+	var tlbl:RichTextLabel = RichTextLabel.new()
+	tlbl.bbcode_enabled = true
+	tlbl.autowrap_mode = TextServer.AUTOWRAP_OFF
+	tlbl.fit_content = true
+	ability_list.add_child(tlbl)
+	abilities[&'Thrust']=tlbl
+	abilities[&'Thrust'].text = Util.get_controls_string(&'forward')+' Thrust'
 
 func make_ability_entry(ability:PlayerAbility)->Control:
 	if(ability is CooldownAbility):
 		var cdm:Control = preload("res://ui/cooldown_meter.tscn").instantiate()
-		ability_list.add_child(cdm)
 		cdm.ability = ability
-		if(include_controls_in_abilities):
-			cdm.text = Util.get_controls_string(ability.get_action_name())
-			cdm.text += ' ' + ability.ability_name
-		else:
-			cdm.text = ability.ability_name
-		
+		cdm.text = Util.get_controls_string(ability.get_action_name())
+		cdm.text += ' ' + ability.ability_name
+		ability_list.add_child(cdm)
 		return cdm
 	else:
 		var lbl:RichTextLabel = RichTextLabel.new()
 		lbl.bbcode_enabled=true
-		if(include_controls_in_abilities):
-			lbl.text =  '[lb]Passive[rb] ' + ability.ability_name
-		else:
-			lbl.text = ability.ability_name
+		lbl.text =  '[lb]Passive[rb] ' + ability.ability_name
 		ability_list.add_child(lbl)
 		return lbl
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	update_score()
-	update_health()
-	update_abilities()
-	if(!Engine.is_editor_hint()):
-		var player:Player = get_tree().get_first_node_in_group('Players')
-		if(is_instance_valid(player)):
-			score = player.score
-			for ability:PlayerAbility in player.abilities.values():
-				abilities[ability] = make_ability_entry(ability)
-			max_health = player.max_health.get_value()
-			health = player.health
-			player.score_changed.connect(_on_player_score_changed)
-			player.added_ability.connect(_on_player_added_ability)
-			player.removed_ability.connect(_on_player_removed_ability)
-			player.health_changed.connect(_on_player_health_changed)
-
-
-func _on_player_score_changed(to:float)->void:
-	score=to
+	if(!Engine.is_editor_hint() && !is_instance_valid(player)):
+		player = get_tree().get_first_node_in_group('Players')
 
 func _on_player_added_ability(ability:PlayerAbility)->void:
 	abilities[ability]=make_ability_entry(ability)
@@ -137,7 +80,3 @@ func _on_player_removed_ability(ability:PlayerAbility)->void:
 	if(abilities.has(ability)):
 		abilities[ability].queue_free()
 		abilities.erase(ability)
-
-func _on_player_health_changed(current:float, maximum:float)->void:
-	max_health = maximum
-	health = current

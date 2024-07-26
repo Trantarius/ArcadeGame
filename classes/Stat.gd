@@ -71,6 +71,7 @@ var _mods:Dictionary={PRE_ADD:{},MUL:{},ADD:{},POST_MUL:{}}
 var _value:float = base
 
 func add_mod(name:StringName, stage:int, strength:float, stacks:int)->void:
+	assert(!name.is_empty())
 	if(_mods[stage].has(name)):
 		assert(_mods[stage][name].strength==strength)
 		_mods[stage][name].stacks += stacks
@@ -79,6 +80,7 @@ func add_mod(name:StringName, stage:int, strength:float, stacks:int)->void:
 	_calc_value()
 
 func remove_mod(name:StringName, stage:int, stacks:int)->void:
+	assert(!name.is_empty())
 	if(_mods[stage].has(name)):
 		_mods[stage][name].stacks -= stacks
 		if(_mods[stage][name].stacks <= 0):

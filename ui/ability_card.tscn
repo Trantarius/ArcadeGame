@@ -20,7 +20,7 @@ expand_margin_top = 10.0
 expand_margin_right = 10.0
 expand_margin_bottom = 10.0
 
-[node name="AbilityCard" type="PanelContainer"]
+[node name="AbilityCard" type="PanelContainer" node_paths=PackedStringArray("title_node", "texture_node", "type_node", "description_node", "state_node", "focus_node")]
 custom_minimum_size = Vector2(360, 720)
 offset_left = 129.0
 offset_top = 91.0
@@ -28,15 +28,16 @@ offset_right = 489.0
 offset_bottom = 811.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
+focus_mode = 2
 theme = ExtResource("1_7joci")
 theme_type_variation = &"FatPanel"
 script = ExtResource("1_mtnm2")
-title = "Ability Name"
-texture = ExtResource("2_xth7e")
-type = "Passive / Active"
-description = "Description Here [code]abcdef[/code]
-This is a super weird way of writing"
-state = "Equipped or not"
+title_node = NodePath("MarginContainer/VBoxContainer/Title")
+texture_node = NodePath("MarginContainer/VBoxContainer/TextureRect")
+type_node = NodePath("MarginContainer/VBoxContainer/Type")
+description_node = NodePath("MarginContainer/VBoxContainer/Description")
+state_node = NodePath("MarginContainer/VBoxContainer/State")
+focus_node = NodePath("Highlight")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -53,7 +54,7 @@ theme_override_constants/separation = 12
 [node name="Title" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 24
-text = "Ability Name"
+text = "Name"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -67,7 +68,7 @@ stretch_mode = 5
 layout_mode = 2
 theme_override_colors/default_color = Color(0.596078, 0.596078, 0.596078, 1)
 bbcode_enabled = true
-text = "[center][i]Passive / Active[/i][/center]"
+text = "[center][i]Type[/i][/center]"
 fit_content = true
 scroll_active = false
 autowrap_mode = 0
@@ -76,15 +77,17 @@ autowrap_mode = 0
 layout_mode = 2
 size_flags_vertical = 3
 bbcode_enabled = true
-text = "Description Here [code]abcdef[/code]
-This is a super weird way of writing"
+text = "Description"
 
 [node name="State" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-text = "Equipped or not"
+text = "State"
 horizontal_alignment = 1
 
 [node name="Highlight" type="Panel" parent="."]
 visible = false
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_yi7yr")
+
+[connection signal="focus_entered" from="." to="." method="_on_focus_entered"]
+[connection signal="focus_exited" from="." to="." method="_on_focus_exited"]
