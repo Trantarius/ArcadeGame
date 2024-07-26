@@ -5,6 +5,9 @@ extends Actor
 @export var point_value:float = 1
 ## Scales point_value for spawning purposes. Higher rarity or point_value decreases spawn frequency.
 @export var rarity:float = 1
+## Enables/disables random spawning from EnemySpawner.
+@export var spawnable:bool = true
+
 ## Minimum distance from the player at spawn
 @export var min_spawn_distance:float = 2000
 ## Maximum distance from the player at spawn

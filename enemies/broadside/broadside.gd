@@ -38,7 +38,7 @@ func _ready() -> void:
 		$'.'.add_collision_exception_with(child)
 		child.add_collision_exception_with(self)
 		child.damage_taken.connect(_on_part_damaged, CONNECT_DEFERRED)
-		max_health.base += child.max_health
+		max_health.base += child.max_health.get_value()
 
 func _on_part_damaged(damage:Damage)->void:
 	damage.silent=true

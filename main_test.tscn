@@ -1,13 +1,8 @@
-[gd_scene load_steps=27 format=3 uid="uid://dgi2i2rcpew0f"]
+[gd_scene load_steps=22 format=3 uid="uid://dgi2i2rcpew0f"]
 
 [ext_resource type="PackedScene" uid="uid://ccgupredk0a3f" path="res://player/player.tscn" id="1_wyqax"]
 [ext_resource type="Script" path="res://classes/Stat.gd" id="2_qfau0"]
 [ext_resource type="Script" path="res://enemies/EnemySpawner.gd" id="3_mithn"]
-[ext_resource type="PackedScene" uid="uid://d4epik40543it" path="res://enemies/hornet/hornet.tscn" id="4_rflj1"]
-[ext_resource type="PackedScene" uid="uid://duw4y42hn6e5i" path="res://enemies/broadside/broadside.tscn" id="5_10v5w"]
-[ext_resource type="PackedScene" uid="uid://b84l7h2qte8nl" path="res://enemies/spiky/spiky_factory.tscn" id="6_5py7p"]
-[ext_resource type="PackedScene" uid="uid://cb3satgchcg1i" path="res://enemies/spiky/spiky.tscn" id="7_g2r1l"]
-[ext_resource type="PackedScene" uid="uid://blf0t84ei3owm" path="res://enemies/shield_bearer/shield_bearer.tscn" id="7_gede4"]
 [ext_resource type="Script" path="res://environment/AsteroidSpawner.gd" id="8_t20lr"]
 [ext_resource type="Script" path="res://pickups/PickupSpawner.gd" id="9_ld0bk"]
 [ext_resource type="PackedScene" uid="uid://c470br5y4agbp" path="res://pickups/health_pickup.tscn" id="10_shm8w"]
@@ -43,7 +38,6 @@ max_health = SubResource("Resource_87d4c")
 [node name="EnemySpawner" type="Node" parent="."]
 script = ExtResource("3_mithn")
 target_points = 100.0
-enemy_list = Array[PackedScene]([ExtResource("4_rflj1"), ExtResource("5_10v5w"), ExtResource("6_5py7p"), ExtResource("7_gede4"), ExtResource("7_g2r1l")])
 enabled = false
 
 [node name="AsteroidSpawner" type="Node" parent="."]

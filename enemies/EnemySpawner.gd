@@ -5,26 +5,33 @@ extends Node
 ## Soft maximum total point_value of spawned enemies currently alive
 @export var target_points:float = 10
 
-## Enemy types to spawn. Each scene's root must have a script extending the Enemy class
-@export var enemy_list:Array[PackedScene]
+const enemy_list:SceneList = preload("res://enemies/enemy_list.tres")
 
 ## Toggles all enemy spawning
 @export var enabled:bool = true
 
-## Internal list of everything that can spawn. Format is 
-## [code]{StringName:{'scene':PackedScene,'weight':float}}[/code]
-var spawn_list:Dictionary
-var total_weight_in_list:float
+func get_weight(idx:int)->float:
+	var spawnable:bool = enemy_list.get_scene_prop(idx, &'spawnable', true)
+	var point_value:float = enemy_list.get_scene_prop(idx, &'point_value', 1)
+	var rarity:float = enemy_list.get_scene_prop(idx, &'rarity', 1)
+	return 100.0/(point_value*rarity) if spawnable else 0
 
-func _ready()->void:
-	spawn_list = {}
-	total_weight_in_list = 0
-	for scene:PackedScene in enemy_list:
-		var enemy:Enemy = scene.instantiate()
-		var weight:float = 100 / (enemy.point_value * enemy.rarity)
-		spawn_list[StringName(enemy.name)] = {'scene':scene,'weight':weight}
-		total_weight_in_list += weight
-		enemy.queue_free()
+func select_random_enemy()->PackedScene:
+	var total:float = 0
+	var weights:Array[float]
+	for n:int in range(enemy_list.list.size()):
+		var w:float = get_weight(n)
+		total+=w
+		weights.push_back(w)
+	var val:float = total*randf()
+	var idx:int = 0
+	while(idx<weights.size()):
+		val -= weights[idx]
+		if(val<=0):
+			break
+		else:
+			idx += 1
+	return enemy_list.list[idx]
 
 func _enter_tree()->void:
 	Performance.add_custom_monitor('Enemy Points',get_total_enemy_points)
@@ -43,20 +50,10 @@ func spawn_an_enemy()->void:
 	var players:Array = get_tree().get_nodes_in_group('Players')
 	if(players.is_empty()):
 		return
-	
-	# pick a random scene from spawn list, weighted by spawn_rate
-	var choice:float = randf() * total_weight_in_list
-	var chosen:StringName
-	for ename:StringName in spawn_list:
-		choice -= spawn_list[ename].weight
-		if(choice<=0):
-			chosen=ename
-			break
-	
-	spawn(chosen)
+	spawn(select_random_enemy())
 
-func spawn(ename:StringName)->void:
-	var enemy:Enemy = spawn_list[ename].scene.instantiate()
+func spawn(scene:PackedScene)->void:
+	var enemy:Enemy = scene.instantiate()
 	var campos:Vector2 = get_viewport().get_camera_2d().get_screen_center_position()
 	var locator:Callable = func()->Transform2D:
 		return Transform2D(randf()*TAU, campos + 
