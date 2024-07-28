@@ -1,12 +1,10 @@
-[gd_resource type="Resource" script_class="SceneList" load_steps=6 format=3 uid="uid://cth1tnkhu3ijs"]
+[gd_resource type="Resource" script_class="SceneList" load_steps=4 format=3 uid="uid://cth1tnkhu3ijs"]
 
-[ext_resource type="PackedScene" uid="uid://duw4y42hn6e5i" path="res://enemies/broadside/broadside.tscn" id="1_3mhvl"]
 [ext_resource type="Script" path="res://classes/SceneList.gd" id="1_bxj33"]
-[ext_resource type="PackedScene" uid="uid://d4epik40543it" path="res://enemies/hornet/hornet.tscn" id="2_07ddc"]
-[ext_resource type="PackedScene" uid="uid://blf0t84ei3owm" path="res://enemies/shield_bearer/shield_bearer.tscn" id="3_qp2xk"]
-[ext_resource type="PackedScene" uid="uid://cb3satgchcg1i" path="res://enemies/spiky/spiky.tscn" id="4_ne0vy"]
+[ext_resource type="Resource" uid="uid://b0bvvuy7bp5s2" path="res://enemies/common_enemy_list.tres" id="1_ygp8h"]
+[ext_resource type="Resource" uid="uid://bnvs5f7mjdicw" path="res://enemies/boss_list.tres" id="2_ib810"]
 
 [resource]
 script = ExtResource("1_bxj33")
-include = Array[ExtResource("1_bxj33")]([])
-scenes = Array[PackedScene]([ExtResource("1_3mhvl"), ExtResource("2_07ddc"), ExtResource("4_ne0vy"), ExtResource("3_qp2xk")])
+include = Array[ExtResource("1_bxj33")]([ExtResource("1_ygp8h"), ExtResource("2_ib810")])
+scenes = Array[PackedScene]([])

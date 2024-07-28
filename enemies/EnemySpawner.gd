@@ -6,7 +6,7 @@ extends Node
 ## Soft maximum total point_value of spawned enemies currently alive
 @export var target_points:float = 10
 
-const enemy_list:SceneList = preload("res://enemies/enemy_list.tres")
+const enemy_list:SceneList = preload("res://enemies/common_enemy_list.tres")
 
 ## Toggles all enemy spawning
 @export var enabled:bool = true
@@ -36,7 +36,7 @@ func _physics_process(delta: float) -> void:
 func spawn_an_enemy()->void:
 	spawn(select_random_enemy())
 
-func spawn(scene:PackedScene)->void:
+func spawn(scene:PackedScene)->Enemy:
 	var enemy:Enemy = scene.instantiate()
 	var locator:Callable = func()->Transform2D:
 		return Transform2D(randf()*TAU, Util.current_camera_pos() + 
@@ -45,6 +45,9 @@ func spawn(scene:PackedScene)->void:
 	if(!Util.attempt_place_node(enemy,self,locator,5)):
 		push_error("Failed to place an enemy after 5 attempts")
 		enemy.queue_free()
+		return null
+	else:
+		return enemy
 
 func get_total_enemy_points()->float:
 	var enemies:Array = get_tree().get_nodes_in_group('Enemies')

@@ -9,6 +9,8 @@
 size = Vector2(32, 32)
 
 [node name="AbilityPickup" type="RigidBody2D"]
+collision_layer = 8
+collision_mask = 3
 physics_material_override = ExtResource("1_irpo6")
 lock_rotation = true
 max_contacts_reported = 3
@@ -28,3 +30,5 @@ offset_right = 16.0
 offset_bottom = 16.0
 texture = ExtResource("4_x87kt")
 expand_mode = 1
+
+[connection signal="picked_up" from="." to="." method="_on_picked_up"]

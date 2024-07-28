@@ -30,6 +30,9 @@ func pick_random(weighter:Callable=Callable())->PackedScene:
 		weights.push_back(weighter.call(scene)+weights.back())
 	weights.pop_front()
 	
+	if(weights.back()==0):
+		return null
+	
 	var rw:float = randf()*weights.back()
 	var idx:int = weights.bsearch(rw)
 	return list[idx]

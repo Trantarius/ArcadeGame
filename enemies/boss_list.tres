@@ -1,0 +1,9 @@
+[gd_resource type="Resource" script_class="SceneList" load_steps=3 format=3 uid="uid://bnvs5f7mjdicw"]
+
+[ext_resource type="Script" path="res://classes/SceneList.gd" id="1_7lh37"]
+[ext_resource type="PackedScene" uid="uid://duw4y42hn6e5i" path="res://enemies/broadside/broadside.tscn" id="1_swct7"]
+
+[resource]
+script = ExtResource("1_7lh37")
+include = Array[ExtResource("1_7lh37")]([])
+scenes = Array[PackedScene]([ExtResource("1_swct7")])

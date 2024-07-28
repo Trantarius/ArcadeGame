@@ -1,26 +1,14 @@
+class_name PickupSpawner
 extends Node
 
-## Multiplies the amount of drops from every drop event.
+## Multiplies the amount of drops from every random drop event.
 @export var global_drop_rate_multiplier:float = 1
-
-## Pickup types to spawn. Each scene's root must have a script extending the Pickup class.
-@export var pickup_list:Array[PackedScene]
 
 ## Toggles all drops
 @export var enabled:bool = true
 
-## Extra points that couldn't produce drops in the last event
-var leftover:float
-## Internal list of everything that can spawn. Format is 
-## [code]{StringName:{'scene':PackedScene,'value':float}}[/code]
-var spawn_list:Dictionary
-
 func _ready()->void:
 	Actor.something_died.connect(_on_something_died)
-	for scene:PackedScene in pickup_list:
-		var pickup:Pickup = scene.instantiate()
-		spawn_list[StringName(pickup.name)]={'scene':scene,'value':pickup.value}
-		pickup.queue_free()
 
 func _on_something_died(damage:Damage)->void:
 	if(!enabled):
@@ -28,31 +16,30 @@ func _on_something_died(damage:Damage)->void:
 	if(damage.attacker is Player && damage.target is Enemy):
 	
 		var total_value:float = damage.target.point_value * 2**(randfn(0,1)) * global_drop_rate_multiplier
-		drop_event(total_value,damage.target.radius,damage.target.global_position,damage.target.get_average_velocity())
-
-func drop_event(total_value:float, radius:float, position:Vector2, velocity:Vector2)->void:
-	total_value += leftover
-	var list:Array = spawn_list.keys().duplicate()
-	while(!list.is_empty()):
-		var chosen_idx:int = randi()%list.size()
-		var chosen:StringName = list[chosen_idx]
-		while(spawn_list[chosen].value > total_value):
-			#list.erase(chosen)
-			list.remove_at(chosen_idx)
-			if(list.is_empty()):
+		var weighter:Callable = func(scene:PackedScene)->float:
+			var value:float = Util.get_scene_prop(scene, &'value', 1)
+			var diff:float = total_value-value
+			return 1.0/(diff*diff+1.0) if value<total_value else 0
+		
+		while(total_value>0):
+			var scene:PackedScene = preload('res://pickups/random_drop_list.tres').pick_random(weighter)
+			if(!is_instance_valid(scene)):
 				break
-			chosen_idx = randi()%list.size()
-			chosen = list[chosen_idx]
-		if(list.is_empty()):
-			break
-		var pickup:Pickup = spawn_list[chosen].scene.instantiate()
-		var locator:Callable = func()->Transform2D:
-			return Transform2D(0,Vector2.from_angle(randf()*TAU)*sqrt(randf())*radius + position)
-		if(!Util.attempt_place_node(pickup,self,locator,5)):
+			var value:float = Util.get_scene_prop(scene, &'value', 1)
+			total_value -= value
+			drop(scene.instantiate(), damage.target)
+
+func drop(pickup:Pickup, actor:Actor)->void:
+	if(!enabled):
+		pickup.queue_free()
+		return
+	var radius:float = actor.radius
+	var position:Vector2 = actor.global_position
+	var velocity:Vector2 = actor.get_average_velocity()
+	var locator:Callable = func()->Transform2D:
+		return Transform2D(0,Vector2.from_angle(randf()*TAU)*sqrt(randf())*radius + position)
+	if(!Util.attempt_place_node(pickup,self,locator,5)):
 			push_error("Failed to place a pickup after 5 attempts")
 			pickup.queue_free()
-			leftover=total_value
 			return
-		pickup.linear_velocity = Vector2(randfn(0,20),randfn(0,20)) + velocity
-		total_value-=pickup.value
-	leftover = total_value
+	pickup.linear_velocity = velocity + (pickup.global_position-position)*3
