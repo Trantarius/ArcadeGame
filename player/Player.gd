@@ -24,6 +24,7 @@ signal new_ability(ability:PlayerAbility)
 signal added_ability(ability:PlayerAbility)
 signal removed_ability(ability:PlayerAbility)
 
+## Map of ability type (see PlayerAbility.gd) to ability nodes
 var abilities:Dictionary
 
 var _ability_choice_screen:AbilityChoiceScreen

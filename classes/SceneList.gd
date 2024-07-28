@@ -1,34 +1,35 @@
 class_name SceneList
 extends Resource
 
-@export var list:Array[PackedScene]
+@export var include:Array[SceneList]
+@export var scenes:Array[PackedScene]
 
-func get_scene_name(idx:int)->String:
-	if(idx<0||idx>=list.size()):
-		return ''
-	if(!is_instance_valid(list[idx])):
-		return ''
-	var state:SceneState = list[idx].get_state()
-	return state.get_node_name(0)
+func size()->int:
+	var s:int = 0
+	for sub:SceneList in include:
+		s+=sub.size()
+	return s+scenes.size()
 
-## Gets a property from a scene without instantiating it. Only works with script properties.
-func get_scene_prop(idx:int, prop:StringName, default:Variant=null)->Variant:
+func get_list()->Array[PackedScene]:
+	var list:Array[PackedScene]
+	for sub:SceneList in include:
+		assert(sub!=self)
+		list.append_array(sub.get_list())
+	list.append_array(scenes)
+	return list
+
+func pick_random(weighter:Callable=Callable())->PackedScene:
+	if(size()==0):
+		return null
+	var list:Array[PackedScene] = get_list()
+	if(weighter.is_null()):
+		return list.pick_random()
+		
+	var weights:Array[float] = [0]
+	for scene:PackedScene in list:
+		weights.push_back(weighter.call(scene)+weights.back())
+	weights.pop_front()
 	
-	var state:SceneState = list[idx].get_state()
-	
-	for i:int in range(state.get_node_property_count(0)):
-		if(state.get_node_property_name(0,i)==prop):
-			return state.get_node_property_value(0,i)
-	
-	var script:Script
-	for i:int in range(state.get_node_property_count(0)):
-		if(state.get_node_property_name(0,i)==&'script'):
-			script = state.get_node_property_value(0,i)
-	if(!is_instance_valid(script)):
-		return default
-	
-	var constmap:Dictionary = script.get_script_constant_map()
-	if(constmap.has(prop)):
-		return constmap[prop]
-	else:
-		return default
+	var rw:float = randf()*weights.back()
+	var idx:int = weights.bsearch(rw)
+	return list[idx]

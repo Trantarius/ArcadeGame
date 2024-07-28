@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://bsgqgktfa8xx6"]
+
+[ext_resource type="Script" path="res://upgrades/Upgrade.gd" id="1_kj7dx"]
+[ext_resource type="Script" path="res://classes/StatMod.gd" id="2_xcsh6"]
+
+[node name="WeaponTuning" type="Node"]
+script = ExtResource("1_kj7dx")
+upgrade_name = "Weapon Tuning"
+description = "+10% weapon damage"
+
+[node name="StatMod" type="Node" parent="."]
+script = ExtResource("2_xcsh6")
+mod_name = &"WeaponTuning"
+stage = 1
+strength = 1.1
+stat_name = &"damage"
+target = 2

@@ -244,3 +244,33 @@ static func custom_format_string(input:String, obj:Object)->String:
 				input = input.insert(found.get_start(),'[code][color=red]ERROR '+err+'[/color][/code]')
 		found = escape_rex.search(input)
 	return input
+
+## Gets a property from a scene without instantiating it. Only works with exported properties which are not the default value.
+## Returns [param default] if the property is not available, or if it has not been set.
+static func get_scene_prop(scene:PackedScene, prop:StringName, default:Variant=null)->Variant:
+	if(!is_instance_valid(scene)):
+		return default
+	
+	var state:SceneState = scene.get_state()
+	
+	for i:int in range(state.get_node_property_count(0)):
+		if(state.get_node_property_name(0,i)==prop):
+			return state.get_node_property_value(0,i)
+	
+	var script:Script
+	for i:int in range(state.get_node_property_count(0)):
+		if(state.get_node_property_name(0,i)==&'script'):
+			script = state.get_node_property_value(0,i)
+	if(!is_instance_valid(script)):
+		return default
+	
+	var constmap:Dictionary = script.get_script_constant_map()
+	if(constmap.has(prop)):
+		return constmap[prop]
+	else:
+		return default
+
+static func current_camera_pos()->Vector2:
+	var vp:Viewport = Engine.get_main_loop().root
+	var canv:Transform2D = vp.canvas_transform
+	return canv.affine_inverse()*(Vector2(vp.size)/2)

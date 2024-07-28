@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="SceneList" load_steps=5 format=3 uid="uid://7dj8ndehy7dl"]
+
+[ext_resource type="PackedScene" uid="uid://d3ek2vmqvfst3" path="res://abilities/weapon/light_cannon/light_cannon.tscn" id="1_c388o"]
+[ext_resource type="Script" path="res://classes/SceneList.gd" id="1_ct133"]
+[ext_resource type="PackedScene" uid="uid://blpkj5dm1bxh5" path="res://abilities/weapon/pulse_laser/pulse_laser.tscn" id="2_wsfsb"]
+[ext_resource type="PackedScene" uid="uid://dqs0njvcsrun8" path="res://abilities/weapon/scatter_gun/scatter_gun.tscn" id="3_5rogh"]
+
+[resource]
+script = ExtResource("1_ct133")
+include = Array[ExtResource("1_ct133")]([])
+scenes = Array[PackedScene]([ExtResource("1_c388o"), ExtResource("2_wsfsb"), ExtResource("3_5rogh")])

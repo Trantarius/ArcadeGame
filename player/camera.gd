@@ -3,6 +3,8 @@ extends Camera2D
 ## Number of ambient particles per million pixels (ie, in a 1000x1000 area)
 @export var ambient_particle_density:float = 100
 
+@export var base_zoom_level:float = 1.0
+
 ## Enables moving under its own velocity
 var is_free:bool = false
 var velocity:Vector2
@@ -17,6 +19,7 @@ func _set(property: StringName, value: Variant) -> bool:
 	return false
 
 func _ready()->void:
+	zoom = Vector2(base_zoom_level,base_zoom_level)
 	get_viewport().size_changed.connect(_on_viewport_size_changed)
 	top_level = true
 	_on_viewport_size_changed()

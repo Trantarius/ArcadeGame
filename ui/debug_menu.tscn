@@ -35,7 +35,7 @@ func _on_spin_box_value_changed(value: float) -> void:
 func _on_h_slider_value_changed(value: float) -> void:
 	var cam:Camera2D = get_viewport().get_camera_2d()
 	if(is_instance_valid(cam)):
-		cam.zoom=Vector2(2**value,2**value);
+		cam.zoom=Vector2(2**value,2**value)*cam.base_zoom_level;
 		$HBoxContainer/HBoxContainer/Label2.text = \"%.2fx\"%(2**value)
 		$HBoxContainer/Reset.disabled = (value==0)
 
@@ -162,24 +162,23 @@ var nearby_enabled:bool = false
 const enemy_list:SceneList = preload('res://enemies/enemy_list.tres')
 
 func _ready() -> void:
-	for n:int in range(enemy_list.list.size()):
-		var ename:StringName = enemy_list.get_scene_name(n)
+	for scene:PackedScene in enemy_list.get_list():
+		var ename:StringName = scene.get_state().get_node_name(0)
 		var button:Button = Button.new()
 		button.text = ename
-		button.pressed.connect(_spawn.bind(enemy_list.list[n]))
+		button.pressed.connect(_spawn.bind(scene))
 		$VBoxContainer/PanelContainer/VBoxContainer.add_child(button)
 
 func _spawn(scene:PackedScene)->void:
 	
 	if(nearby_enabled):
-		var player:Player = get_tree().get_first_node_in_group(&'Players')
-		if(is_instance_valid(player)):
-			var enemy:Enemy = scene.instantiate()
-			var locator:Callable = func()->Transform2D: return Transform2D(randf()*TAU, 
-				player.global_position + Vector2.from_angle(randf()*TAU)*(512+enemy.radius))
-			if(!Util.attempt_place_node(enemy,get_tree().current_scene,locator,5)):
-				push_error(\"Failed to place an enemy (nearby) after 5 attempts\")
-				enemy.queue_free()
+		var cpos:Vector2 = Util.current_camera_pos()
+		var enemy:Enemy = scene.instantiate()
+		var locator:Callable = func()->Transform2D: return Transform2D(randf()*TAU, 
+			cpos + Vector2.from_angle(randf()*TAU)*(512+enemy.radius))
+		if(!Util.attempt_place_node(enemy,get_tree().current_scene,locator,5)):
+			push_error(\"Failed to place an enemy (nearby) after 5 attempts\")
+			enemy.queue_free()
 	else:
 		var enemyspawner:Node = get_tree().root.find_child('EnemySpawner',true,false)
 		if(is_instance_valid(enemyspawner)):
@@ -194,9 +193,7 @@ func _on_nearby_toggled(toggled_on: bool) -> void:
 
 
 func _on_random_pressed() -> void:
-	var enemyspawner:Node = get_tree().root.find_child('EnemySpawner',true,false)
-	if(is_instance_valid(enemyspawner)):
-		_spawn(enemyspawner.select_random_enemy())
+	_spawn(enemy_list.pick_random(EnemySpawner.get_weight))
 "
 
 [sub_resource type="GDScript" id="GDScript_oqi4g"]

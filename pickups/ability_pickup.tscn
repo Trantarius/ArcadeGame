@@ -1,0 +1,30 @@
+[gd_scene load_steps=6 format=3 uid="uid://c0tbx4r8rsqey"]
+
+[ext_resource type="PhysicsMaterial" uid="uid://b06aqip1r854e" path="res://pickups/pickup_physics_material.tres" id="1_irpo6"]
+[ext_resource type="Script" path="res://pickups/ability_pickup.gd" id="1_jvggd"]
+[ext_resource type="Script" path="res://classes/Interpolator.gd" id="2_fph0v"]
+[ext_resource type="Texture2D" uid="uid://bude4na0hnosm" path="res://icon.svg" id="4_x87kt"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fyp3v"]
+size = Vector2(32, 32)
+
+[node name="AbilityPickup" type="RigidBody2D"]
+physics_material_override = ExtResource("1_irpo6")
+lock_rotation = true
+max_contacts_reported = 3
+contact_monitor = true
+script = ExtResource("1_jvggd")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_fyp3v")
+
+[node name="Interpolator" type="Node2D" parent="."]
+script = ExtResource("2_fph0v")
+
+[node name="TextureRect" type="TextureRect" parent="Interpolator"]
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+texture = ExtResource("4_x87kt")
+expand_mode = 1

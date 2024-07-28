@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="SceneList" load_steps=5 format=3 uid="uid://q8mr142om7lx"]
+
+[ext_resource type="Resource" uid="uid://yjr728b7vi17" path="res://abilities/attack/attack_ability_list.tres" id="1_aeog5"]
+[ext_resource type="Script" path="res://classes/SceneList.gd" id="1_wydrg"]
+[ext_resource type="Resource" uid="uid://uuni84ub2tnp" path="res://abilities/movement/movement_ability_list.tres" id="2_13wgn"]
+[ext_resource type="Resource" uid="uid://7dj8ndehy7dl" path="res://abilities/weapon/weapon_list.tres" id="3_iwd0g"]
+
+[resource]
+script = ExtResource("1_wydrg")
+include = Array[ExtResource("1_wydrg")]([ExtResource("1_aeog5"), ExtResource("2_13wgn"), ExtResource("3_iwd0g")])
+scenes = Array[PackedScene]([])

@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="SceneList" load_steps=5 format=3 uid="uid://uuni84ub2tnp"]
+
+[ext_resource type="Script" path="res://classes/SceneList.gd" id="1_c1nkt"]
+[ext_resource type="PackedScene" uid="uid://8506rbhgwm4s" path="res://abilities/movement/boost/boost_ability.tscn" id="1_uqpa2"]
+[ext_resource type="PackedScene" uid="uid://c8qt870yuj2yn" path="res://abilities/movement/handbrake/handbrake_ability.tscn" id="2_sfcth"]
+[ext_resource type="PackedScene" uid="uid://j7ojgjiy4k3i" path="res://abilities/movement/sidestep/sidestep_ability.tscn" id="3_m63ge"]
+
+[resource]
+script = ExtResource("1_c1nkt")
+include = Array[ExtResource("1_c1nkt")]([])
+scenes = Array[PackedScene]([ExtResource("1_uqpa2"), ExtResource("2_sfcth"), ExtResource("3_m63ge")])

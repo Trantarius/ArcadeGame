@@ -1,0 +1,10 @@
+[gd_resource type="Resource" script_class="SceneList" load_steps=4 format=3 uid="uid://yjr728b7vi17"]
+
+[ext_resource type="PackedScene" uid="uid://c2g3s6js6hne" path="res://abilities/attack/missile_swarm/missile_swarm_ability.tscn" id="1_b2bv8"]
+[ext_resource type="Script" path="res://classes/SceneList.gd" id="1_g41ny"]
+[ext_resource type="PackedScene" uid="uid://c1abqegxiegd0" path="res://abilities/attack/proximity_mine/proximity_mine_ability.tscn" id="2_fiagx"]
+
+[resource]
+script = ExtResource("1_g41ny")
+include = Array[ExtResource("1_g41ny")]([])
+scenes = Array[PackedScene]([ExtResource("1_b2bv8"), ExtResource("2_fiagx")])
