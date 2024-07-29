@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://classes/Stat.gd" id="2_ktr7o"]
 [ext_resource type="PackedScene" uid="uid://d3ek2vmqvfst3" path="res://abilities/weapon/light_cannon/light_cannon.tscn" id="3_y280g"]
 [ext_resource type="PackedScene" uid="uid://d4epik40543it" path="res://enemies/hornet/hornet.tscn" id="4_j20x2"]
-[ext_resource type="Script" path="res://classes/StatMod.gd" id="5_xly35"]
+[ext_resource type="Script" path="res://classes/StatBuffStack.gd" id="5_xly35"]
 [ext_resource type="Script" path="res://ui/world/HitNumberSpawner.gd" id="6_bx35c"]
 
 [sub_resource type="Resource" id="Resource_rpv7a"]

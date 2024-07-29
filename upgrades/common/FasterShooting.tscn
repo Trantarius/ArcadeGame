@@ -1,17 +1,22 @@
-[gd_scene load_steps=3 format=3 uid="uid://becix0upe0bxf"]
+[gd_scene load_steps=5 format=3 uid="uid://becix0upe0bxf"]
 
-[ext_resource type="Script" path="res://classes/StatMod.gd" id="1_8r5al"]
+[ext_resource type="Script" path="res://classes/StatBuffStack.gd" id="1_8r5al"]
 [ext_resource type="Script" path="res://upgrades/Upgrade.gd" id="1_mjsaq"]
+[ext_resource type="Script" path="res://classes/StatBuff.gd" id="3_eo3ie"]
 
-[node name="FasterShooting" type="Node"]
-script = ExtResource("1_mjsaq")
-upgrade_name = "Faster Shooting"
-description = "+10% weapon fire rate"
-
-[node name="StatMod" type="Node" parent="."]
-script = ExtResource("1_8r5al")
-mod_name = &"Faster Shooting"
+[sub_resource type="Resource" id="Resource_e52gr"]
+script = ExtResource("3_eo3ie")
+name = &"Faster Shooting"
 stage = 1
 strength = 1.1
 stat_name = &"fire_rate"
 target = 2
+
+[node name="FasterShooting" type="Node"]
+script = ExtResource("1_mjsaq")
+upgrade_name = &"Faster Shooting"
+description = "+10% weapon fire rate"
+
+[node name="StatMod" type="Node" parent="."]
+script = ExtResource("1_8r5al")
+buff = SubResource("Resource_e52gr")

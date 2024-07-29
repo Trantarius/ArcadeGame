@@ -2,7 +2,16 @@ class_name AbilityPickup
 extends Pickup
 
 # must match values found in PlayerAbility
-@export_enum("Movement:0","Attack:1","Weapon:2") var type:int
+@export_enum("Movement:0","Attack:1","Weapon:2") var type:int:
+	set(to):
+		type=to
+		match type:
+			PlayerAbility.MOVEMENT:
+				$Interpolator/TextureRect.texture = preload('res://pickups/movement.png')
+			PlayerAbility.ATTACK:
+				$Interpolator/TextureRect.texture = preload('res://pickups/attack.png')
+			PlayerAbility.WEAPON:
+				$Interpolator/TextureRect.texture = preload('res://pickups/weapon.png')
 
 const ability_lists:Dictionary = {
 	PlayerAbility.MOVEMENT: preload("res://abilities/movement/movement_ability_list.tres"),

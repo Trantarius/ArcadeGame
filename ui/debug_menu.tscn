@@ -1,7 +1,6 @@
-[gd_scene load_steps=14 format=3 uid="uid://b4v2b4cphju7v"]
+[gd_scene load_steps=13 format=3 uid="uid://b4v2b4cphju7v"]
 
 [ext_resource type="Theme" uid="uid://d0ifc4kse0sbj" path="res://ui/theme/theme.tres" id="1_8pghh"]
-[ext_resource type="PackedScene" uid="uid://bj2sxi1blpt13" path="res://ui/debug_stat_mod_adder.tscn" id="2_d11um"]
 
 [sub_resource type="GDScript" id="GDScript_2tfo1"]
 script/source = "extends PanelContainer
@@ -281,6 +280,18 @@ func _on_weapon_pressed() -> void:
 		if(!Util.attempt_place_node(pickup,pickupspawner,locator,5)):
 			push_error(\"Failed to spawn a pickup after 5 attempts\")
 			pickup.queue_free()
+
+
+func _on_common_upgrade_pressed() -> void:
+	var pickupspawner:PickupSpawner = get_tree().root.find_child('PickupSpawner',true,false)
+	if(is_instance_valid(pickupspawner)):
+		var pos:Vector2 = Util.current_camera_pos()
+		var pickup:Pickup = preload('res://pickups/common_upgrade_pickup.tscn').instantiate()
+		var locator:Callable = func()->Transform2D: return Transform2D(0,
+			pos + Vector2.from_angle(randf()*TAU)*512)
+		if(!Util.attempt_place_node(pickup,pickupspawner,locator,5)):
+			push_error(\"Failed to spawn a pickup after 5 attempts\")
+			pickup.queue_free()
 "
 
 [node name="DebugMenu" type="Control"]
@@ -398,6 +409,7 @@ text = "Player"
 flat = true
 
 [node name="PanelContainer" type="PanelContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer"]
+visible = false
 layout_mode = 2
 theme_type_variation = &"DarkPanel"
 
@@ -427,15 +439,12 @@ text = "Add"
 flat = true
 
 [node name="PanelContainer" type="PanelContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Add/VBoxContainer"]
+visible = false
 layout_mode = 2
 theme_type_variation = &"DarkPanel"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Add/VBoxContainer/PanelContainer"]
 layout_mode = 2
-
-[node name="StatMod" type="Button" parent="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Add/VBoxContainer/PanelContainer/VBoxContainer"]
-layout_mode = 2
-text = "StatMod"
 
 [node name="Remove" type="PanelContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer"]
 layout_mode = 2
@@ -475,6 +484,7 @@ text = "Enemies"
 flat = true
 
 [node name="PanelContainer" type="PanelContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Enemies/VBoxContainer"]
+visible = false
 layout_mode = 2
 theme_type_variation = &"DarkPanel"
 
@@ -514,6 +524,7 @@ layout_mode = 2
 text = "Nearby"
 
 [node name="PanelContainer" type="PanelContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer"]
+visible = false
 layout_mode = 2
 theme_type_variation = &"DarkPanel"
 
@@ -537,6 +548,7 @@ text = "Pickups"
 flat = true
 
 [node name="PanelContainer" type="PanelContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Pickups/VBoxContainer"]
+visible = false
 layout_mode = 2
 theme_type_variation = &"DarkPanel"
 
@@ -569,6 +581,7 @@ text = "Spawn"
 flat = true
 
 [node name="PanelContainer" type="PanelContainer" parent="DebugMenu/PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer"]
+visible = false
 layout_mode = 2
 theme_type_variation = &"DarkPanel"
 
@@ -587,17 +600,9 @@ text = "Attack Ability"
 layout_mode = 2
 text = "Weapon"
 
-[node name="DebugStatModAdder" parent="." instance=ExtResource("2_d11um")]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_bottom = 0.0
-offset_left = -654.0
-offset_top = 24.0
-offset_right = -337.0
-offset_bottom = 340.0
-grow_horizontal = 0
-grow_vertical = 1
+[node name="CommonUpgrade" type="Button" parent="DebugMenu/PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+text = "Common Upgrade"
 
 [connection signal="value_changed" from="DebugMenu/PanelContainer/VBoxContainer/GameSpeed/HBoxContainer/HSlider" to="DebugMenu/PanelContainer/VBoxContainer/GameSpeed" method="_on_h_slider_value_changed"]
 [connection signal="pressed" from="DebugMenu/PanelContainer/VBoxContainer/GameSpeed/HBoxContainer/Reset" to="DebugMenu/PanelContainer/VBoxContainer/GameSpeed" method="_on_reset_pressed"]
@@ -606,7 +611,6 @@ grow_vertical = 1
 [connection signal="pressed" from="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/Button" to="DebugMenu/PanelContainer/VBoxContainer/Player" method="_on_button_pressed"]
 [connection signal="toggled" from="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/PanelContainer/Immortal" to="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/PanelContainer/Immortal" method="_on_toggled"]
 [connection signal="pressed" from="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Add/VBoxContainer/Button" to="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Add" method="_on_button_pressed"]
-[connection signal="pressed" from="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Add/VBoxContainer/PanelContainer/VBoxContainer/StatMod" to="DebugStatModAdder" method="show"]
 [connection signal="pressed" from="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Remove/VBoxContainer/Button" to="DebugMenu/PanelContainer/VBoxContainer/Player/VBoxContainer/PanelContainer/VBoxContainer/Remove" method="_on_button_pressed"]
 [connection signal="pressed" from="DebugMenu/PanelContainer/VBoxContainer/Enemies/VBoxContainer/Button" to="DebugMenu/PanelContainer/VBoxContainer/Enemies" method="_on_button_pressed"]
 [connection signal="toggled" from="DebugMenu/PanelContainer/VBoxContainer/Enemies/VBoxContainer/PanelContainer/VBoxContainer/PanelContainer/AllowSpawnButton" to="DebugMenu/PanelContainer/VBoxContainer/Enemies" method="_on_allow_spawn_button_toggled"]
@@ -621,3 +625,4 @@ grow_vertical = 1
 [connection signal="pressed" from="DebugMenu/PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer/PanelContainer/VBoxContainer/MovementAbility" to="DebugMenu/PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Spawn" method="_on_movement_ability_pressed"]
 [connection signal="pressed" from="DebugMenu/PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer/PanelContainer/VBoxContainer/AttackAbility" to="DebugMenu/PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Spawn" method="_on_attack_ability_pressed"]
 [connection signal="pressed" from="DebugMenu/PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer/PanelContainer/VBoxContainer/Weapon" to="DebugMenu/PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Spawn" method="_on_weapon_pressed"]
+[connection signal="pressed" from="DebugMenu/PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Spawn/VBoxContainer/PanelContainer/VBoxContainer/CommonUpgrade" to="DebugMenu/PanelContainer/VBoxContainer/Pickups/VBoxContainer/PanelContainer/VBoxContainer/Spawn" method="_on_common_upgrade_pressed"]

@@ -66,26 +66,23 @@ func _get_property_list() -> Array[Dictionary]:
 
 signal value_changed
 
-# form is {Stage:{StringName:{'strength':float,'stacks':int}}}
-var _mods:Dictionary={PRE_ADD:{},MUL:{},ADD:{},POST_MUL:{}}
+# form is {Stage:{StatBuff:stacks}}
+var _buffs:Dictionary={PRE_ADD:{},MUL:{},ADD:{},POST_MUL:{}}
 var _value:float = base
 
-func add_mod(name:StringName, stage:int, strength:float, stacks:int)->void:
-	assert(!name.is_empty())
-	if(_mods[stage].has(name)):
-		assert(_mods[stage][name].strength==strength)
-		_mods[stage][name].stacks += stacks
+func add_buff(buff:StatBuff)->void:
+	if(_buffs[buff.stage].has(buff)):
+		_buffs[buff.stage][buff]+=1
 	else:
-		_mods[stage][name]={&'strength':strength,&'stacks':stacks}
+		_buffs[buff.stage][buff]=1
 	_calc_value()
 
-func remove_mod(name:StringName, stage:int, stacks:int)->void:
-	assert(!name.is_empty())
-	if(_mods[stage].has(name)):
-		_mods[stage][name].stacks -= stacks
-		if(_mods[stage][name].stacks <= 0):
-			_mods[stage].erase(name)
-	_calc_value()
+func remove_buff(buff:StatBuff)->void:
+	if(_buffs[buff.stage].has(buff)):
+		_buffs[buff.stage][buff]-=1
+		if(_buffs[buff.stage][buff]<=0):
+			_buffs[buff.stage].erase(buff)
+		_calc_value()
 
 func _init(_base:float=0, _min:float=-INF, _max:float=INF, _round_mode:int=NONE)->void:
 	resource_local_to_scene=true
@@ -95,14 +92,14 @@ func _calc_value()->void:
 	var prev_value:float = _value
 	_value=base
 	
-	for mod:Dictionary in _mods[PRE_ADD].values():
-		_value += mod.strength * mod.stacks
-	for mod:Dictionary in _mods[MUL].values():
-		_value *= mod.strength ** mod.stacks
-	for mod:Dictionary in _mods[ADD].values():
-		_value += mod.strength * mod.stacks
-	for mod:Dictionary in _mods[POST_MUL].values():
-		_value *= mod.strength ** mod.stacks
+	for buff:StatBuff in _buffs[PRE_ADD]:
+		_value += buff.strength * _buffs[PRE_ADD][buff]
+	for buff:StatBuff in _buffs[MUL]:
+		_value *= buff.strength ** _buffs[MUL][buff]
+	for buff:StatBuff in _buffs[ADD]:
+		_value += buff.strength * _buffs[ADD][buff]
+	for buff:StatBuff in _buffs[POST_MUL]:
+		_value *= buff.strength ** _buffs[POST_MUL][buff]
 	
 	match round_mode:
 		ROUND:
@@ -129,30 +126,26 @@ func get_explanation()->String:
 	var val:float = base
 	var ret:String = 'base: %.2f\n'%[base]
 	
-	for mname:StringName in _mods[PRE_ADD]:
-		var mstrength:float = _mods[PRE_ADD][mname].strength 
-		var mstacks:int = _mods[PRE_ADD][mname].stacks
-		var desc:String = "%i stacks of %s"%[mstacks,mname] if mstacks>1 else mname
-		val += mstrength * mstacks
-		ret += '%+.2f from %s = %.2f\n'%[mstrength*mstacks, desc, val]
-	for mname:StringName in _mods[MUL]:
-		var mstrength:float = _mods[MUL][mname].strength 
-		var mstacks:int = _mods[MUL][mname].stacks
-		var desc:String = "%i stacks of %s"%[mstacks,mname] if mstacks>1 else mname
-		val *= mstrength**mstacks
-		ret += '×%.2f from %s = %.2f\n'%[mstrength**mstacks, desc, val]
-	for mname:StringName in _mods[ADD]:
-		var mstrength:float = _mods[ADD][mname].strength 
-		var mstacks:int = _mods[ADD][mname].stacks
-		var desc:String = "%i stacks of %s"%[mstacks,mname] if mstacks>1 else mname
-		val += mstrength * mstacks
-		ret += '%+.2f from %s = %.2f\n'%[mstrength*mstacks, desc, val]
-	for mname:StringName in _mods[POST_MUL]:
-		var mstrength:float = _mods[POST_MUL][mname].strength 
-		var mstacks:int = _mods[POST_MUL][mname].stacks
-		var desc:String = "%i stacks of %s"%[mstacks,mname] if mstacks>1 else mname
-		val *= mstrength**mstacks
-		ret += '×%.2f from %s = %.2f\n'%[mstrength**mstacks, desc, val]
+	for buff:StatBuff in _buffs[PRE_ADD]:
+		var stacks:int = _buffs[PRE_ADD][buff]
+		var desc:String = "%i stacks of %s"%[stacks,buff.name] if stacks>1 else buff.name
+		val += buff.strength * stacks
+		ret += '%+.2f from %s = %.2f\n'%[buff.strength*stacks, desc, val]
+	for buff:StatBuff in _buffs[MUL]:
+		var stacks:int = _buffs[MUL][buff]
+		var desc:String = "%i stacks of %s"%[stacks,buff.name] if stacks>1 else buff.name
+		val *= buff.strength**stacks
+		ret += '×%.2f from %s = %.2f\n'%[buff.strength**stacks, desc, val]
+	for buff:StatBuff in _buffs[ADD]:
+		var stacks:int = _buffs[ADD][buff]
+		var desc:String = "%i stacks of %s"%[stacks,buff.name] if stacks>1 else buff.name
+		val += buff.strength * stacks
+		ret += '%+.2f from %s = %.2f\n'%[buff.strength*stacks, desc, val]
+	for buff:StatBuff in _buffs[POST_MUL]:
+		var stacks:int = _buffs[POST_MUL][buff]
+		var desc:String = "%i stacks of %s"%[stacks,buff.name] if stacks>1 else buff.name
+		val *= buff.strength**stacks
+		ret += '×%.2f from %s = %.2f\n'%[buff.strength**stacks, desc, val]
 	
 	return ret
 	

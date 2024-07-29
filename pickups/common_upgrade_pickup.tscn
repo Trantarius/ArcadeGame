@@ -1,0 +1,25 @@
+[gd_scene load_steps=5 format=3 uid="uid://ctaw66cisecr8"]
+
+[ext_resource type="Script" path="res://pickups/common_upgrade_pickup.gd" id="1_u5o0f"]
+[ext_resource type="Script" path="res://classes/Interpolator.gd" id="2_qxlcn"]
+[ext_resource type="Texture2D" uid="uid://yqowahag4l85" path="res://pickups/upgrade.png" id="3_4c8bo"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vc8ka"]
+size = Vector2(32, 32)
+
+[node name="CommonUpgradePickup" type="RigidBody2D"]
+collision_layer = 8
+collision_mask = 3
+script = ExtResource("1_u5o0f")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_vc8ka")
+
+[node name="Interpolator" type="Node2D" parent="."]
+script = ExtResource("2_qxlcn")
+
+[node name="Sprite2D" type="Sprite2D" parent="Interpolator"]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("3_4c8bo")
+
+[connection signal="picked_up" from="." to="." method="_on_picked_up"]

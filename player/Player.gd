@@ -27,11 +27,7 @@ signal removed_ability(ability:PlayerAbility)
 ## Map of ability type (see PlayerAbility.gd) to ability nodes
 var abilities:Dictionary
 
-var _ability_choice_screen:AbilityChoiceScreen
-
 func add_ability(ability:PlayerAbility)->void:
-	while(is_instance_valid(_ability_choice_screen)):
-		await _ability_choice_screen.select_finished
 	
 	if(abilities.has(ability.type) && abilities[ability.type].ability_name == ability.ability_name):
 		# if the new ability is the same as the one already possessed, ignore it
@@ -40,14 +36,14 @@ func add_ability(ability:PlayerAbility)->void:
 	
 	new_ability.emit(ability)
 	var uilayer:CanvasLayer = get_tree().get_first_node_in_group('UILayer')
-	_ability_choice_screen = preload('res://ui/ability_choice_screen.tscn').instantiate()
-	uilayer.add_child(_ability_choice_screen)
-	_ability_choice_screen.add_ability(ability)
+	var ability_choice_screen:AbilityChoiceScreen = preload('res://ui/ability_choice_screen.tscn').instantiate()
+	uilayer.add_child(ability_choice_screen)
+	ability_choice_screen.add_ability(ability)
 	if(abilities.has(ability.type)):
-		_ability_choice_screen.add_ability(abilities[ability.type])
-	_ability_choice_screen.begin_selection()
-	var selected:PlayerAbility = await _ability_choice_screen.select_finished
-	_ability_choice_screen=null
+		ability_choice_screen.add_ability(abilities[ability.type])
+	ability_choice_screen.begin_selection()
+	var selected:PlayerAbility = await ability_choice_screen.select_finished
+	ability_choice_screen=null
 	
 	if(selected.is_inside_tree()):
 		ability.queue_free()
@@ -58,6 +54,20 @@ func add_ability(ability:PlayerAbility)->void:
 		abilities[ability.type]=ability
 		add_child(ability)
 		added_ability.emit(ability)
+
+func add_upgrade(options:Array[Upgrade])->void:
+	var uilayer:CanvasLayer = get_tree().get_first_node_in_group('UILayer')
+	var upgrade_choice_screen:UpgradeChoiceScreen = preload('res://ui/upgrade_choice_screen.tscn').instantiate()
+	uilayer.add_child(upgrade_choice_screen)
+	for up:Upgrade in options:
+		upgrade_choice_screen.add_upgrade(up)
+	upgrade_choice_screen.begin_selection()
+	var selected:Upgrade = await upgrade_choice_screen.select_finished
+	
+	for up:Upgrade in options:
+		if(up!=selected):
+			up.queue_free()
+	add_child(selected)
 
 func remove_ability(ability:PlayerAbility)->void:
 	assert(ability.is_inside_tree())

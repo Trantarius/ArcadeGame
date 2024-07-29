@@ -1,17 +1,22 @@
-[gd_scene load_steps=3 format=3 uid="uid://bsgqgktfa8xx6"]
+[gd_scene load_steps=5 format=3 uid="uid://bsgqgktfa8xx6"]
 
 [ext_resource type="Script" path="res://upgrades/Upgrade.gd" id="1_kj7dx"]
-[ext_resource type="Script" path="res://classes/StatMod.gd" id="2_xcsh6"]
+[ext_resource type="Script" path="res://classes/StatBuffStack.gd" id="2_xcsh6"]
+[ext_resource type="Script" path="res://classes/StatBuff.gd" id="3_gohfi"]
 
-[node name="WeaponTuning" type="Node"]
-script = ExtResource("1_kj7dx")
-upgrade_name = "Weapon Tuning"
-description = "+10% weapon damage"
-
-[node name="StatMod" type="Node" parent="."]
-script = ExtResource("2_xcsh6")
-mod_name = &"WeaponTuning"
+[sub_resource type="Resource" id="Resource_ma3ld"]
+script = ExtResource("3_gohfi")
+name = &"Weapon Tuning"
 stage = 1
 strength = 1.1
 stat_name = &"damage"
 target = 2
+
+[node name="WeaponTuning" type="Node"]
+script = ExtResource("1_kj7dx")
+upgrade_name = &"Weapon Tuning"
+description = "+10% weapon damage"
+
+[node name="StatMod" type="Node" parent="."]
+script = ExtResource("2_xcsh6")
+buff = SubResource("Resource_ma3ld")

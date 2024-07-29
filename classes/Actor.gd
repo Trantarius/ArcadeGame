@@ -24,6 +24,8 @@ signal damage_taken(damage:Damage)
 signal damage_dealt(damage:Damage)
 signal health_changed(health:float, max_health:float)
 
+var modifiers:Dictionary
+
 static var something_spawned:Signal
 static var something_died:Signal
 static var something_took_damage:Signal

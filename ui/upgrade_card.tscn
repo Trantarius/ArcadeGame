@@ -1,0 +1,79 @@
+[gd_scene load_steps=4 format=3 uid="uid://kkgdcx2500hv"]
+
+[ext_resource type="Theme" uid="uid://d0ifc4kse0sbj" path="res://ui/theme/theme.tres" id="1_6sv8g"]
+[ext_resource type="Script" path="res://ui/upgrade_card.gd" id="2_cdsjg"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yi7yr"]
+draw_center = false
+border_width_left = 4
+border_width_top = 4
+border_width_right = 4
+border_width_bottom = 4
+border_color = Color(0.819608, 0.647059, 0.301961, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+expand_margin_left = 10.0
+expand_margin_top = 10.0
+expand_margin_right = 10.0
+expand_margin_bottom = 10.0
+
+[node name="UpgradeCard" type="PanelContainer" node_paths=PackedStringArray("title_node", "type_node", "description_node", "focus_node")]
+custom_minimum_size = Vector2(360, 360)
+offset_left = 129.0
+offset_top = 91.0
+offset_right = 489.0
+offset_bottom = 451.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+focus_mode = 2
+theme = ExtResource("1_6sv8g")
+theme_type_variation = &"FatPanel"
+script = ExtResource("2_cdsjg")
+title_node = NodePath("MarginContainer/VBoxContainer/Title")
+type_node = NodePath("MarginContainer/VBoxContainer/Type")
+description_node = NodePath("MarginContainer/VBoxContainer/Description")
+focus_node = NodePath("Highlight")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 24
+text = "Name"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Description" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+bbcode_enabled = true
+text = "Description"
+
+[node name="Type" type="RichTextLabel" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/default_color = Color(0.596078, 0.596078, 0.596078, 1)
+bbcode_enabled = true
+text = "[center][i]Type[/i][/center]"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="Highlight" type="Panel" parent="."]
+visible = false
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_yi7yr")
+
+[connection signal="focus_entered" from="." to="." method="_on_focus_entered"]
+[connection signal="focus_exited" from="." to="." method="_on_focus_exited"]
