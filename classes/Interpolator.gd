@@ -17,6 +17,7 @@ var linear_velocity_override:Variant = null
 var angular_velocity_override:Variant = null
 
 func _init()->void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	top_level = true
 
 func _ready()->void:
@@ -45,41 +46,46 @@ func _process(_delta:float) -> void:
 			global_position = (target.global_transform * offset).origin
 			
 		INTERPOLATE:
-			var localpos:Vector2 = (target.global_transform * offset).origin
-			var velocity:Vector2
-			if(linear_velocity_override is Vector2):
-				velocity = linear_velocity_override
-			elif('linear_velocity' in target):
-				if('angular_velocity' in target):
-					if('center_of_mass' in target):
-						velocity = target.linear_velocity + target.angular_velocity * (localpos-(target.global_position+target.center_of_mass)).orthogonal()
+			if(target.can_process()):
+				var localpos:Vector2 = (target.global_transform * offset).origin
+				var velocity:Vector2
+				if(linear_velocity_override is Vector2):
+					velocity = linear_velocity_override
+				elif('linear_velocity' in target):
+					if('angular_velocity' in target):
+						if('center_of_mass' in target):
+							velocity = target.linear_velocity + target.angular_velocity * (localpos-(target.global_position+target.center_of_mass)).orthogonal()
+						else:
+							velocity = target.linear_velocity + target.angular_velocity * (localpos-target.global_position).orthogonal()
 					else:
-						velocity = target.linear_velocity + target.angular_velocity * (localpos-target.global_position).orthogonal()
+						velocity = target.linear_velocity
+				elif(target is Actor):
+					velocity = target.get_average_velocity(0)
 				else:
-					velocity = target.linear_velocity
-			elif(target is Actor):
-				velocity = target.get_average_velocity(0)
+					velocity = Vector2.ZERO
+					
+				global_position = localpos + velocity * dt
 			else:
-				velocity = Vector2.ZERO
-				
-			global_position = localpos + velocity * dt
+				global_position = (target.global_transform * offset).origin
 			
 	match rotation_behavior:
 		TRACK:
 			global_rotation = (target.global_transform * offset).get_rotation()
 		INTERPOLATE:
-			var velocity:float
-			if(angular_velocity_override is float):
-				velocity = angular_velocity_override
-			elif('angular_velocity' in target):
-				velocity = target.angular_velocity
-			elif(target is Actor):
-				velocity = target.get_average_angular_velocity(0)
-			else:
-				velocity = 0
-			
-			global_rotation = (target.global_transform * offset).get_rotation() + velocity * dt
+			if(target.can_process()):
+				var velocity:float
+				if(angular_velocity_override is float):
+					velocity = angular_velocity_override
+				elif('angular_velocity' in target):
+					velocity = target.angular_velocity
+				elif(target is Actor):
+					velocity = target.get_average_angular_velocity(0)
+				else:
+					velocity = 0
 				
+				global_rotation = (target.global_transform * offset).get_rotation() + velocity * dt
+			else:
+				global_rotation = (target.global_transform * offset).get_rotation()
 	match scale_behavior:
 		TRACK:
 			global_scale = (target.global_transform * offset).get_scale()

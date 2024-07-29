@@ -1,0 +1,24 @@
+[gd_scene load_steps=3 format=3 uid="uid://bpjxxsattf7b8"]
+
+[ext_resource type="Script" path="res://visual_effects/shatter.gd" id="1_3pxi7"]
+[ext_resource type="Script" path="res://classes/ReversibleTimer.gd" id="3_vhg0g"]
+
+[node name="Shatter" type="Node2D"]
+position = Vector2(504, 468)
+script = ExtResource("1_3pxi7")
+rect = Rect2(-64, -64, 128, 128)
+explosiveness = 2.0
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+size = Vector2i(128, 128)
+render_target_update_mode = 4
+
+[node name="Camera2D" type="Camera2D" parent="SubViewport"]
+
+[node name="ReversibleTimer" type="Node" parent="."]
+script = ExtResource("3_vhg0g")
+running = true
+duration = 2.0
+
+[connection signal="timeout" from="ReversibleTimer" to="." method="_on_reversible_timer_timeout"]

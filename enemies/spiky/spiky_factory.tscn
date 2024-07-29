@@ -13,7 +13,6 @@ contact_monitor = true
 script = ExtResource("1_8hxwo")
 point_value = 10.0
 radar_distance = 10000.0
-max_health = 100.0
 radius = 48.0
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]

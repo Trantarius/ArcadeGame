@@ -152,4 +152,8 @@ func take_damage(damage:Damage)->void:
 		death.emit(damage)
 		something_died.emit(damage)
 		if(free_on_death):
-			queue_free()
+			var shatter:Node2D = preload('res://visual_effects/shatter.tscn').instantiate()
+			get_tree().current_scene.add_child(shatter)
+			shatter.adopt(self)
+			shatter.shatter()
+			#queue_free()
