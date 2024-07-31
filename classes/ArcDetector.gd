@@ -38,13 +38,11 @@ var _overlapping:Dictionary
 var _shapenode:CollisionPolygon2D
 var _is_drawing:bool = false
 
-func _init()->void:
+func _ready():
 	area_shape_entered.connect(_on_collider_shape_entered)
 	body_shape_entered.connect(_on_collider_shape_entered)
 	area_shape_exited.connect(_on_collider_shape_exited)
 	body_shape_exited.connect(_on_collider_shape_exited)
-
-func _ready():
 	make_detector_shape()
 
 func _physics_process(_delta: float) -> void:

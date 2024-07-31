@@ -1,24 +1,19 @@
-[gd_scene load_steps=4 format=3 uid="uid://7qu071lo6ysp"]
+[gd_scene load_steps=5 format=3 uid="uid://7qu071lo6ysp"]
 
 [ext_resource type="PackedScene" uid="uid://cyfnmhhrm5rdf" path="res://abilities/attack/missile_swarm/swarm_missile.tscn" id="1_j4o6u"]
-[ext_resource type="Texture2D" uid="uid://bude4na0hnosm" path="res://icon.svg" id="2_ster4"]
+[ext_resource type="PackedScene" uid="uid://d4epik40543it" path="res://enemies/hornet/hornet.tscn" id="2_n1ncu"]
+[ext_resource type="Script" path="res://classes/Stat.gd" id="3_j7yla"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_lhxq1"]
-size = Vector2(64, 64)
+[sub_resource type="Resource" id="Resource_b20qt"]
+resource_local_to_scene = true
+script = ExtResource("3_j7yla")
+use_min_value = true
+use_max_value = false
+base = 50.0
+round_mode = 0
+min_value = 0.0
 
 [node name="MissileTest" type="Node2D"]
-
-[node name="AnimatableBody2D" type="AnimatableBody2D" parent="."]
-position = Vector2(739, 293)
-collision_layer = 4
-collision_mask = 0
-
-[node name="Sprite2D" type="Sprite2D" parent="AnimatableBody2D"]
-scale = Vector2(0.5, 0.5)
-texture = ExtResource("2_ster4")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="AnimatableBody2D"]
-shape = SubResource("RectangleShape2D_lhxq1")
 
 [node name="SwarmMissile" parent="." instance=ExtResource("1_j4o6u")]
 position = Vector2(118, 474)
@@ -32,6 +27,10 @@ rotation = -1.87797
 
 [node name="ArcDetector" parent="SwarmMissile2" index="3"]
 debug_draw = true
+
+[node name="Hornet" parent="." instance=ExtResource("2_n1ncu")]
+position = Vector2(694, 232)
+max_health = SubResource("Resource_b20qt")
 
 [editable path="SwarmMissile"]
 [editable path="SwarmMissile2"]

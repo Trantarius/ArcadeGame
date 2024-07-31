@@ -2,12 +2,12 @@ class_name Player
 extends Actor
 
 ## Approximate radius at which to collect pickups
-@export var pickup_magnet:float = 256
+const pickup_magnet:float = 256
 
-@export var max_rotation_speed:float
-@export var max_linear_speed:float
-@export var max_thrust:float
-@export var max_torque:float
+const max_rotation_speed:float = 10
+const max_linear_speed:float = 800
+const max_thrust:float = 250
+const max_torque:float = 7.75
 
 ## Total value of all enemies this player has killed
 var score:float:
@@ -95,7 +95,10 @@ func _physics_process(delta: float) -> void:
 	
 	# since 'left' and 'right' are buttons, this will always be -1, 0, or 1
 	var rotation_input:float = Input.get_axis('left','right')
-	$'.'.apply_torque(-sign(self.angular_velocity - rotation_input*max_rotation_speed)*max_torque)
+	if(rotation_input==0 && abs(self.angular_velocity)<max_torque*delta):
+		self.angular_velocity = 0
+	else:
+		self.angular_velocity += -sign(self.angular_velocity - rotation_input*max_rotation_speed)*max_torque*delta
 	
 	if(Input.is_action_pressed('forward')):
 		$'.'.apply_force(global_transform.basis_xform(Vector2.UP).normalized() * max_thrust)

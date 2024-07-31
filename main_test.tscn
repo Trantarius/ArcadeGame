@@ -1,8 +1,10 @@
-[gd_scene load_steps=13 format=3 uid="uid://dgi2i2rcpew0f"]
+[gd_scene load_steps=16 format=3 uid="uid://dgi2i2rcpew0f"]
 
 [ext_resource type="PackedScene" uid="uid://ccgupredk0a3f" path="res://player/player.tscn" id="1_wyqax"]
 [ext_resource type="Script" path="res://classes/Stat.gd" id="2_qfau0"]
+[ext_resource type="Script" path="res://classes/StatBuffStack.gd" id="3_fc4ol"]
 [ext_resource type="Script" path="res://enemies/EnemySpawner.gd" id="3_mithn"]
+[ext_resource type="Script" path="res://classes/StatBuff.gd" id="4_0mh42"]
 [ext_resource type="Script" path="res://environment/AsteroidSpawner.gd" id="8_t20lr"]
 [ext_resource type="Script" path="res://pickups/PickupSpawner.gd" id="9_ld0bk"]
 [ext_resource type="Script" path="res://ui/world/HitNumberSpawner.gd" id="19_ynf55"]
@@ -21,14 +23,25 @@ base = 100.0
 round_mode = 0
 min_value = 1.0
 
+[sub_resource type="Resource" id="Resource_bi3e3"]
+script = ExtResource("4_0mh42")
+name = &"temp"
+stage = 2
+strength = 100.0
+stat_name = &"fire_rate"
+target = 2
+
 [node name="Main" type="Node"]
 
 [node name="Player" parent="." instance=ExtResource("1_wyqax")]
 max_health = SubResource("Resource_87d4c")
 
+[node name="StatBuffStack" type="Node" parent="Player"]
+script = ExtResource("3_fc4ol")
+buff = SubResource("Resource_bi3e3")
+
 [node name="EnemySpawner" type="Node" parent="."]
 script = ExtResource("3_mithn")
-target_points = 100.0
 enabled = false
 
 [node name="AsteroidSpawner" type="Node" parent="."]
@@ -55,7 +68,8 @@ script = ExtResource("20_4nqwg")
 [node name="UILayer" type="CanvasLayer" parent="." groups=["UILayer"]]
 layer = 2
 
-[node name="InfoPanel" parent="UILayer" instance=ExtResource("21_1litg")]
+[node name="InfoPanel" parent="UILayer" node_paths=PackedStringArray("player") instance=ExtResource("21_1litg")]
+player = NodePath("../../Player")
 
 [node name="Minimap" parent="UILayer" instance=ExtResource("22_14ij0")]
 custom_minimum_size = Vector2(512, 512)

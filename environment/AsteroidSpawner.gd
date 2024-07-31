@@ -3,7 +3,6 @@ extends Node
 ## How many asteroids will always be present
 @export var asteroid_count:float = 5
 
-
 ## Average asteroid size
 @export var mean_size:float = 512
 ## Standard deviation of asteroid size, multiplicative and relative to mean size
@@ -13,7 +12,6 @@ extends Node
 @export var max_linear_momentum:float = 100
 ## Maximum asteroid angular momentum (larger asteroids rotate slower)
 @export var max_angular_momentum:float = 1
-
 
 ## Distance from player to spawn asteroids
 @export var spawn_distance:float = 4000

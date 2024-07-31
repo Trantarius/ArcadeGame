@@ -82,7 +82,7 @@ projectile_size = SubResource("Resource_l81r3")
 
 [node name="EnemySpawner" type="Node" parent="."]
 script = ExtResource("6_xg0x2")
-target_points = 100.0
+spawn_rate = 50.0
 
 [node name="AsteroidSpawner" type="Node" parent="."]
 script = ExtResource("5_hea7j")
@@ -110,7 +110,8 @@ script = ExtResource("9_dl15g")
 [node name="UILayer" type="CanvasLayer" parent="." groups=["UILayer"]]
 layer = 2
 
-[node name="InfoPanel" parent="UILayer" instance=ExtResource("2_8k6rt")]
+[node name="InfoPanel" parent="UILayer" node_paths=PackedStringArray("player") instance=ExtResource("2_8k6rt")]
+player = NodePath("../../Player")
 
 [node name="Minimap" parent="UILayer" instance=ExtResource("4_u66eo")]
 custom_minimum_size = Vector2(512, 512)

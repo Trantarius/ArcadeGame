@@ -8,6 +8,7 @@ const torque:float = 1
 var body:RigidBody2D
 
 func _init()->void:
+	super()
 	body = $'.'
 
 func _physics_process(delta: float) -> void:

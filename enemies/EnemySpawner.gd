@@ -3,8 +3,6 @@ extends Node
 
 ## Scales how fast enemies spawn
 @export var spawn_rate:float = 1
-## Soft maximum total point_value of spawned enemies currently alive
-@export var target_points:float = 10
 
 const enemy_list:SceneList = preload("res://enemies/common_enemy_list.tres")
 
@@ -29,7 +27,7 @@ func _exit_tree() -> void:
 func _physics_process(delta: float) -> void:
 	if(!enabled):
 		return
-	var spawn_chance:float = delta * spawn_rate * (target_points-get_total_enemy_points())/target_points
+	var spawn_chance:float = delta * spawn_rate / get_total_enemy_points()
 	if(randf() < spawn_chance):
 		spawn_an_enemy()
 

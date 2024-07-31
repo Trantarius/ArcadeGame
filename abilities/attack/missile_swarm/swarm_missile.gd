@@ -28,6 +28,8 @@ func _ready() -> void:
 			
 func _physics_process(delta: float) -> void:
 	
+	$ArcDetector.update_detected()
+	
 	modulate.a = clamp(lifetime_timer.time,0,1)
 	if(lifetime_timer.is_finished()):
 		queue_free()
@@ -52,6 +54,8 @@ func _physics_process(delta: float) -> void:
 			angular_velocity = -sign((rot_center-global_position).dot(facing.orthogonal())) * linear_velocity.length()/(rot_center-global_position).length()
 		
 		angular_velocity = clamp(angular_velocity*2, -max_rot_speed, max_rot_speed)
+	else:
+		angular_velocity = 0
 	
 	global_position += linear_velocity * delta
 	global_rotation += angular_velocity * delta

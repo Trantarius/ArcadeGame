@@ -30,6 +30,7 @@ func _ready() -> void:
 	pickup_spawner = get_tree().current_scene.find_child('PickupSpawner',true,false)
 	player = get_tree().get_first_node_in_group(&'Players')
 	player.kill.connect(_on_player_kill)
+	score_req = score_req_base
 
 func get_current_stage()->int:
 	return progression_cycle[progression_stage%progression_cycle.size()] 
@@ -38,7 +39,9 @@ func _on_player_kill(damage:Damage)->void:
 	if(player.score>score_req && get_current_stage()!=BOSS):
 		match get_current_stage():
 			COMMON_UPGRADE:
-				pass
+				var pickup:Pickup = preload('res://pickups/common_upgrade_pickup.tscn').instantiate()
+				pickup_spawner.drop(pickup, damage.target)
+				score_req += score_req_base + score_req_growth*progression_stage
 			MOVEMENT_ABILITY:
 				var pickup:AbilityPickup = preload('res://pickups/ability_pickup.tscn').instantiate()
 				pickup.type = PlayerAbility.MOVEMENT

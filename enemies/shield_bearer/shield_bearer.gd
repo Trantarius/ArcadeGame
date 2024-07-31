@@ -1,10 +1,10 @@
 extends Enemy
 
-const base_distance:float = 512
-const max_torque:float = 6
+const base_distance:float = 256
+const max_torque:float = 1
 const max_thrust:float = 100
 const max_speed:float = 800
-const max_rot_speed:float = 10
+const max_rot_speed:float = 0.5
 
 const charge_dist_tolerance:float = 200
 const charge_angle_tolerance:float = 1
@@ -46,15 +46,15 @@ func _physics_process(delta: float) -> void:
 		var sol:Dictionary = Ballistics.solve_linear_intercept(global_position, shot_speed, target.global_position, 
 															   target.get_average_velocity()-body.linear_velocity)
 		
-		var desired_angle:float = sol.velocity.angle()
+		var desired_angle:float = (target.global_position-global_position).angle()
 		var tsim:Dictionary = Ballistics.solve_torque(global_rotation, body.angular_velocity, max_torque, desired_angle, delta)
 		body.angular_velocity = clamp(tsim.angular_velocity, -max_rot_speed, max_rot_speed)
 		
 		var tdist:float = (target.global_position-global_position).length()
 		var dist_err:float = (target.global_position-global_position).length()-base_distance
 		var angle_err:float = abs(angle_difference(desired_angle, global_rotation))
-		target_in_range = dist_err<charge_dist_tolerance && angle_err<charge_angle_tolerance
-		target_in_shot_range = angle_err<shot_angle_tolerance
+		#target_in_range = dist_err<charge_dist_tolerance && angle_err<charge_angle_tolerance
+		#target_in_shot_range = angle_err<shot_angle_tolerance
 	
 	$RightShield.rotation =  ($ShieldTimer.duration-$ShieldTimer.time)/$ShieldTimer.duration * PI/4
 	$LeftShield.rotation =  -($ShieldTimer.duration-$ShieldTimer.time)/$ShieldTimer.duration * PI/4
@@ -110,10 +110,11 @@ func _on_avoidance_agent_pre_update() -> void:
 		var tdir:Vector2 = (global_position-target.global_position).normalized()
 		
 		
-		var tpos_a:Vector2 = (global_position-target.global_position).normalized()*base_distance + target.global_position
-		var tpos_b:Vector2 = -Vector2.from_angle(global_rotation)*base_distance + target.global_position
-		var t:float = (Vector2.from_angle(global_rotation).dot(tdir)+1)/2
-		var tpos:Vector2 = tpos_a.slerp(tpos_b, t)
+		#var tpos_a:Vector2 = (global_position-target.global_position).normalized()*base_distance + target.global_position
+		#var tpos_b:Vector2 = -Vector2.from_angle(global_rotation)*base_distance + target.global_position
+		#var t:float = (Vector2.from_angle(global_rotation).dot(tdir)+1)/2
+		#var tpos:Vector2 = tpos_a.slerp(tpos_b, t)
+		var tpos:Vector2 = target.global_position - Vector2.from_angle(global_rotation) * base_distance
 		
 		var tvel:Vector2 = target.get_average_velocity()
 		var acc:Vector2 = Ballistics.solve_rendezvous(global_position, body.linear_velocity, max_thrust, tpos, tvel)

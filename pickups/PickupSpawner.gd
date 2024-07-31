@@ -36,5 +36,5 @@ func drop(pickup:Pickup, actor:Actor)->void:
 	if(attempts>10):
 		push_warning('drop took '+str(attempts)+' attempts to place')
 	pickup.transform = tform
-	add_child(pickup)
+	add_child.call_deferred(pickup)
 	pickup.linear_velocity = velocity/2 + Vector2(randfn(0,20),randfn(0,20))
