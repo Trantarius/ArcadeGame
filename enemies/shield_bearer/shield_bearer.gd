@@ -51,7 +51,7 @@ func _physics_process(delta: float) -> void:
 		body.angular_velocity = clamp(tsim.angular_velocity, -max_rot_speed, max_rot_speed)
 		
 		var tdist:float = (target.global_position-global_position).length()
-		var dist_err:float = abs((target.global_position-global_position).length()-base_distance)
+		var dist_err:float = (target.global_position-global_position).length()-base_distance
 		var angle_err:float = abs(angle_difference(desired_angle, global_rotation))
 		target_in_range = dist_err<charge_dist_tolerance && angle_err<charge_angle_tolerance
 		target_in_shot_range = angle_err<shot_angle_tolerance

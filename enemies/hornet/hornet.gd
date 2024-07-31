@@ -48,7 +48,7 @@ func _physics_process(delta: float) -> void:
 		
 		# reverse the charging if too far or facing the wrong direction
 		var tdist:float = (target.global_position-global_position).length()
-		var dist_err:float = abs((target.global_position-global_position).length()-base_distance)
+		var dist_err:float = (target.global_position-global_position).length()-base_distance
 		var angle_err:float = abs(angle_difference(desired_angle, global_rotation))
 		var charge:bool = !(dist_err>charge_dist_tolerance || angle_err>charge_angle_tolerance)
 		$ChargeTimer.reverse = !charge
