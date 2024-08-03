@@ -1,24 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://uy3scf6qnduw"]
+[gd_scene load_steps=5 format=3 uid="uid://uy3scf6qnduw"]
 
 [ext_resource type="Shader" path="res://visual_effects/ambientparticles.gdshader" id="1_edv84"]
-
-[sub_resource type="GDScript" id="GDScript_crokd"]
-script/source = "extends CenterContainer
-
-
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
-	pass
-
-
-func _on_resized() -> void:
-	pass # Replace with function body.
-"
+[ext_resource type="Script" path="res://environment/AsteroidSpawner.gd" id="2_0ejel"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_57446"]
 shader = ExtResource("1_edv84")
@@ -29,24 +12,45 @@ shader_parameter/fade_time = 5.0
 shader_parameter/parallax = 0.5
 shader_parameter/particle_size = 1.0
 
+[sub_resource type="GDScript" id="GDScript_dgod0"]
+script/source = "extends GPUParticles2D
+
+@export var ambient_particle_density:float
+
+func _ready()->void:
+	get_viewport().size_changed.connect(_on_viewport_size_changed)
+	_on_viewport_size_changed()
+
+func _on_viewport_size_changed()->void:
+	var rect:Rect2 = get_canvas_transform().affine_inverse() * get_viewport_rect()
+	process_material.set_shader_parameter('particle_size',1)
+	process_material.set_shader_parameter('width',rect.size.x)
+	process_material.set_shader_parameter('height',rect.size.y)
+	amount = ambient_particle_density * (rect.size.x*rect.size.y)/ 1_000_000
+	restart()
+"
+
 [node name="MainMenu" type="Node"]
 
-[node name="CenterContainer" type="CenterContainer" parent="."]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-script = SubResource("GDScript_crokd")
+[node name="AsteroidSpawner" type="Node" parent="."]
+script = ExtResource("2_0ejel")
+asteroid_count = 10.0
+mean_size = 128.0
+size_variation = 0.5
+max_linear_momentum = 50.0
+spawn_distance = 2000.0
+despawn_distance = 2000.0
+motion_target_radius = 500.0
 
-[node name="Control" type="Control" parent="CenterContainer"]
-layout_mode = 2
-
-[node name="AmbientParticles" type="GPUParticles2D" parent="CenterContainer/Control"]
+[node name="AmbientParticles" type="GPUParticles2D" parent="."]
 z_index = -10
 amount = 256
 process_material = SubResource("ShaderMaterial_57446")
 lifetime = 10.0
 preprocess = 10.0
+script = SubResource("GDScript_dgod0")
+ambient_particle_density = 100.0
 
-[connection signal="resized" from="CenterContainer" to="CenterContainer" method="_on_resized"]
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]

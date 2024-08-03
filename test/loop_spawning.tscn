@@ -1,0 +1,99 @@
+[gd_scene load_steps=2 format=3 uid="uid://bq17krqju2wir"]
+
+[sub_resource type="GDScript" id="GDScript_xrmi8"]
+script/source = "extends Node2D
+
+@export var spawn_count:int = 5
+
+@export var mean_size:float = 16
+@export_range(0,1) var size_variation:float = 1
+
+@export var spawn_distance:float = 128
+@export var despawn_distance:float = 256
+
+var spawn_center:Vector2
+
+class Circle extends Node2D:
+	var radius:float
+	
+	func _process(delta: float) -> void:
+		queue_redraw()
+	
+	func _draw() -> void:
+		draw_circle(Vector2.ZERO, radius, Color(0.8,0.6,0.1,0.5))
+
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	spawn_center = get_global_mouse_position()
+	for n:int in range(spawn_count):
+		await random_spawn()
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(_delta: float) -> void:
+	spawn_center = get_global_mouse_position()
+	
+	for child:Circle in get_children():
+		if((child.position-spawn_center).length() - child.radius > despawn_distance):
+			dir_spawn(spawn_center-child.position)
+			child.queue_free()
+	
+	queue_redraw()
+
+func _draw() -> void:
+	draw_arc(spawn_center, spawn_distance, 0, TAU, 64, Color.GREEN)
+	draw_arc(spawn_center, despawn_distance, 0, TAU, 64, Color.RED)
+
+func dir_spawn(dir:Vector2)->void:
+	var circle:Circle = Circle.new()
+	circle.radius = mean_size * 2**(randfn(0,size_variation))
+	circle.position = spawn_center + Vector2.from_angle(dir.angle()+randfn(0,0.5)) * (spawn_distance + circle.radius)
+	
+	while(!circle_fits(circle)):
+		await get_tree().process_frame
+		circle.radius = mean_size * 2**(randfn(0,size_variation))
+		circle.position = spawn_center + Vector2.from_angle(dir.angle()+randfn(0,0.5)) * (spawn_distance + circle.radius)
+	
+	add_child.call_deferred(circle)
+	await circle.tree_entered
+
+func edge_spawn()->void:
+	var circle:Circle = Circle.new()
+	circle.radius = mean_size * 2**(randfn(0,size_variation))
+	circle.position = spawn_center + Vector2.from_angle(randf()*TAU) * (spawn_distance + circle.radius)
+	
+	while(!circle_fits(circle)):
+		await get_tree().process_frame
+		circle.radius = mean_size * 2**(randfn(0,size_variation))
+		circle.position = spawn_center + Vector2.from_angle(randf()*TAU) * (spawn_distance + circle.radius)
+	
+	add_child.call_deferred(circle)
+	await circle.tree_entered
+
+func random_spawn()->void:
+	var circle:Circle = Circle.new()
+	circle.position = spawn_center + Vector2.from_angle(randf()*TAU) * sqrt(randf()) * (spawn_distance+despawn_distance)/2
+	circle.radius = mean_size * 2**(randfn(0,size_variation))
+	
+	while(!circle_fits(circle)):
+		await get_tree().process_frame
+		circle.position = spawn_center + Vector2.from_angle(randf()*TAU) * sqrt(randf()) * (spawn_distance+despawn_distance)/2
+		circle.radius = mean_size * 2**(randfn(0,size_variation))
+	
+	add_child.call_deferred(circle)
+	await circle.tree_entered
+	
+
+func circle_fits(circle:Circle)->bool:
+	for child:Circle in get_children():
+		if((circle.position-child.position).length() < circle.radius + child.radius):
+			return false
+	return true
+"
+
+[node name="LoopSpawning" type="Node2D"]
+script = SubResource("GDScript_xrmi8")
+spawn_count = 20
+spawn_distance = 100.0
+despawn_distance = 400.0
