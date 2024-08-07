@@ -1,4 +1,4 @@
-class_name ProgressMonitor
+class_name RunMonitor
 extends Node
 
 enum{COMMON_UPGRADE, MOVEMENT_ABILITY, ATTACK_ABILITY, WEAPON, BOSS}
@@ -24,18 +24,61 @@ var current_boss:Enemy
 var player:Player
 var enemy_spawner:EnemySpawner
 var pickup_spawner:PickupSpawner
+
+var score:float
+var run_start_time:int = 0
+var events:Array[Dictionary]
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	Client.try_connect_to(Client.host)
 	enemy_spawner = get_tree().current_scene.find_child('EnemySpawner',true,false)
 	pickup_spawner = get_tree().current_scene.find_child('PickupSpawner',true,false)
 	player = get_tree().get_first_node_in_group(&'Players')
 	player.kill.connect(_on_player_kill)
+	player.death.connect(_on_player_death)
+	player.new_ability.connect(_on_player_new_ability)
+	player.added_ability.connect(_on_player_added_ability)
+	player.removed_ability.connect(_on_player_removed_ability)
+	player.new_upgrade.connect(_on_player_new_upgrade)
+	player.added_upgrade.connect(_on_player_added_upgrade)
 	score_req = score_req_base
 
 func get_current_stage()->int:
 	return progression_cycle[progression_stage%progression_cycle.size()] 
 
+func identify(obj:Object)->String:
+	if(!is_instance_valid(obj)):
+		return '<null>'
+	if(obj is Node && !obj.scene_file_path.is_empty()):
+		return '<'+obj.scene_file_path+'>'
+	if(obj is Resource):
+		return '<'+obj.resource_path+'>'
+	if(is_instance_valid(obj.get_script())):
+		return '<'+obj.get_script().resource_path+'>'
+	return str(obj)
+
+func source_trace(obj:Object)->String:
+	var trace:String = identify(obj)
+	if(&'source' in obj && is_instance_valid(obj.source)):
+		trace += ' from ' + source_trace(obj.source)
+	return trace
+
+func end_run()->void:
+	var rundata:Dictionary = {}
+
 func _on_player_kill(damage:Damage)->void:
+	
+	if(damage.target is Enemy):
+		score += damage.target.point_value
+	
+	events.push_back({
+		'event':'player_kill',
+		'target':identify(damage.target),
+		'method':source_trace(damage.source),
+		'time': Time.get_ticks_msec()-run_start_time
+	})
+	
 	if(player.score>score_req && get_current_stage()!=BOSS):
 		match get_current_stage():
 			COMMON_UPGRADE:
@@ -70,3 +113,46 @@ func _on_boss_death(damage:Damage)->void:
 	if(get_current_stage()==BOSS):
 		current_boss = enemy_spawner.spawn(preload('res://enemies/broadside/broadside.tscn'))
 		current_boss.death.connect(_on_boss_death)
+
+func _on_player_death(damage:Damage)->void:
+	events.push_back({
+		'event':'player_death',
+		'attacker':identify(damage.attacker),
+		'method':source_trace(damage.source),
+		'time': Time.get_ticks_msec()-run_start_time
+	})
+
+func _on_player_new_ability(ability:PlayerAbility)->void:
+	events.push_back({
+		'event':'player_new_ability',
+		'ability_name':ability.ability_name,
+		'time': Time.get_ticks_msec()-run_start_time
+	})
+
+func _on_player_added_ability(ability:PlayerAbility)->void:
+	events.push_back({
+		'event':'player_added_ability',
+		'ability_name':ability.ability_name,
+		'time': Time.get_ticks_msec()-run_start_time
+	})
+
+func _on_player_removed_ability(ability:PlayerAbility)->void:
+	events.push_back({
+		'event':'player_removed_ability',
+		'ability_name':ability.ability_name,
+		'time': Time.get_ticks_msec()-run_start_time
+	})
+
+func _on_player_new_upgrade(upgrade:Upgrade)->void:
+	events.push_back({
+		'event':'player_new_upgrade',
+		'upgrade_name':upgrade.upgrade_name,
+		'time': Time.get_ticks_msec()-run_start_time
+	})
+
+func _on_player_added_upgrade(upgrade:Upgrade)->void:
+	events.push_back({
+		'event':'player_added_upgrade',
+		'upgrade_name':upgrade.upgrade_name,
+		'time': Time.get_ticks_msec()-run_start_time
+	})

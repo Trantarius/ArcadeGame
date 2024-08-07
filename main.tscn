@@ -10,7 +10,7 @@
 [ext_resource type="Script" path="res://environment/AsteroidSpawner.gd" id="5_hea7j"]
 [ext_resource type="Script" path="res://pickups/PickupSpawner.gd" id="6_0lnqi"]
 [ext_resource type="Script" path="res://enemies/EnemySpawner.gd" id="6_xg0x2"]
-[ext_resource type="Script" path="res://classes/ProgressMonitor.gd" id="9_dl15g"]
+[ext_resource type="Script" path="res://classes/RunMonitor.gd" id="9_dl15g"]
 [ext_resource type="Script" path="res://ui/world/HitNumberSpawner.gd" id="10_mwqnm"]
 [ext_resource type="Script" path="res://ui/world/HealthBarSpawner.gd" id="11_bnywn"]
 
@@ -104,7 +104,7 @@ enemy_color = Color(0.517647, 0.513726, 1, 1)
 [node name="HealthBarSpawner" type="Node" parent="."]
 script = ExtResource("11_bnywn")
 
-[node name="ProgressMonitor" type="Node" parent="."]
+[node name="RunMonitor" type="Node" parent="."]
 script = ExtResource("9_dl15g")
 
 [node name="UILayer" type="CanvasLayer" parent="." groups=["UILayer"]]

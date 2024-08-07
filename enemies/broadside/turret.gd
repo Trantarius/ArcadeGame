@@ -30,6 +30,7 @@ func fire()->void:
 	proj.global_position = $Barrel/Muzzle.global_position
 	proj.linear_velocity = Vector2.from_angle($Barrel.global_rotation)*shot_speed + get_average_velocity()
 	proj.source = self
+	proj.attacker = self
 	get_tree().current_scene.add_child(proj)
 
 func _on_detector_body_entered(body: Node2D) -> void:

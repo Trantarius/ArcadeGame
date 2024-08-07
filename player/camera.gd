@@ -29,7 +29,7 @@ func _on_viewport_size_changed()->void:
 	$AmbientParticles.process_material.set_shader_parameter('particle_size',1/zoom.x)
 	$AmbientParticles.process_material.set_shader_parameter('width',rect.size.x)
 	$AmbientParticles.process_material.set_shader_parameter('height',rect.size.y)
-	$AmbientParticles.amount = ambient_particle_density * (rect.size.x*rect.size.y)*(zoom.x*zoom.y) / 1_000_000
+	$AmbientParticles.amount = max(1,ambient_particle_density * (rect.size.x*rect.size.y)*(zoom.x*zoom.y) / 1_000_000)
 	$AmbientParticles.restart()
 
 func _process(delta: float) -> void:

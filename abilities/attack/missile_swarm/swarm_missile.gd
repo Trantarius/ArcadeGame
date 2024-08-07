@@ -19,7 +19,8 @@ var angular_velocity:float
 
 @onready var lifetime_timer:ReversibleTimer = $LifetimeTimer
 var enemies_detected:int = 0
-var source:Actor
+var attacker:Actor
+var source:Node
 
 func _ready() -> void:
 	lifetime_timer.duration = lifetime
@@ -69,6 +70,7 @@ func _on_body_entered(body: Node2D) -> void:
 		explosion.damage_amount = explosion_damage
 		explosion.radius = explosion_radius
 		explosion.position = global_position
-		explosion.source = source
+		explosion.attacker = attacker
+		explosion.source = self
 		get_tree().current_scene.add_child(explosion)
 		queue_free()

@@ -24,6 +24,9 @@ signal new_ability(ability:PlayerAbility)
 signal added_ability(ability:PlayerAbility)
 signal removed_ability(ability:PlayerAbility)
 
+signal new_upgrade(upgrade:Upgrade)
+signal added_upgrade(upgrade:Upgrade)
+
 ## Map of ability type (see PlayerAbility.gd) to ability nodes
 var abilities:Dictionary
 
@@ -56,6 +59,8 @@ func add_ability(ability:PlayerAbility)->void:
 		added_ability.emit(ability)
 
 func add_upgrade(options:Array[Upgrade])->void:
+	for up:Upgrade in options:
+		new_upgrade.emit(up)
 	var uilayer:CanvasLayer = get_tree().get_first_node_in_group('UILayer')
 	var upgrade_choice_screen:UpgradeChoiceScreen = preload('res://ui/upgrade_choice_screen.tscn').instantiate()
 	uilayer.add_child(upgrade_choice_screen)
@@ -68,6 +73,7 @@ func add_upgrade(options:Array[Upgrade])->void:
 		if(up!=selected):
 			up.queue_free()
 	add_child(selected)
+	added_upgrade.emit(selected)
 
 func remove_ability(ability:PlayerAbility)->void:
 	assert(ability.is_inside_tree())

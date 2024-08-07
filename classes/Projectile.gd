@@ -7,7 +7,8 @@ var lifetime_timer:Timer
 
 @export var damage_amount:float = 1
 
-var source:Actor
+var attacker:Actor
+var source:Node
 var linear_velocity:Vector2
 var angular_velocity:float
 
@@ -43,8 +44,9 @@ func _projectile_area_shape_entered(area_rid:RID, area:Area2D, area_shape_index:
 		
 		var damage:Damage = Damage.new()
 		damage.amount = damage_amount
-		damage.attacker = source
+		damage.attacker = attacker
 		damage.target = area.actor
+		damage.source = self
 		if(contact.is_empty()):
 			damage.position = (area.global_position + global_position)/2
 			damage.direction = (area.global_position - global_position).normalized()

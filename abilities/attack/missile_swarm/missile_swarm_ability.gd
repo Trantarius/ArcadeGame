@@ -12,7 +12,8 @@ func _on_triggered() -> void:
 		missile.global_position = get_parent().get_muzzle_position()
 		missile.linear_velocity = get_parent().linear_velocity + Vector2.from_angle(theta)*randf_range(80,160)
 		missile.global_rotation = theta
-		missile.source = get_parent()
+		missile.attacker = get_parent()
+		missile.source = self
 		missile.explosion_damage = damage.get_value()
 		missile.explosion_radius = explosion_size.get_value()
 	

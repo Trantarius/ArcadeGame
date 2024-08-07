@@ -98,6 +98,7 @@ func fire_projectile()->void:
 	proj.linear_velocity = Vector2.RIGHT.rotated(global_rotation)*shot_speed + self.linear_velocity
 	proj.global_rotation = global_rotation
 	proj.source = self
+	proj.attacker = self
 	get_tree().current_scene.add_child(proj)
 
 func _on_cooldown_timer_timeout() -> void:

@@ -28,7 +28,8 @@ extends RigidBody2D
 var armed:bool = false
 var detonating:bool = false
 var enemies_detected:int = 0
-var source:Actor
+var source:Node
+var attacker:Actor
 
 func _ready() -> void:
 	timer.duration = arming_time
@@ -72,7 +73,8 @@ func detonate()->void:
 	explosion.radius = explosion_radius
 	explosion.linear_velocity = linear_velocity
 	explosion.position = global_position
-	explosion.source = source
+	explosion.source = self
+	explosion.attacker = attacker
 	get_tree().current_scene.add_child(explosion)
 	queue_free()
 

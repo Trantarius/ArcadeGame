@@ -34,7 +34,8 @@ func _on_fire_timer_timeout_precise(ago: float) -> void:
 			laser.global_position = muzzle_pos
 			laser.global_rotation = muzzle_dir.angle()
 			laser.length = laser_range.get_value()
-			laser.source = get_parent()
+			laser.attacker = get_parent()
+			laser.source = self
 			laser.fire()
 	
 	else:

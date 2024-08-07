@@ -56,6 +56,7 @@ func _area_shape_entered(area_rid:RID, area:Area2D, area_shape_index:int, local_
 			damage.position = contact.position
 			damage.direction = contact.normal
 		damage.attacker = actor
+		damage.source = self
 		damage.target = area.actor
 		damage_dealt.emit(damage)
 		area.take_damage(damage)

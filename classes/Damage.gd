@@ -5,6 +5,8 @@ var amount:float
 
 ## Actor responsible for causing the damage.
 var attacker:Actor
+## Object used to perform damage (projectile, explosion, etc.)
+var source:Node
 ## Actor that will take this damage.
 var target:Actor
 

@@ -5,5 +5,6 @@ func fire()->void:
 	proj.top_level = true
 	proj.global_transform = $Muzzle.global_transform
 	proj.linear_velocity = 300*Vector2.from_angle($Muzzle.global_rotation) + get_average_velocity()
+	proj.attacker = self
 	proj.source = self
 	get_tree().current_scene.add_child(proj)

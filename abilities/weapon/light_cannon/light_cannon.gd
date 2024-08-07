@@ -34,7 +34,8 @@ func _on_fire_timer_timeout_precise(ago: float) -> void:
 		bullet.global_position = p0 + dp*n
 		
 		bullet.linear_velocity = projectile_speed.get_value() * mdir + get_parent().linear_velocity
-		bullet.source = get_parent()
+		bullet.attacker = get_parent()
+		bullet.source = self
 		bullet.damage_amount = damage.get_value()
 		bullet.scale = Vector2.ONE * projectile_size.get_value()/8
 		bullet.global_position += bullet.linear_velocity * ago

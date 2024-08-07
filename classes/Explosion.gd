@@ -12,7 +12,8 @@ extends Node2D
 
 @export_flags_2d_physics var collision_mask:int
 
-var source:Actor
+var attacker:Actor
+var source:Node
 var duration:float
 var lifetime_timer:Timer
 ## The velocity of the thing that created the explosion
@@ -50,7 +51,8 @@ func _ready()->void:
 			if(res.collider is HitBox):
 				var damage:Damage = Damage.new()
 				damage.amount = damage_amount
-				damage.attacker = source
+				damage.attacker = attacker
+				damage.source = self
 				damage.target = res.collider.actor
 				damage.position = global_position + (res.collider.global_position-global_position).limit_length(radius)
 				damage.direction = (damage.position-global_position).normalized()

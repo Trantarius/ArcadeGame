@@ -106,6 +106,7 @@ func create_shot()->void:
 	interp.offset_target = charging_shot
 	charging_shot.transform = $Marker2D.transform
 	charging_shot.source = self
+	charging_shot.attacker = self
 	add_child(charging_shot)
 	charging_shot.transform = $Marker2D.transform
 	$ChargeTimer.reset()

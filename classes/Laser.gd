@@ -27,7 +27,8 @@ var lifetime_timer:ReversibleTimer
 			line.width=width
 
 var line:Line2D
-var source:Actor
+var attacker:Actor
+var source:Node
 
 signal damage_dealt(damage:Damage)
 
@@ -73,7 +74,8 @@ func fire()->void:
 			if(hit.collider is HitBox):
 				var damage:Damage = Damage.new()
 				damage.amount = damage_amount
-				damage.attacker = source
+				damage.attacker = attacker
+				damage.source = self
 				damage.target = hit.collider.actor
 				damage.position = hit.position
 				damage.direction = Vector2.from_angle(global_rotation)
