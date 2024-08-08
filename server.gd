@@ -27,6 +27,7 @@ func _process(_delta: float) -> void:
 		conn.send({'what':'hello from server'})
 
 func received_message(message:Dictionary, connection:WebSocketConnection)->void:
+	connection.send({'what':'got it'})
 	pass
 	
 func _exit_tree() -> void:

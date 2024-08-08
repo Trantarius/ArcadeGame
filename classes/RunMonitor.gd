@@ -28,6 +28,8 @@ var pickup_spawner:PickupSpawner
 var score:float
 var run_start_time:int = 0
 var events:Array[Dictionary]
+var perf_data:Array[Dictionary]
+var run_ended:bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -43,6 +45,33 @@ func _ready() -> void:
 	player.new_upgrade.connect(_on_player_new_upgrade)
 	player.added_upgrade.connect(_on_player_added_upgrade)
 	score_req = score_req_base
+	process_mode = Node.PROCESS_MODE_ALWAYS
+	var perf_timer:Timer = Timer.new()
+	add_child(perf_timer)
+	perf_timer.timeout.connect(_update_perf_info)
+	perf_timer.start(10)
+
+func _update_perf_info()->void:
+	perf_data.push_back({
+		'fps': _worst_fps,
+		'process': _worst_process,
+		'physics': _worst_physics,
+		'nav': _worst_nav
+	})
+	_worst_fps = INF
+	_worst_physics = -INF
+	_worst_process = -INF
+	_worst_nav = -INF
+
+var _worst_process:float = -INF
+var _worst_physics:float = -INF
+var _worst_fps:float = INF
+var _worst_nav:float = -INF
+func _process(_delta: float) -> void:
+	_worst_process = max(_worst_process, Performance.get_monitor(Performance.TIME_PROCESS))
+	_worst_physics = max(_worst_physics, Performance.get_monitor(Performance.TIME_PHYSICS_PROCESS))
+	_worst_nav = max(_worst_nav, Performance.get_monitor(Performance.TIME_NAVIGATION_PROCESS))
+	_worst_fps = min(_worst_fps, Performance.get_monitor(Performance.TIME_FPS))
 
 func get_current_stage()->int:
 	return progression_cycle[progression_stage%progression_cycle.size()] 
@@ -65,7 +94,19 @@ func source_trace(obj:Object)->String:
 	return trace
 
 func end_run()->void:
-	var rundata:Dictionary = {}
+	if(run_ended):
+		return
+	run_ended=true
+	print("run end")
+	events.push_back({'event':'run_end','time': Time.get_ticks_msec()-run_start_time})
+	GlobalMonitor.record_run(events, score, perf_data)
+
+func _exit_tree() -> void:
+	print("exit tree")
+
+func _notification(what: int) -> void:
+	if((what==NOTIFICATION_EXIT_TREE || what==NOTIFICATION_WM_CLOSE_REQUEST) && is_instance_valid(player)):
+		end_run()
 
 func _on_player_kill(damage:Damage)->void:
 	
@@ -121,6 +162,7 @@ func _on_player_death(damage:Damage)->void:
 		'method':source_trace(damage.source),
 		'time': Time.get_ticks_msec()-run_start_time
 	})
+	end_run()
 
 func _on_player_new_ability(ability:PlayerAbility)->void:
 	events.push_back({

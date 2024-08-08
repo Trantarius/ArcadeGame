@@ -35,7 +35,7 @@ func _ready()->void:
 		userdata.set_value('','telemetry_enabled',true)
 	userdata.save('user://userdata.txt')
 
-func record_run(events:Dictionary, score:float)->void:
+func record_run(events:Array[Dictionary], score:float, perf:Array[Dictionary])->void:
 	
 	var hasher:HashingContext = HashingContext.new()
 	hasher.start(HashingContext.HASH_SHA256)
@@ -49,17 +49,28 @@ func record_run(events:Dictionary, score:float)->void:
 		'events': events,
 		'start_playtime': playtime,
 		'final_score': score,
-		'duration': float(events[events.keys()[-1]].time)/1000.0
+		'duration': events[-1].time
 	}
 	
 	if(telemetry_enabled):
-		if(!Client.is_socket_connected()):
+		if(!await Client.is_socket_connected()):
 			await Client.try_connect_to(Client.host)
-		if(Client.is_socket_connected() && Client.send({'what':'run','data':rundata})):
+		if(await Client.is_socket_connected() && await Client.send({'what':'run','data':rundata})):
+			print('submitted')
+			await Client.get_response()
 			rundata.submitted = true
 	
 	playtime += rundata.duration
+	
+	if(!DirAccess.dir_exists_absolute('user://runs')):
+		var err:Error = DirAccess.make_dir_absolute('user://runs')
+		if(err!=OK):
+			push_error('cannot create runs directory: ',error_string(err))
+	
 	var file:FileAccess = FileAccess.open('user://runs/'+run_id,FileAccess.WRITE)
-	file.store_var(rundata)
-	file.close()
+	if(!is_instance_valid(file)):
+		push_error("cannot write run file: ",error_string(FileAccess.get_open_error()))
+	else:
+		file.store_var(rundata)
+		file.close()
 	
