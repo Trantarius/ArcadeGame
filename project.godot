@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="ArcadeGame"
-run/main_scene="res://main.tscn"
+run/main_scene="res://main_menu.tscn"
 config/features=PackedStringArray("4.2", "GL Compatibility")
 config/icon="res://icon.svg"
 run/main_scene.server="res://server.tscn"
@@ -19,8 +19,8 @@ run/max_fps.server=100
 
 [autoload]
 
-Client="*res://client.tscn"
-GlobalMonitor="*res://GlobalMonitor.gd"
+GlobalMonitor="*res://classes/GlobalMonitor.gd"
+Client="*res://client.gd"
 
 [debug]
 

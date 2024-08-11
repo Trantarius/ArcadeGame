@@ -25,7 +25,8 @@ var player:Player
 var enemy_spawner:EnemySpawner
 var pickup_spawner:PickupSpawner
 
-var score:float
+var score:float = 0
+var boss_kills:int = 0
 var run_start_time:int = 0
 var events:Array[Dictionary]
 var perf_data:Array[Dictionary]
@@ -33,7 +34,7 @@ var run_ended:bool = false
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	Client.try_connect_to(Client.host)
+	run_start_time = Time.get_ticks_msec()
 	enemy_spawner = get_tree().current_scene.find_child('EnemySpawner',true,false)
 	pickup_spawner = get_tree().current_scene.find_child('PickupSpawner',true,false)
 	player = get_tree().get_first_node_in_group(&'Players')
@@ -56,7 +57,8 @@ func _update_perf_info()->void:
 		'fps': _worst_fps,
 		'process': _worst_process,
 		'physics': _worst_physics,
-		'nav': _worst_nav
+		'nav': _worst_nav,
+		'time': Time.get_ticks_msec()-run_start_time
 	})
 	_worst_fps = INF
 	_worst_physics = -INF
@@ -97,12 +99,16 @@ func end_run()->void:
 	if(run_ended):
 		return
 	run_ended=true
-	print("run end")
-	events.push_back({'event':'run_end','time': Time.get_ticks_msec()-run_start_time})
-	GlobalMonitor.record_run(events, score, perf_data)
-
-func _exit_tree() -> void:
-	print("exit tree")
+	var time:int = Time.get_ticks_msec()-run_start_time
+	events.push_back({'event':'run_end','time': time})
+	var rundata:Dictionary = {
+		'events':events,
+		'duration':time,
+		'final_score':score,
+		'perf':perf_data,
+		'boss_kills':boss_kills
+	}
+	GlobalMonitor.record_run(rundata)
 
 func _notification(what: int) -> void:
 	if((what==NOTIFICATION_EXIT_TREE || what==NOTIFICATION_WM_CLOSE_REQUEST) && is_instance_valid(player)):
@@ -117,6 +123,7 @@ func _on_player_kill(damage:Damage)->void:
 		'event':'player_kill',
 		'target':identify(damage.target),
 		'method':source_trace(damage.source),
+		'point_value': damage.target.point_value if damage.target is Enemy else 0,
 		'time': Time.get_ticks_msec()-run_start_time
 	})
 	
@@ -154,6 +161,11 @@ func _on_boss_death(damage:Damage)->void:
 	if(get_current_stage()==BOSS):
 		current_boss = enemy_spawner.spawn(preload('res://enemies/broadside/broadside.tscn'))
 		current_boss.death.connect(_on_boss_death)
+	events.push_back({
+		'event':'boss_kill',
+		'time':Time.get_ticks_msec()-run_start_time
+	})
+	boss_kills+=1
 
 func _on_player_death(damage:Damage)->void:
 	events.push_back({

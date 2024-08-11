@@ -150,13 +150,13 @@ func send(message:Dictionary)->bool:
 func get_response(timeout:float = 5)->Dictionary:
 	if(!await is_socket_connected()):
 		return {}
-	var response:Dictionary = {}
+	var response:Array = [{}]
 	
 	var sig:Signal = __make_task()
 	task = sig
 	
 	var on_received:Callable = func(m:Dictionary)->void:
-		response=m
+		response[0]=m
 		sig.emit(true)
 	received.connect(on_received)
 	
@@ -171,7 +171,7 @@ func get_response(timeout:float = 5)->Dictionary:
 	received.disconnect(on_received)
 	timer.timeout.disconnect(on_timeout)
 	task = Signal()
-	return response
+	return response[0]
 
 func close_connection(timeout:float = 5)->bool:
 	while(!task.is_null()):
@@ -296,8 +296,6 @@ func _process(_delta:float)->void:
 
 func _notification(what: int) -> void:
 	if((what==NOTIFICATION_EXIT_TREE || what==NOTIFICATION_WM_CLOSE_REQUEST) && is_instance_valid(peer)):
-		(func()->void:
-			close_connection()
-			while(!task.is_null()):
-				_process(0)
-		).call_deferred()
+		close_connection()
+		while(!task.is_null()):
+			_process(0)

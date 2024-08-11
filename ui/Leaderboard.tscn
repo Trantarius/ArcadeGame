@@ -1,0 +1,199 @@
+[gd_scene load_steps=6 format=3 uid="uid://68a6cwugogao"]
+
+[ext_resource type="Theme" uid="uid://d0ifc4kse0sbj" path="res://ui/theme/theme.tres" id="1_prflq"]
+[ext_resource type="Script" path="res://ui/global_leaderboard.gd" id="2_p8vnk"]
+[ext_resource type="PackedScene" uid="uid://d0jk1v25t23vv" path="res://ui/leaderboard_entry.tscn" id="3_lte65"]
+[ext_resource type="Script" path="res://ui/local_leaderboard.gd" id="4_1t38o"]
+[ext_resource type="Texture2D" uid="uid://dqjfimrkrf3lc" path="res://ui/loading.png" id="4_gckg4"]
+
+[node name="Leaderboard" type="TabContainer"]
+custom_minimum_size = Vector2(700, 0)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -332.0
+offset_bottom = -599.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1_prflq")
+
+[node name="Global" type="VBoxContainer" parent="." node_paths=PackedStringArray("entries", "loading_sign", "fail_message")]
+layout_mode = 2
+script = ExtResource("2_p8vnk")
+entries = NodePath("PanelContainer/ScrollContainer/VBoxContainer")
+loading_sign = NodePath("PanelContainer/CenterContainer/Control/Sprite2D")
+fail_message = NodePath("PanelContainer/CenterContainer/Label")
+
+[node name="MarginContainer" type="MarginContainer" parent="Global"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_right = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Global/MarginContainer"]
+layout_mode = 2
+
+[node name="Rank" type="Button" parent="Global/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+text = "Rank"
+
+[node name="VSeparator" type="VSeparator" parent="Global/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Name" type="Button" parent="Global/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "Name"
+
+[node name="VSeparator2" type="VSeparator" parent="Global/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Score" type="Button" parent="Global/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Score"
+
+[node name="VSeparator3" type="VSeparator" parent="Global/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Time" type="Button" parent="Global/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Time"
+
+[node name="VSeparator4" type="VSeparator" parent="Global/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="BossKills" type="Button" parent="Global/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Boss Kills"
+
+[node name="Control" type="Control" parent="Global/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(8, 0)
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="Global"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"DarkPanel"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Global/PanelContainer"]
+layout_mode = 2
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Global/PanelContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LeaderboardEntry" parent="Global/PanelContainer/ScrollContainer/VBoxContainer" instance=ExtResource("3_lte65")]
+layout_mode = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="Global/PanelContainer"]
+layout_mode = 2
+mouse_filter = 2
+
+[node name="Control" type="Control" parent="Global/PanelContainer/CenterContainer"]
+layout_mode = 2
+
+[node name="Sprite2D" type="Sprite2D" parent="Global/PanelContainer/CenterContainer/Control"]
+modulate = Color(0.377919, 0.377919, 0.377919, 1)
+texture = ExtResource("4_gckg4")
+
+[node name="Label" type="Label" parent="Global/PanelContainer/CenterContainer"]
+modulate = Color(0.68, 0.306, 0.306, 1)
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "server connection failed"
+
+[node name="Local" type="VBoxContainer" parent="." node_paths=PackedStringArray("entries")]
+visible = false
+layout_mode = 2
+script = ExtResource("4_1t38o")
+entries = NodePath("PanelContainer/ScrollContainer/VBoxContainer")
+
+[node name="MarginContainer" type="MarginContainer" parent="Local"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_right = 8
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Local/MarginContainer"]
+layout_mode = 2
+
+[node name="Rank" type="Button" parent="Local/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+text = "Rank"
+
+[node name="VSeparator" type="VSeparator" parent="Local/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Name" type="Button" parent="Local/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 2.0
+text = "Name"
+
+[node name="VSeparator2" type="VSeparator" parent="Local/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Score" type="Button" parent="Local/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Score"
+
+[node name="VSeparator3" type="VSeparator" parent="Local/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Time" type="Button" parent="Local/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Time"
+
+[node name="VSeparator4" type="VSeparator" parent="Local/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="BossKills" type="Button" parent="Local/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Boss Kills"
+
+[node name="VSeparator5" type="VSeparator" parent="Local/MarginContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="Submitted" type="Button" parent="Local/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(100, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Submitted"
+
+[node name="Control" type="Control" parent="Local/MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(8, 0)
+layout_mode = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="Local"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_type_variation = &"DarkPanel"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="Local/PanelContainer"]
+layout_mode = 2
+horizontal_scroll_mode = 3
+vertical_scroll_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Local/PanelContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LeaderboardEntry" parent="Local/PanelContainer/ScrollContainer/VBoxContainer" instance=ExtResource("3_lte65")]
+layout_mode = 2

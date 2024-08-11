@@ -15,6 +15,23 @@ static func _process() -> void:
 		game_time += Engine.time_scale * float(now-__last_tick)/1_000_000
 	__last_tick = now
 
+## Checks if a username is valid. Returns an error message if invalid, otherwise returns an empty string.
+static func verify_username(username:String)->String:
+	if(username.is_empty()):
+		return "username cannot be empty"
+	if(username.strip_edges()!=username):
+		return "username cannot begin or end with whitespace"
+	if(username.length()>32):
+		return "username cannot be longer than 32 characters"
+	var font:Font = load('res://ui/theme/Montserrat-Regular.ttf')
+	for n:int in range(username.length()):
+		if(!font.has_char(username.unicode_at(n))):
+			return "username contains an invalid character"
+	var size:Vector2 = font.get_string_size(username)
+	if(size.x>200):
+		return "username cannot be more than 200px wide"
+	return ""
+
 ## Limits an angle to be between left and right. The difference between left and right must be less than PI. 
 static func angle_clamp(angle:float, left:float, right:float)->float:
 	if(angle_difference(angle,left)>0):
