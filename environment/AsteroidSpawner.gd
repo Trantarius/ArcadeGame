@@ -21,6 +21,7 @@ extends Node
 @export var motion_target_radius:float = -1
 
 func _ready()->void:
+	await get_tree().physics_frame
 	for n:int in range(asteroid_count):
 		await spawn_asteroid_anywhere()
 

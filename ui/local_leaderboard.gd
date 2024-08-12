@@ -15,10 +15,8 @@ func update() -> void:
 	
 	for n:int in range(leaderboard.size()):
 		var entry:Control = preload('res://ui/leaderboard_entry.tscn').instantiate()
-		entry.username = leaderboard[n].username
+		entry.run = leaderboard[n]
 		entry.rank = n+1
-		entry.score = leaderboard[n].final_score
-		entry.time = leaderboard[n].duration
-		entry.boss_kills = leaderboard[n].boss_kills
+		entry.show_submitted = true
 		entries.add_child(entry)
 	

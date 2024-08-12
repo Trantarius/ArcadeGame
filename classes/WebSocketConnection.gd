@@ -48,14 +48,14 @@ func try_connect_to(host:String, timeout:float = 5)->bool:
 	var err:Error = peer.connect_to_url(host)
 	if(err!=OK):
 		if(verbose):
-			push_error('connection failed: ',error_string(err))
+			printerr('connection failed: ',error_string(err))
 		terminate_connection()
 		return false
 	else:
 		peer.poll()
 		if(peer.get_ready_state()==WebSocketPeer.STATE_CLOSED):
 			if(verbose):
-				push_error('connection failed')
+				printerr('connection failed')
 			terminate_connection()
 			return false
 			
@@ -73,7 +73,7 @@ func try_connect_to(host:String, timeout:float = 5)->bool:
 			var timer:SceneTreeTimer = get_tree().create_timer(timeout,true, false, true)
 			var on_timeout:Callable = func()->void:
 				if(verbose):
-					push_error('connection timed out')
+					printerr('connection timed out')
 				sig.emit(false)
 			timer.timeout.connect(on_timeout)
 			
@@ -98,7 +98,7 @@ func adopt_tcp_connection(tcp:StreamPeerTCP, timeout:float = 5)->bool:
 	var err:Error = peer.accept_stream(tcp)
 	if(err!=OK):
 		if(verbose):
-			push_error('web socket error: ',error_string(err))
+			printerr('web socket error: ',error_string(err))
 		tcp.disconnect_from_host()
 		terminate_connection()
 		return false
@@ -114,7 +114,7 @@ func adopt_tcp_connection(tcp:StreamPeerTCP, timeout:float = 5)->bool:
 	var timer:SceneTreeTimer = get_tree().create_timer(timeout,true, false, true)
 	var on_timeout:Callable = func()->void:
 		if(verbose):
-			push_error('connection timed out')
+			printerr('connection timed out')
 		tcp.disconnect_from_host()
 		sig.emit(false)
 	timer.timeout.connect(on_timeout)
@@ -126,15 +126,19 @@ func adopt_tcp_connection(tcp:StreamPeerTCP, timeout:float = 5)->bool:
 	return success
 
 func send(message:Dictionary)->bool:
-	assert('what' in message)
 	if(!await is_socket_connected()):
 		return false
+	print('sending: ',message)
+	var binmsg:PackedByteArray = var_to_bytes(message)
+	var pre_compress_size:int = binmsg.size()
+	binmsg = binmsg.compress(FileAccess.COMPRESSION_ZSTD)
+	print('message size: ',pre_compress_size,'  ->  ',binmsg.size())
 	var hasher:HashingContext = HashingContext.new()
 	hasher.start(HashingContext.HASH_SHA256)
-	hasher.update(var_to_bytes(message))
+	hasher.update(binmsg)
 	var sha:PackedByteArray = hasher.finish()
 	var signature:PackedByteArray = crypto.sign(HashingContext.HASH_SHA256, sha, this_side_key)
-	var signed:Dictionary = {'signature':signature,'message':message}
+	var signed:Dictionary = {'signature':signature, 'message':binmsg, 'size':pre_compress_size}
 	var data:PackedByteArray = var_to_bytes(signed)
 	var encrypted:PackedByteArray
 	for n:int in range(0,data.size(),200):
@@ -142,7 +146,7 @@ func send(message:Dictionary)->bool:
 	var err:Error = peer.put_packet(encrypted)
 	if(err!=OK):
 		if(verbose):
-			push_error("failed to send message: ",error_string(err))
+			printerr("failed to send message: ",error_string(err))
 		return false
 	else:
 		return true
@@ -163,7 +167,7 @@ func get_response(timeout:float = 5)->Dictionary:
 	var timer:SceneTreeTimer = get_tree().create_timer(timeout,true,false,true)
 	var on_timeout:Callable = func()->void:
 		if(verbose):
-			push_error("response timed out")
+			printerr("response timed out")
 		sig.emit(false)
 	timer.timeout.connect(on_timeout)
 	
@@ -192,7 +196,7 @@ func close_connection(timeout:float = 5)->bool:
 	var timer:SceneTreeTimer = get_tree().create_timer(timeout,true, false, true)
 	var on_timeout:Callable = func()->void:
 		if(verbose):
-			push_error("disconnect timed out")
+			printerr("disconnect timed out")
 		if(is_instance_valid(peer)):
 			peer.close(CLOSE_ERROR)
 		peer=null
@@ -241,25 +245,29 @@ func _process(_delta:float)->void:
 			var data:PackedByteArray = peer.get_packet()
 			if(peer.get_packet_error()!=OK):
 				if(verbose):
-					push_error('packet error: ',error_string(peer.get_packet_error()))
+					printerr('packet error: ',error_string(peer.get_packet_error()))
 				terminate_connection()
+				return
 			elif(peer.was_string_packet()):
 				if(verbose):
-					push_error('bad packet received (received string packet)')
+					printerr('bad packet received (received string packet)')
 				terminate_connection()
+				return
 			elif(!is_instance_valid(other_side_key)):
 				var vdata:Variant = data.decode_var(0)
 				if(!(vdata is String)):
 					if(verbose):
-						push_error('bad packet received (expected crypto key)')
+						printerr('bad packet received (expected crypto key)')
 					terminate_connection()
+					return
 				else:
 					other_side_key = CryptoKey.new()
 					var err:Error = other_side_key.load_from_string(vdata,true)
 					if(err!=OK):
 						if(verbose):
-							push_error("bad crypto key received: ",error_string(err))
+							printerr("bad crypto key received: ",error_string(err))
 						terminate_connection()
+						return
 					else:
 						if(verbose):
 							print("connected")
@@ -270,29 +278,34 @@ func _process(_delta:float)->void:
 					decrypted.append_array(crypto.decrypt(this_side_key,data.slice(n,n+256)))
 				data = decrypted
 				var vdata:Variant = data.decode_var(0)
-				if(!(vdata is Dictionary) || !('signature' in vdata) || !('message' in vdata) ||
-				!(vdata.signature is PackedByteArray) || !(vdata.message is Dictionary)):
+				if(!(vdata is Dictionary) || !('signature' in vdata) || !('message' in vdata) || !('size' in vdata) ||
+				!(vdata.signature is PackedByteArray) || !(vdata.message is PackedByteArray) || !(vdata.size is int)):
 					if(verbose):
-						push_error('bad packet received (invalid signature format)')
+						printerr('bad packet received (invalid signature format)')
 					terminate_connection()
+					return
 				else:
-					var message:Dictionary = vdata.message
-					var hasher:HashingContext = HashingContext.new()
-					hasher.start(HashingContext.HASH_SHA256)
-					hasher.update(var_to_bytes(message))
-					var sha:PackedByteArray = hasher.finish()
-					if(!crypto.verify(HashingContext.HASH_SHA256,sha,vdata.signature,other_side_key)):
+					var binmsg:PackedByteArray = vdata.message.decompress(vdata.size,FileAccess.COMPRESSION_ZSTD)
+					var message:Variant = bytes_to_var(binmsg)
+					if(!message is Dictionary):
 						if(verbose):
-							push_error('bad packet received (bad signature)')
+							printerr('bad packed received (invalid message format)')
 						terminate_connection()
-					elif(!('what' in message)):
-						if(verbose):
-							push_error('bad packet received (message has no \'what\' field)')
-						terminate_connection()
+						return
 					else:
-						if(verbose):
-							print('received message: ',message)
-						received.emit(message)
+						var hasher:HashingContext = HashingContext.new()
+						hasher.start(HashingContext.HASH_SHA256)
+						hasher.update(vdata.message)
+						var sha:PackedByteArray = hasher.finish()
+						if(!crypto.verify(HashingContext.HASH_SHA256,sha,vdata.signature,other_side_key)):
+							if(verbose):
+								printerr('bad packet received (bad signature)')
+							terminate_connection()
+							return
+						else:
+							if(verbose):
+								print('received message: ',message)
+							received.emit(message)
 
 func _notification(what: int) -> void:
 	if((what==NOTIFICATION_EXIT_TREE || what==NOTIFICATION_WM_CLOSE_REQUEST) && is_instance_valid(peer)):

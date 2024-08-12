@@ -101,14 +101,15 @@ func end_run()->void:
 	run_ended=true
 	var time:int = Time.get_ticks_msec()-run_start_time
 	events.push_back({'event':'run_end','time': time})
-	var rundata:Dictionary = {
-		'events':events,
-		'duration':time,
-		'final_score':score,
-		'perf':perf_data,
-		'boss_kills':boss_kills
-	}
-	GlobalMonitor.record_run(rundata)
+	var run:RunRecord = RunRecord.new()
+	run.is_local = true
+	run.events = events.duplicate()
+	run.set_from_events()
+	run.extra_data['performance'] = perf_data
+	GlobalMonitor.record_run(run)
+	var game_over:Control = preload('res://ui/game_over.tscn').instantiate()
+	game_over.run = run
+	get_tree().get_first_node_in_group('UILayer').add_child(game_over)
 
 func _notification(what: int) -> void:
 	if((what==NOTIFICATION_EXIT_TREE || what==NOTIFICATION_WM_CLOSE_REQUEST) && is_instance_valid(player)):

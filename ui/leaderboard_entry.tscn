@@ -16,45 +16,40 @@ extends PanelContainer
 			await tree_entered
 		$HBoxContainer/Rank.text = str(rank)
 
-@export var username:String:
+@export var run:RunRecord:
 	set(to):
-		username = to
+		if(is_instance_valid(run)):
+			run.submission_begin.disconnect(_on_run_submission_begin)
+			run.submission_complete.disconnect(_on_run_submission_complete)
+		run=to
+		if(is_instance_valid(run)):
+			run.submission_begin.connect(_on_run_submission_begin)
+			run.submission_complete.connect(_on_run_submission_complete)
 		if(!is_inside_tree()):
 			await tree_entered
-		$HBoxContainer/Name.text = username
-
-@export var score:float:
-	set(to):
-		score = to
-		if(!is_inside_tree()):
-			await tree_entered
-		$HBoxContainer/Score.text = '%d'%[score]
-
-@export var time:int:
-	set(to):
-		time = to
-		if(!is_inside_tree()):
-			await tree_entered
-		if(time>3600000):
-			$HBoxContainer/Time.text = '%d:%02d:%02d'%[time/3600000, (time%3600000)/60000, (time%60000)/1000]
-		else:
-			$HBoxContainer/Time.text = '%d:%02d'%[time/60000, (time%60000)/1000]
-
-@export var boss_kills:int:
-	set(to):
-		boss_kills = to
-		if(!is_inside_tree()):
-			await tree_entered
-		$HBoxContainer/BossKills.text = str(boss_kills)
-
-@export var submitted:bool:
-	set(to):
-		submitted=to
-		if(!is_inside_tree()):
-			await tree_entered
-		$HBoxContainer/Submitted/No.visible = !submitted
-		$HBoxContainer/Submitted/Yes.visible = submitted
-		$HBoxContainer/Submitted/Control.hide()
+		
+		if(is_instance_valid(run)):
+			$HBoxContainer/Name.text = run.username
+			$HBoxContainer/Score.text = '%d'%[run.score]
+			if(run.time>3600000):
+				$HBoxContainer/Time.text = '%d:%02d:%02d'%[run.time/3600000, (run.time%3600000)/60000, (run.time%60000)/1000]
+			else:
+				$HBoxContainer/Time.text = '%d:%02d'%[run.time/60000, (run.time%60000)/1000]
+			$HBoxContainer/BossKills.text = '%d'%[run.boss_kills]
+			if(show_submitted):
+				if(run.submission_in_progress):
+					$HBoxContainer/Submitted/Yes.hide()
+					$HBoxContainer/Submitted/No.hide()
+					$HBoxContainer/Submitted/Loading.show()
+				elif(run.has_been_submitted):
+					$HBoxContainer/Submitted/Yes.show()
+					$HBoxContainer/Submitted/No.hide()
+					$HBoxContainer/Submitted/Loading.hide()
+				else:
+					$HBoxContainer/Submitted/Yes.hide()
+					$HBoxContainer/Submitted/No.show()
+					$HBoxContainer/Submitted/Loading.hide()
+		
 
 @export var show_submitted:bool:
 	set(to):
@@ -64,25 +59,55 @@ extends PanelContainer
 		if(show_submitted):
 			$HBoxContainer/VSeparator5.show()
 			$HBoxContainer/Submitted.show()
+			if(is_instance_valid(run) && run.submission_in_progress):
+				$HBoxContainer/Submitted/Yes.hide()
+				$HBoxContainer/Submitted/No.hide()
+				$HBoxContainer/Submitted/Loading.show()
+			elif(is_instance_valid(run) && run.has_been_submitted):
+				$HBoxContainer/Submitted/Yes.show()
+				$HBoxContainer/Submitted/No.hide()
+				$HBoxContainer/Submitted/Loading.hide()
+			else:
+				$HBoxContainer/Submitted/Yes.hide()
+				$HBoxContainer/Submitted/No.show()
+				$HBoxContainer/Submitted/Loading.hide()
 		else:
 			$HBoxContainer/VSeparator5.hide()
 			$HBoxContainer/Submitted.hide()
 
 var run_id:String
 
+func _on_run_submission_begin()->void:
+	if(show_submitted):
+		if(!is_inside_tree()):
+			await tree_entered
+			if(!is_instance_valid(run)||!show_submitted):
+				return
+		$HBoxContainer/Submitted/Loading.show()
+		$HBoxContainer/Submitted/Yes.hide()
+		$HBoxContainer/Submitted/No.hide()
+
+func _on_run_submission_complete()->void:
+	if(show_submitted):
+		if(!is_inside_tree()):
+			await tree_entered
+			if(!is_instance_valid(run)||!show_submitted):
+				return
+		$HBoxContainer/Submitted/Loading.hide()
+		if(run.has_been_submitted):
+			$HBoxContainer/Submitted/Yes.show()
+			$HBoxContainer/Submitted/No.hide()
+		else:
+			$HBoxContainer/Submitted/Yes.hide()
+			$HBoxContainer/Submitted/No.show()
 
 func _on_submit_button_pressed() -> void:
-	
-	$HBoxContainer/Submitted/No.hide()
-	$HBoxContainer/Submitted/Yes.hide()
-	$HBoxContainer/Submitted/Control.show()
-	submitted = await GlobalMonitor.submit_run(run_id)
-	
-	pass # Replace with function body.
+	if(is_instance_valid(run)):
+		run.submit()
 
 func _process(delta: float) -> void:
-	if(!Engine.is_editor_hint() && $HBoxContainer/Submitted/Control.visible):
-		$HBoxContainer/Submitted/Control/Control2.rotation += delta*2
+	if(!Engine.is_editor_hint() && $HBoxContainer/Submitted/Loading.visible):
+		$HBoxContainer/Submitted/Loading/Control2.rotation += delta*2
 "
 
 [node name="LeaderboardEntry" type="PanelContainer"]
@@ -93,10 +118,6 @@ offset_bottom = 32.0
 theme = ExtResource("1_q3c0r")
 script = SubResource("GDScript_vvk8m")
 rank = 1
-username = "Anonymous"
-score = 12345.0
-time = 12345678
-boss_kills = 13
 show_submitted = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
@@ -176,10 +197,10 @@ grow_horizontal = 2
 grow_vertical = 2
 flat = true
 
-[node name="Control" type="Control" parent="HBoxContainer/Submitted"]
+[node name="Loading" type="Control" parent="HBoxContainer/Submitted"]
 layout_mode = 2
 
-[node name="Control2" type="TextureRect" parent="HBoxContainer/Submitted/Control"]
+[node name="Control2" type="TextureRect" parent="HBoxContainer/Submitted/Loading"]
 modulate = Color(0.509286, 0.509286, 0.509286, 1)
 texture_filter = 4
 layout_mode = 1

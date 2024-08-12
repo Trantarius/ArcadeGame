@@ -7,7 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://dqjfimrkrf3lc" path="res://ui/loading.png" id="4_gckg4"]
 
 [node name="Leaderboard" type="TabContainer"]
-custom_minimum_size = Vector2(700, 0)
+custom_minimum_size = Vector2(750, 0)
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

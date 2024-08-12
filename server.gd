@@ -1,3 +1,4 @@
+class_name Server
 extends Node
 
 var server:TCPServer
@@ -5,24 +6,7 @@ var port:int = 8888
 var verbose:bool = true
 
 var all_runs:Dictionary
-var leaderboard:Array
-
-func load_run(rundata:Dictionary)->int:
-	all_runs[rundata.id]=rundata
-	
-	var trimmed:Dictionary = {
-		'username':rundata.username,
-		'final_score':rundata.final_score,
-		'duration':rundata.duration,
-		'boss_kills':rundata.boss_kills
-	}
-	
-	var cmp_runs:Callable = func(run_a:Dictionary, run_b:Dictionary)->bool:
-		return run_a.final_score>run_b.final_score
-	
-	var rank:int = leaderboard.bsearch_custom(trimmed, cmp_runs)
-	leaderboard.insert(rank,trimmed)
-	return rank
+var leaderboard:Array[RunRecord]
 
 func _ready() -> void:
 	server = TCPServer.new()
@@ -32,22 +16,26 @@ func _ready() -> void:
 	elif(verbose):
 		print("server listening on port ",port)
 	
-	if(!DirAccess.dir_exists_absolute('user://server')):
-		DirAccess.make_dir_absolute('user://server')
 	if(!DirAccess.dir_exists_absolute('user://server/runs')):
-		DirAccess.make_dir_absolute('user://server/runs')
+		err = DirAccess.make_dir_recursive_absolute('user://server/runs')
+		if(err!=OK):
+			push_error('cannot create runs directory: ',error_string(err))
+			return
 	
 	for filename:String in DirAccess.get_files_at('user://server/runs'):
-		var string:String = FileAccess.get_file_as_string('user://server/runs/'+filename)
-		if(string.is_empty()):
-			push_error("run file ",filename," could not be read: ",error_string(FileAccess.get_open_error()))
-		else:
-			load_run(str_to_var(string))
-		
+		var run:RunRecord = RunRecord.new()
+		run.is_local = false
+		if(run.load_file('user://server/runs/'+filename)):
+			run.minimize()
+			var rank:int = leaderboard.bsearch_custom(run, RunRecord.compare_score)
+			leaderboard.insert(rank,run)
+			all_runs[run.id]=run 
 	
 
 func _process(_delta: float) -> void:
 	
+	if(!is_instance_valid(server)):
+		return
 	while(server.is_connection_available()):
 		var tcp:StreamPeerTCP = server.take_connection()
 		var conn:WebSocketConnection = WebSocketConnection.new()
@@ -62,54 +50,46 @@ func _process(_delta: float) -> void:
 func received_message(message:Dictionary, connection:WebSocketConnection)->void:
 	if(message.what=='run'):
 		handle_run_message(message, connection)
-	if(message.what=='get_leaderboard'):
+	elif(message.what=='get_leaderboard'):
 		handle_get_leaderboard_message(message, connection)
-	pass
+	else:
+		push_error("server doesn't know what to do with message; what = '",message.what,"'")
 
 func handle_get_leaderboard_message(message:Dictionary, connection:WebSocketConnection)->void:
-	connection.send({'what':'leaderboard','leaderboard':leaderboard})
+	var data:Array = leaderboard.map(func(run:RunRecord)->Dictionary:
+		return run.serialize_min())
+	connection.send({'what':'leaderboard','leaderboard':data})
 
 func handle_run_message(message:Dictionary, connection:WebSocketConnection)->void:
 	
-	if(!(message.what=='run' && 'data' in message && message.data is Dictionary 
-		&& 'username' in message.data && message.data.username is String 
-		&& 'events' in message.data && message.data.events is Array 
-		&& 'final_score' in message.data && message.data.final_score is float
-		&& 'boss_kills' in message.data && message.data.boss_kills is int
-		&& 'duration' in message.data && message.data.duration is int)):
-			push_error("bad run message: missing/invalid fields")
-			connection.send({'what':'run_response','status':'error'})
-			return
-	
-	if(Util.verify_username(message.data.username)!=""):
-		push_error("bad run message: invalid username")
+	if(!(message.what=='run' && 'data' in message && message.data is Dictionary)):
+		push_error("bad run message: missing/invalid data")
 		connection.send({'what':'run_response','status':'error'})
 		return
 	
-	for item:Variant in message.data.events:
-		if(!(item is Dictionary && 'event' in item && item.event is String && 'time' in item && item.time is int)):
-			push_error("bad run message: invalid event")
-			connection.send({'what':'run_response','status':'error'})
-			return
-	
-	var hasher:HashingContext = HashingContext.new()
-	hasher.start(HashingContext.HASH_SHA256)
-	hasher.update(var_to_bytes(message.data.events))
-	var sha:PackedByteArray = hasher.finish()
-	var run_id:String = sha.hex_encode()
-	
-	if(all_runs.has(run_id)):
-		push_error("duplicate run submitted")
-		connection.send({'what':'run_response','status':'accepted'})
+	var run:RunRecord = RunRecord.new()
+	run.is_local = false
+	if(!run.deserialize(message.data)):
+		connection.send({'what':'run_response','status':'error'})
 		return
 	
-	message.data['id']=run_id
-	var rank:int = load_run(message.data)
-	connection.send({'what':'run_response', 'status':'accepted', 'rank':rank, 'leaderboard':leaderboard})
+	if(!run.validate()):
+		push_error("bad run message: failed to validate")
+		connection.send({'what':'run_response','status':'error'})
+		return
 	
-	var file:FileAccess = FileAccess.open('user://server/runs/'+run_id,FileAccess.WRITE)
-	file.store_string(var_to_str(message.data))
-	file.close()
+	var rank:int = leaderboard.bsearch_custom(run,RunRecord.compare_score)
+	if(all_runs.has(run.id)):
+		while(rank<leaderboard.size() && leaderboard[rank].id!=run.id):
+			rank+=1
+		leaderboard[rank] = run
+	else:
+		leaderboard.insert(rank,run)
+	
+	all_runs[run.id] = run
+	run.save_file()
+	run.minimize()
+	connection.send({'what':'run_response','status':'accepted','rank':rank})
 	
 
 func _notification(what: int) -> void:

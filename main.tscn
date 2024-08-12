@@ -133,3 +133,4 @@ offset_right = 0.0
 offset_bottom = 0.0
 
 [node name="DebugMenu" parent="UILayer" instance=ExtResource("3_bx4mw")]
+visible = false

@@ -39,23 +39,20 @@ func update() -> void:
 		return
 	
 	for n:int in range(response.leaderboard.size()):
-		if(!(response.leaderboard[n] is Dictionary 
-			&& 'username' in response.leaderboard[n] && response.leaderboard[n].username is String
-			&& 'final_score' in response.leaderboard[n] && response.leaderboard[n].final_score is float
-			&& 'boss_kills' in response.leaderboard[n] && response.leaderboard[n].boss_kills is int
-			&& 'duration' in response.leaderboard[n] && response.leaderboard[n].duration is int)):
-				fail_message.show()
-				loading_sign.hide()
-				is_updating=false
-				return
+		var run:RunRecord = RunRecord.new()
+		run.is_local=false
+		if(!(response.leaderboard[n] is Dictionary && run.deserialize(response.leaderboard[n]))):
+			fail_message.show()
+			loading_sign.hide()
+			is_updating=false
+			return
 		var entry:Control = preload('res://ui/leaderboard_entry.tscn').instantiate()
-		entry.username = response.leaderboard[n].username
+		entry.run = run
 		entry.rank = n+1
-		entry.score = response.leaderboard[n].final_score
-		entry.time = response.leaderboard[n].duration
-		entry.boss_kills = response.leaderboard[n].boss_kills
+		entry.show_submitted = false
 		entries.add_child(entry)
 	
+	is_updating = false
 	entries.show()
 	loading_sign.hide()
 
