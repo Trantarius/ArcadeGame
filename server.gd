@@ -2,18 +2,25 @@ class_name Server
 extends Node
 
 var server:TCPServer
-var port:int = 8888
-var verbose:bool = true
+var port:int = 8008
+var verbose:int = 0
 
 var all_runs:Dictionary
 var leaderboard:Array[RunRecord]
 
 func _ready() -> void:
+	
+	for arg:String in OS.get_cmdline_args():
+		if(arg.begins_with('--port=')):
+			port = arg.trim_prefix('--port=').to_int()
+		if(arg.begins_with('--net_verbose=')):
+			verbose = arg.trim_prefix('--net_verbose=').to_int()
+	
 	server = TCPServer.new()
 	var err:Error = server.listen(port)
 	if(err!=OK):
 		push_error("server listen error: ",error_string(err))
-	elif(verbose):
+	elif(verbose>0):
 		print("server listening on port ",port)
 	
 	if(!DirAccess.dir_exists_absolute('user://server/runs')):
@@ -95,6 +102,6 @@ func handle_run_message(message:Dictionary, connection:WebSocketConnection)->voi
 func _notification(what: int) -> void:
 	if(what==NOTIFICATION_WM_CLOSE_REQUEST && is_instance_valid(server)):
 		server.stop()
-		if(verbose):
+		if(verbose>1):
 			print("server stopped")
 		server = null

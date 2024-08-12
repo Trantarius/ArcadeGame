@@ -57,7 +57,7 @@ enum{PRE_ADD=0, MUL=1, ADD=2, POST_MUL=3}
 		emit_changed()
 
 func _get_property_list() -> Array[Dictionary]:
-	var ret:Array[Dictionary]
+	var ret:Array[Dictionary] = []
 	if(use_min_value):
 		ret.push_back({'name':'min_value','type':TYPE_FLOAT})
 	if(use_max_value):

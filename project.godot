@@ -16,6 +16,8 @@ config/features=PackedStringArray("4.2", "GL Compatibility")
 config/icon="res://icon.svg"
 run/main_scene.server="res://server.tscn"
 run/max_fps.server=100
+config/custom_user_dir_name.server="ArcadeGameServer"
+config/use_custom_user_dir.server=true
 
 [autoload]
 
@@ -34,6 +36,7 @@ window/size/viewport_height=1024
 
 [editor]
 
+run/main_run_args="--host=127.0.0.1:8008 --port=8008 --net_verbose=2"
 run/main_run_args.server="--headless"
 
 [filesystem]
@@ -137,4 +140,5 @@ avoidance/layer_4="Player"
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true
 environment/defaults/default_clear_color=Color(0, 0, 0, 1)
