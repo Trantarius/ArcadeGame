@@ -37,7 +37,7 @@ func is_socket_connected()->bool:
 	return (is_instance_valid(peer) && peer.get_ready_state()==WebSocketPeer.STATE_OPEN &&
 			is_instance_valid(this_side_key) && is_instance_valid(other_side_key))
 	
-func try_connect_to(host:String, timeout:float = 5)->bool:
+func try_connect_to(host:String, timeout:float = 30)->bool:
 	
 	while(!task.is_null()):
 		await task
@@ -90,7 +90,7 @@ func try_connect_to(host:String, timeout:float = 5)->bool:
 			return success
 			
 
-func adopt_tcp_connection(tcp:StreamPeerTCP, timeout:float = 5)->bool:
+func adopt_tcp_connection(tcp:StreamPeerTCP, timeout:float = 30)->bool:
 	while(!task.is_null()):
 		await task
 	
@@ -121,7 +121,7 @@ func adopt_tcp_connection(tcp:StreamPeerTCP, timeout:float = 5)->bool:
 	var timer:SceneTreeTimer = get_tree().create_timer(timeout,true, false, true)
 	var on_timeout:Callable = func()->void:
 		if(verbose>=PRINT_ERRORS):
-			printerr('connection timed out')
+			printerr(conn_name, ': connection timed out')
 		tcp.disconnect_from_host()
 		terminate_connection()
 	timer.timeout.connect(on_timeout)
@@ -160,7 +160,7 @@ func send(message:Dictionary)->bool:
 	else:
 		return true
 
-func get_response(timeout:float = 5)->Dictionary:
+func get_response(timeout:float = 30)->Dictionary:
 	if(!await is_socket_connected()):
 		return {}
 	var response:Array = [{}]
@@ -186,7 +186,7 @@ func get_response(timeout:float = 5)->Dictionary:
 	task = Signal()
 	return response[0]
 
-func close_connection(timeout:float = 5)->bool:
+func close_connection(timeout:float = 30)->bool:
 	while(!task.is_null()):
 		await task
 	

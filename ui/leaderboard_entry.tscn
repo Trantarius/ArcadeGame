@@ -198,6 +198,7 @@ grow_vertical = 2
 flat = true
 
 [node name="Loading" type="Control" parent="HBoxContainer/Submitted"]
+visible = false
 layout_mode = 2
 
 [node name="Control2" type="TextureRect" parent="HBoxContainer/Submitted/Loading"]
