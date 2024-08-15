@@ -1,7 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://c2oh24ptn7mbq"]
+[gd_scene load_steps=9 format=3 uid="uid://c2oh24ptn7mbq"]
 
 [ext_resource type="Script" path="res://classes/Projectile.gd" id="1_5f2bs"]
 [ext_resource type="Script" path="res://classes/Interpolator.gd" id="2_7j1hq"]
+[ext_resource type="Script" path="res://audio/SoundMaker.gd" id="3_m7g2w"]
+[ext_resource type="AudioStream" uid="uid://cbk7myy5ar07m" path="res://audio/bup.wav" id="4_ykofs"]
 
 [sub_resource type="Gradient" id="Gradient_ra8x4"]
 offsets = PackedFloat32Array(0, 0.00849858, 0.235127, 1)
@@ -15,6 +17,13 @@ fill_to = Vector2(0, 1)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_6odyh"]
 size = Vector2(8, 96)
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_a6vbm"]
+random_pitch = 1.66
+random_volume_offset_db = 8.0
+streams_count = 1
+stream_0/stream = ExtResource("4_ykofs")
+stream_0/weight = 1.0
 
 [node name="CannonProjectile" type="Area2D"]
 collision_layer = 32
@@ -33,3 +42,9 @@ texture = SubResource("GradientTexture2D_mkpr5")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(11, 0)
 shape = SubResource("RectangleShape2D_6odyh")
+
+[node name="HitSound" type="Node2D" parent="."]
+script = ExtResource("3_m7g2w")
+stream = SubResource("AudioStreamRandomizer_a6vbm")
+
+[connection signal="hit" from="." to="HitSound" method="play"]

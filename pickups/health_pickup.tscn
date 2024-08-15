@@ -1,7 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://c470br5y4agbp"]
+[gd_scene load_steps=6 format=3 uid="uid://c470br5y4agbp"]
 
 [ext_resource type="Script" path="res://pickups/HealthPickup.gd" id="1_s53f5"]
 [ext_resource type="Script" path="res://classes/Interpolator.gd" id="2_ti35d"]
+[ext_resource type="Script" path="res://audio/SoundMaker.gd" id="3_feq0i"]
+[ext_resource type="AudioStream" uid="uid://6mvo1sjk526f" path="res://audio/bloop.wav" id="4_0jxii"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_e0wdq"]
 radius = 6.5
@@ -24,4 +26,9 @@ script = ExtResource("2_ti35d")
 color = Color(0.278431, 0.85098, 0.27451, 1)
 polygon = PackedVector2Array(-2, -6, 2, -6, 2, -2, 6, -2, 6, 2, 2, 2, 2, 6, -2, 6, -2, 2, -6, 2, -6, -2, -2, -2)
 
+[node name="SoundMaker" type="Node2D" parent="."]
+script = ExtResource("3_feq0i")
+stream = ExtResource("4_0jxii")
+
 [connection signal="picked_up" from="." to="." method="_on_picked_up"]
+[connection signal="picked_up" from="." to="SoundMaker" method="play" unbinds=1]

@@ -110,7 +110,12 @@ func _physics_process(delta: float) -> void:
 		$'.'.apply_force(global_transform.basis_xform(Vector2.UP).normalized() * max_thrust)
 		$Interpolator/RocketParticles.emitting=true
 		$Interpolator/RocketParticles.process_material.set_shader_parameter('base_velocity',self.linear_velocity)
+		#if(!$RocketSound.playing):
+		#	$RocketSound.playing=true
+		$RocketSound.volume_db = clamp($RocketSound.volume_db + delta*500, -20, -10)
 	else:
+		$RocketSound.volume_db = clamp($RocketSound.volume_db - delta*500, -20, -10)
+		#$RocketSound.playing=false
 		$Interpolator/RocketParticles.emitting=false
 	
 	$'.'.linear_velocity = $'.'.linear_velocity.limit_length(max_linear_speed)

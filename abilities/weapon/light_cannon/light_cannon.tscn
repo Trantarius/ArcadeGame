@@ -1,9 +1,11 @@
-[gd_scene load_steps=10 format=3 uid="uid://d3ek2vmqvfst3"]
+[gd_scene load_steps=13 format=3 uid="uid://d3ek2vmqvfst3"]
 
 [ext_resource type="Script" path="res://abilities/weapon/light_cannon/light_cannon.gd" id="1_i0mqr"]
 [ext_resource type="Script" path="res://classes/Stat.gd" id="2_1fpji"]
 [ext_resource type="Texture2D" uid="uid://bqutew3hdet82" path="res://abilities/weapon/light_cannon/light_cannon_icon.png" id="2_p5xmy"]
 [ext_resource type="Script" path="res://classes/ReversibleTimer.gd" id="3_360it"]
+[ext_resource type="Script" path="res://audio/SoundMaker.gd" id="5_p2tfl"]
+[ext_resource type="AudioStream" uid="uid://bry1qngliatho" path="res://audio/pew.wav" id="6_1mv7s"]
 
 [sub_resource type="Resource" id="Resource_0ns4k"]
 resource_local_to_scene = true
@@ -50,7 +52,14 @@ base = 8.0
 round_mode = 0
 min_value = 1.0
 
-[node name="LightCannon" type="Node"]
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_kfadc"]
+random_pitch = 1.5
+random_volume_offset_db = 3.0
+streams_count = 1
+stream_0/stream = ExtResource("6_1mv7s")
+stream_0/weight = 1.0
+
+[node name="LightCannon" type="Node2D"]
 script = ExtResource("1_i0mqr")
 fire_rate = SubResource("Resource_0ns4k")
 damage = SubResource("Resource_0vvcj")
@@ -73,5 +82,10 @@ script = ExtResource("3_360it")
 loop = true
 auto_update = 2
 
-[connection signal="fired" from="." to="." method="_on_fired"]
+[node name="SoundMaker" type="Node2D" parent="."]
+script = ExtResource("5_p2tfl")
+stream = SubResource("AudioStreamRandomizer_kfadc")
+volume = -15.0
+
+[connection signal="fired" from="." to="SoundMaker" method="play"]
 [connection signal="timeout_precise" from="FireTimer" to="." method="_on_fire_timer_timeout_precise"]

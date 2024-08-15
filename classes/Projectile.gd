@@ -13,6 +13,7 @@ var linear_velocity:Vector2
 var angular_velocity:float
 
 signal damage_dealt(damage:Damage)
+signal hit
 
 func _init()->void:
 	area_shape_entered.connect(_projectile_area_shape_entered)
@@ -33,10 +34,16 @@ func _physics_process(delta: float) -> void:
 	global_rotation += angular_velocity * delta
 	global_position += linear_velocity * delta
 
-var _projectile_has_hit:bool = false
+var _projectile_has_hit_hitbox:bool = false
+var _projecltile_has_hit_anything:bool = false
 
 func _projectile_area_shape_entered(area_rid:RID, area:Area2D, area_shape_index:int, local_shape_index:int)->void:
-	if(area is HitBox && !_projectile_has_hit):
+	if(area is HitBox && !_projectile_has_hit_hitbox):
+		
+		if(!_projecltile_has_hit_anything):
+			hit.emit()
+		_projecltile_has_hit_anything = true
+		
 		if(area.actor.health<=0):
 			return
 		
@@ -56,9 +63,12 @@ func _projectile_area_shape_entered(area_rid:RID, area:Area2D, area_shape_index:
 		damage_dealt.emit(damage)
 		damage.target.take_damage(damage)
 		
-		_projectile_has_hit=true
+		_projectile_has_hit_hitbox=true
 		
 		queue_free()
 
 func _projectile_body_entered(body:Node2D)->void:
+	if(!_projecltile_has_hit_anything):
+		hit.emit()
+	_projecltile_has_hit_anything = true
 	queue_free()

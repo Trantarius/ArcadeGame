@@ -1,7 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://kpct6grqmm7i"]
+[gd_scene load_steps=9 format=3 uid="uid://kpct6grqmm7i"]
 
 [ext_resource type="Script" path="res://classes/Projectile.gd" id="1_1d245"]
 [ext_resource type="Script" path="res://classes/Interpolator.gd" id="2_v0427"]
+[ext_resource type="Script" path="res://audio/SoundMaker.gd" id="3_0igt2"]
+[ext_resource type="AudioStream" uid="uid://cbk7myy5ar07m" path="res://audio/bup.wav" id="4_3hc0n"]
 
 [sub_resource type="Gradient" id="Gradient_scb42"]
 interpolation_color_space = 2
@@ -19,6 +21,13 @@ fill_to = Vector2(0.5, 0)
 [sub_resource type="CircleShape2D" id="CircleShape2D_132tx"]
 radius = 12.0
 
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_pr5gp"]
+random_pitch = 1.66
+random_volume_offset_db = 8.0
+streams_count = 1
+stream_0/stream = ExtResource("4_3hc0n")
+stream_0/weight = 1.0
+
 [node name="HornetShot" type="Area2D"]
 collision_layer = 32
 collision_mask = 3
@@ -33,3 +42,9 @@ texture = SubResource("GradientTexture2D_7y4g8")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_132tx")
+
+[node name="HitSound" type="Node2D" parent="."]
+script = ExtResource("3_0igt2")
+stream = SubResource("AudioStreamRandomizer_pr5gp")
+
+[connection signal="hit" from="." to="HitSound" method="play"]

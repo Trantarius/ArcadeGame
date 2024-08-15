@@ -1,10 +1,12 @@
-[gd_scene load_steps=11 format=3 uid="uid://blpkj5dm1bxh5"]
+[gd_scene load_steps=14 format=3 uid="uid://blpkj5dm1bxh5"]
 
 [ext_resource type="Script" path="res://abilities/weapon/pulse_laser/pulse_laser.gd" id="1_lsk2q"]
 [ext_resource type="Script" path="res://classes/Stat.gd" id="2_6lfis"]
 [ext_resource type="Texture2D" uid="uid://d0b1i8dwuq1ah" path="res://abilities/weapon/pulse_laser/pulse_laser_icon.png" id="2_grv64"]
 [ext_resource type="Script" path="res://classes/ArcDetector.gd" id="3_2r0o1"]
 [ext_resource type="Script" path="res://classes/ReversibleTimer.gd" id="4_dupaf"]
+[ext_resource type="Script" path="res://audio/SoundMaker.gd" id="6_rtddv"]
+[ext_resource type="AudioStream" uid="uid://bry1qngliatho" path="res://audio/pew.wav" id="7_rvhyv"]
 
 [sub_resource type="Resource" id="Resource_hhd45"]
 resource_local_to_scene = true
@@ -52,6 +54,13 @@ round_mode = 0
 min_value = 0.0
 max_value = 90.0
 
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_vt8m2"]
+random_pitch = 1.5
+random_volume_offset_db = 3.0
+streams_count = 1
+stream_0/stream = ExtResource("7_rvhyv")
+stream_0/weight = 1.0
+
 [node name="PulseLaser" type="Node2D"]
 script = ExtResource("1_lsk2q")
 fire_rate = SubResource("Resource_hhd45")
@@ -84,4 +93,10 @@ script = ExtResource("4_dupaf")
 loop = true
 auto_update = 2
 
+[node name="SoundMaker" type="Node2D" parent="."]
+script = ExtResource("6_rtddv")
+stream = SubResource("AudioStreamRandomizer_vt8m2")
+volume = -15.0
+
+[connection signal="fired" from="." to="SoundMaker" method="play"]
 [connection signal="timeout_precise" from="FireTimer" to="." method="_on_fire_timer_timeout_precise"]

@@ -1,7 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://bqh75ayxlavl6"]
+[gd_scene load_steps=9 format=3 uid="uid://bqh75ayxlavl6"]
 
 [ext_resource type="Script" path="res://classes/Projectile.gd" id="1_cqn71"]
 [ext_resource type="Script" path="res://classes/Interpolator.gd" id="2_8y106"]
+[ext_resource type="Script" path="res://audio/SoundMaker.gd" id="3_rcj4p"]
+[ext_resource type="AudioStream" uid="uid://cbk7myy5ar07m" path="res://audio/bup.wav" id="4_k88ac"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_33omy"]
 radius = 8.0
@@ -17,6 +19,13 @@ height = 19
 fill = 1
 fill_from = Vector2(0.5, 0.5)
 fill_to = Vector2(0.5, 0)
+
+[sub_resource type="AudioStreamRandomizer" id="AudioStreamRandomizer_ftep4"]
+random_pitch = 1.66
+random_volume_offset_db = 8.0
+streams_count = 1
+stream_0/stream = ExtResource("4_k88ac")
+stream_0/weight = 1.0
 
 [node name="LightCannonProjectile" type="Area2D"]
 collision_layer = 16
@@ -34,3 +43,9 @@ script = ExtResource("2_8y106")
 
 [node name="Sprite2D" type="Sprite2D" parent="Interpolator"]
 texture = SubResource("GradientTexture2D_y6rjq")
+
+[node name="HitSound" type="Node2D" parent="."]
+script = ExtResource("3_rcj4p")
+stream = SubResource("AudioStreamRandomizer_ftep4")
+
+[connection signal="hit" from="." to="HitSound" method="play"]
