@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://calsi17ho0g4c"]
+[gd_scene load_steps=15 format=3 uid="uid://calsi17ho0g4c"]
 
 [ext_resource type="Script" path="res://enemies/broadside/turret.gd" id="1_w5xny"]
 [ext_resource type="Script" path="res://classes/Stat.gd" id="2_3u81m"]
@@ -8,6 +8,14 @@
 [ext_resource type="Script" path="res://classes/ReversibleTimer.gd" id="5_6sy6v"]
 [ext_resource type="Script" path="res://audio/SoundMaker.gd" id="7_oln3i"]
 [ext_resource type="AudioStream" uid="uid://bxmc65alvyob4" path="res://audio/boom.wav" id="8_nuifo"]
+
+[sub_resource type="Resource" id="Resource_32yym"]
+resource_local_to_scene = true
+script = ExtResource("2_3u81m")
+use_min_value = false
+use_max_value = false
+base = 30.0
+round_mode = 0
 
 [sub_resource type="Resource" id="Resource_dkprd"]
 resource_local_to_scene = true
@@ -45,7 +53,7 @@ collision_layer = 4
 collision_mask = 0
 sync_to_physics = false
 script = ExtResource("1_w5xny")
-point_value = 15.0
+point_value = SubResource("Resource_32yym")
 spawnable = false
 despawn_distance = -1.0
 max_health = SubResource("Resource_dkprd")

@@ -9,14 +9,6 @@ const max_linear_speed:float = 800
 const max_thrust:float = 250
 const max_torque:float = 7.75
 
-## Total value of all enemies this player has killed
-var score:float:
-	set(to):
-		score=to
-		score_changed.emit(score)
-
-signal score_changed(to:float)
-
 # emitting when a new ability is considered (before choice screen)
 signal new_ability(ability:PlayerAbility)
 
@@ -95,10 +87,6 @@ func _on_death(_damage:Damage)->void:
 	# ensure camera stays around after player dies
 	$Camera2D.is_free=true
 	$Camera2D.reparent(get_parent())
-
-func _on_kill(damage:Damage)->void:
-	if(damage.target is Enemy):
-		score += damage.target.point_value
 
 func _physics_process(delta: float) -> void:
 	

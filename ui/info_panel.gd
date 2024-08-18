@@ -8,7 +8,7 @@ extends Control
 @export var player:Player:
 	set(to):
 		if(is_instance_valid(player)):
-			player.score_changed.disconnect(_on_player_score_changed)
+			#player.score_changed.disconnect(_on_player_score_changed)
 			player.health_changed.disconnect(health_bar._on_health_changed)
 			player.added_ability.disconnect(_on_player_added_ability)
 			player.removed_ability.disconnect(_on_player_removed_ability)
@@ -17,8 +17,8 @@ extends Control
 			abilities.clear()
 		player=to
 		if(is_instance_valid(player)):
-			score_label.text = 'Score: %d'%[player.score]
-			player.score_changed.connect(_on_player_score_changed)
+			#score_label.text = 'Score: %d'%[player.score]
+			#player.score_changed.connect(_on_player_score_changed)
 			health_bar.max_value = player.max_health.get_value()
 			health_bar.value = player.health
 			player.health_changed.connect(health_bar._on_health_changed)
@@ -28,9 +28,16 @@ extends Control
 			for ability:PlayerAbility in player.abilities.values():
 				_on_player_added_ability(ability)
 
+@export var run_monitor:RunMonitor:
+	set(to):
+		if(is_instance_valid(run_monitor)):
+			run_monitor.score_changed.disconnect(_on_score_changed)
+		run_monitor = to
+		if(is_instance_valid(run_monitor)):
+			run_monitor.score_changed.connect(_on_score_changed)
 
-func _on_player_score_changed(to:float)->void:
-	score_label.text = 'Score: %d'%[player.score]
+func _on_score_changed(to:float)->void:
+	score_label.text = 'Score: %d'%[to]
 
 var abilities:Dictionary
 

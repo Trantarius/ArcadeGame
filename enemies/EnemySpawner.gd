@@ -11,9 +11,8 @@ const enemy_list:SceneList = preload("res://enemies/common_enemy_list.tres")
 
 static func get_weight(scene:PackedScene)->float:
 	var spawnable:bool = Util.get_scene_prop(scene, &'spawnable', true)
-	var point_value:float = Util.get_scene_prop(scene, &'point_value', 1)
 	var rarity:float = Util.get_scene_prop(scene, &'rarity', 1)
-	return 100.0/(point_value*rarity) if spawnable else 0
+	return 100.0/(rarity) if spawnable else 0
 
 func select_random_enemy()->PackedScene:
 	return enemy_list.pick_random(get_weight)
@@ -40,16 +39,23 @@ func spawn(scene:PackedScene)->Enemy:
 		return Transform2D(randf()*TAU, Util.current_camera_pos() + 
 			Vector2.from_angle(randf()*TAU) * randf_range(enemy.min_spawn_distance,enemy.max_spawn_distance))
 	
-	if(!Util.attempt_place_node(enemy,self,locator,5)):
-		push_error("Failed to place an enemy after 5 attempts")
-		enemy.queue_free()
-		return null
-	else:
-		return enemy
+	var tform:Transform2D = locator.call()
+	var attempts:int = 1
+	while(!Util.does_node_fit(enemy,tform)):
+		if(attempts%10==0):
+			await get_tree().process_frame
+		tform = locator.call()
+		attempts += 1
+	if(attempts>10):
+		push_warning('enemy took '+str(attempts)+' attempts to place')
+	enemy.transform = tform
+	get_tree().current_scene.add_child.bind(enemy).call_deferred()
+	await enemy.ready
+	return enemy
 
 func get_total_enemy_points()->float:
 	var enemies:Array = get_tree().get_nodes_in_group('Enemies')
 	var total:float = 0
 	for enemy:Enemy in enemies:
-		total += enemy.point_value
+		total += enemy.point_value.get_value()
 	return total

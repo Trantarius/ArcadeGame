@@ -25,7 +25,11 @@ var player:Player
 var enemy_spawner:EnemySpawner
 var pickup_spawner:PickupSpawner
 
-var score:float = 0
+signal score_changed(to:float)
+var score:float = 0:
+	set(to):
+		score = to
+		score_changed.emit(score)
 var boss_kills:int = 0
 var run_start_time:int = 0
 var events:Array[Dictionary]
@@ -118,17 +122,17 @@ func _notification(what: int) -> void:
 func _on_player_kill(damage:Damage)->void:
 	
 	if(damage.target is Enemy):
-		score += damage.target.point_value
+		score += damage.target.point_value.get_value()
 	
 	events.push_back({
 		'event':'player_kill',
 		'target':identify(damage.target),
 		'method':source_trace(damage.source),
-		'point_value': damage.target.point_value if damage.target is Enemy else 0,
+		'point_value': damage.target.point_value.get_value() if damage.target is Enemy else 0,
 		'time': Time.get_ticks_msec()-run_start_time
 	})
 	
-	if(player.score>score_req && get_current_stage()!=BOSS):
+	if(score>score_req && get_current_stage()!=BOSS):
 		match get_current_stage():
 			COMMON_UPGRADE:
 				var pickup:Pickup = preload('res://pickups/common_upgrade_pickup.tscn').instantiate()
@@ -151,22 +155,25 @@ func _on_player_kill(damage:Damage)->void:
 				score_req += score_req_base + score_req_growth*progression_stage
 		progression_stage += 1
 		if(get_current_stage()==BOSS):
-			current_boss = enemy_spawner.spawn(preload('res://enemies/broadside/broadside.tscn'))
+			print("spawning boss ... ")
+			current_boss = await enemy_spawner.spawn(preload('res://enemies/broadside/broadside.tscn'))
+			print("boss spawned")
 			current_boss.death.connect(_on_boss_death)
 
 func _on_boss_death(damage:Damage)->void:
 	# reset score requirement so that multiple stages can't be passed at once
 	score_req = player.score + score_req_base + score_req_growth*progression_stage
 	current_boss = null
-	progression_stage += 1
-	if(get_current_stage()==BOSS):
-		current_boss = enemy_spawner.spawn(preload('res://enemies/broadside/broadside.tscn'))
-		current_boss.death.connect(_on_boss_death)
 	events.push_back({
 		'event':'boss_kill',
 		'time':Time.get_ticks_msec()-run_start_time
 	})
 	boss_kills+=1
+	progression_stage += 1
+	if(get_current_stage()==BOSS):
+		current_boss =  await enemy_spawner.spawn(preload('res://enemies/broadside/broadside.tscn'))
+		current_boss.death.connect(_on_boss_death)
+	
 
 func _on_player_death(damage:Damage)->void:
 	events.push_back({

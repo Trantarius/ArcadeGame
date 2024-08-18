@@ -128,22 +128,22 @@ func get_explanation()->String:
 	
 	for buff:StatBuff in _buffs[PRE_ADD]:
 		var stacks:int = _buffs[PRE_ADD][buff]
-		var desc:String = "%i stacks of %s"%[stacks,buff.name] if stacks>1 else buff.name
+		var desc:String = "%d stacks of %s"%[stacks,buff.name] if stacks>1 else buff.name
 		val += buff.strength * stacks
 		ret += '%+.2f from %s = %.2f\n'%[buff.strength*stacks, desc, val]
 	for buff:StatBuff in _buffs[MUL]:
 		var stacks:int = _buffs[MUL][buff]
-		var desc:String = "%i stacks of %s"%[stacks,buff.name] if stacks>1 else buff.name
+		var desc:String = "%d stacks of %s"%[stacks,buff.name] if stacks>1 else buff.name
 		val *= buff.strength**stacks
 		ret += '×%.2f from %s = %.2f\n'%[buff.strength**stacks, desc, val]
 	for buff:StatBuff in _buffs[ADD]:
 		var stacks:int = _buffs[ADD][buff]
-		var desc:String = "%i stacks of %s"%[stacks,buff.name] if stacks>1 else buff.name
+		var desc:String = "%d stacks of %s"%[stacks,buff.name] if stacks>1 else buff.name
 		val += buff.strength * stacks
 		ret += '%+.2f from %s = %.2f\n'%[buff.strength*stacks, desc, val]
 	for buff:StatBuff in _buffs[POST_MUL]:
 		var stacks:int = _buffs[POST_MUL][buff]
-		var desc:String = "%i stacks of %s"%[stacks,buff.name] if stacks>1 else buff.name
+		var desc:String = "%d stacks of %s"%[stacks,buff.name] if stacks>1 else buff.name
 		val *= buff.strength**stacks
 		ret += '×%.2f from %s = %.2f\n'%[buff.strength**stacks, desc, val]
 	

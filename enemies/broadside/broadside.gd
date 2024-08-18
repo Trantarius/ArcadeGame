@@ -18,6 +18,7 @@ const max_torque:float = 1
 
 var target:Player
 var body:RigidBody2D
+@export var parts:Array[Enemy]
 
 func _init()->void:
 	super()
@@ -31,18 +32,13 @@ func _ready() -> void:
 	$StarboardFireTimer.reset()
 	$StarboardFireTimer.start()
 	
-	max_health.base = 0
-	for child:Node in ($Port/Turrets.get_children() + $Port/Cannons.get_children() + 
-					   $Starboard/Turrets.get_children() + $Starboard/Cannons.get_children() +
-					   [$Engine, $Engine2]):
-		$'.'.add_collision_exception_with(child)
-		child.add_collision_exception_with(self)
-		child.damage_taken.connect(_on_part_damaged, CONNECT_DEFERRED)
-		max_health.base += child.max_health.get_value()
-
-func _on_part_damaged(damage:Damage)->void:
-	damage.silent=true
-	take_damage(damage)
+	for part:Enemy in parts:
+		part.death.connect(func(damage:Damage)->void:
+			parts.erase(part)
+			if(parts.is_empty()):
+				damage.silent = true
+				damage.amount = 1
+				take_damage(damage))
 
 func _physics_process(_delta: float) -> void:
 	

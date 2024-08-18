@@ -1,9 +1,9 @@
 class_name Enemy
 extends Actor
 
-## How strong this enemy is; used for spawning and scoring
-@export var point_value:float = 1
-## Scales point_value for spawning purposes. Higher rarity or point_value decreases spawn frequency.
+## How strong this enemy is, used for scoring.
+@export var point_value:Stat
+## Scales how often the enemy will randomly spawn, if allowed. Higher rarity decreases spawn chance. 
 @export var rarity:float = 1
 ## Enables/disables random spawning from EnemySpawner.
 @export var spawnable:bool = true

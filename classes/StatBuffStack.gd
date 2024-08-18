@@ -25,8 +25,10 @@ func _enter_tree() -> void:
 					if(node.abilities.has(buff.target) && buff.stat_name in node.abilities[buff.target] && node.abilities[buff.target].get(buff.stat_name) is Stat):
 						var stat:Stat = node.abilities[buff.target].get(buff.stat_name)
 						stat.add_buff(buff)
-						tree_exiting.connect(stat.remove_buff.bind(buff), CONNECT_ONE_SHOT)
-					node.new_ability.connect(_on_player_new_ability)
+						if(!tree_exiting.is_connected(stat.remove_buff.bind(buff))):
+							tree_exiting.connect(stat.remove_buff.bind(buff), CONNECT_ONE_SHOT)
+					if(!node.new_ability.is_connected(_on_player_new_ability)):
+						node.new_ability.connect(_on_player_new_ability)
 					break
 				else:
 					node = node.get_parent()
