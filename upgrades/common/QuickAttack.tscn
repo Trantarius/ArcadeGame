@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://76kr5mw3yv7l"]
+
+[ext_resource type="Script" path="res://upgrades/Upgrade.gd" id="1_p7b2k"]
+[ext_resource type="Script" path="res://classes/StatBuffStack.gd" id="2_anin5"]
+[ext_resource type="Script" path="res://classes/StatBuff.gd" id="3_pw5af"]
+
+[sub_resource type="Resource" id="Resource_c11ud"]
+script = ExtResource("3_pw5af")
+name = &"Quick Attack"
+stage = 1
+strength = 0.9
+stat_name = &"cooldown"
+target = 1
+
+[node name="QuickAttack" type="Node"]
+script = ExtResource("1_p7b2k")
+upgrade_name = &"Quick Attack"
+description = "-10% attack ability cooldown"
+
+[node name="StatBuffStack" type="Node" parent="."]
+script = ExtResource("2_anin5")
+buff = SubResource("Resource_c11ud")

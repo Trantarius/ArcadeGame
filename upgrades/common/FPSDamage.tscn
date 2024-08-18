@@ -1,0 +1,48 @@
+[gd_scene load_steps=7 format=3 uid="uid://cx5qjuvu37h7s"]
+
+[ext_resource type="Script" path="res://upgrades/Upgrade.gd" id="1_q7vof"]
+[ext_resource type="Script" path="res://classes/StatBuffStack.gd" id="2_162oc"]
+[ext_resource type="Script" path="res://classes/StatBuff.gd" id="3_yuih0"]
+
+[sub_resource type="Resource" id="Resource_uaq4i"]
+script = ExtResource("3_yuih0")
+name = &"FPS Damage"
+stage = 3
+strength = 2.0
+stat_name = &"fire_rate"
+target = 2
+
+[sub_resource type="Resource" id="Resource_2gjyk"]
+script = ExtResource("3_yuih0")
+name = &"FPS Damage"
+stage = 3
+strength = 0.2
+stat_name = &"damage"
+target = 2
+
+[sub_resource type="Resource" id="Resource_g06ns"]
+script = ExtResource("3_yuih0")
+name = &"FPS Damage"
+stage = 3
+strength = 2.0
+stat_name = &"projectile_count"
+target = 2
+
+[node name="FpsDamage" type="Node"]
+script = ExtResource("1_q7vof")
+upgrade_name = &"FPS Damage"
+description = "x2 weapon fire rate
+x2 weapon projectiles
+x0.2 weapon damage"
+
+[node name="StatBuffStack" type="Node" parent="."]
+script = ExtResource("2_162oc")
+buff = SubResource("Resource_uaq4i")
+
+[node name="StatBuffStack2" type="Node" parent="."]
+script = ExtResource("2_162oc")
+buff = SubResource("Resource_2gjyk")
+
+[node name="StatBuffStack3" type="Node" parent="."]
+script = ExtResource("2_162oc")
+buff = SubResource("Resource_g06ns")

@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://cr0cplyujjrod"]
+
+[ext_resource type="Script" path="res://upgrades/Upgrade.gd" id="1_g77wx"]
+[ext_resource type="Script" path="res://classes/StatBuffStack.gd" id="2_3rb2w"]
+[ext_resource type="Script" path="res://classes/StatBuff.gd" id="3_qh6sr"]
+
+[sub_resource type="Resource" id="Resource_047wf"]
+script = ExtResource("3_qh6sr")
+name = &"Quick Movement"
+stage = 1
+strength = 0.9
+stat_name = &"cooldown"
+target = 0
+
+[node name="QuickMovement" type="Node"]
+script = ExtResource("1_g77wx")
+upgrade_name = &"Quick Movement"
+description = "-10% movement ability cooldown"
+
+[node name="StatBuffStack" type="Node" parent="."]
+script = ExtResource("2_3rb2w")
+buff = SubResource("Resource_047wf")

@@ -1,0 +1,75 @@
+[gd_scene load_steps=9 format=3 uid="uid://nl0o3p7pb546"]
+
+[ext_resource type="Script" path="res://upgrades/Upgrade.gd" id="1_q2cg2"]
+[ext_resource type="Script" path="res://classes/StatBuffStack.gd" id="2_e1n56"]
+[ext_resource type="Script" path="res://classes/StatBuff.gd" id="3_662gd"]
+
+[sub_resource type="Resource" id="Resource_3w6l5"]
+script = ExtResource("3_662gd")
+name = &"A Bit Better"
+stage = 0
+strength = 1.0
+stat_name = &"damage"
+target = 2
+
+[sub_resource type="Resource" id="Resource_txv38"]
+script = ExtResource("3_662gd")
+name = &"A Bit Better"
+stage = 0
+strength = 1.0
+stat_name = &"damage"
+target = 1
+
+[sub_resource type="Resource" id="Resource_v8e0a"]
+script = ExtResource("3_662gd")
+name = &"A Bit Better"
+stage = 0
+strength = -0.1
+stat_name = &"cooldown"
+target = 0
+
+[sub_resource type="Resource" id="Resource_aitk5"]
+script = ExtResource("3_662gd")
+name = &"A Bit Better"
+stage = 0
+strength = -0.1
+stat_name = &"cooldown"
+target = 1
+
+[sub_resource type="Resource" id="Resource_3u76p"]
+script = ExtResource("3_662gd")
+name = &"A Bit Better"
+stage = 0
+strength = 0.5
+stat_name = &"fire_rate"
+target = 2
+
+[node name="ABitBetter" type="Node"]
+script = ExtResource("1_q2cg2")
+upgrade_name = &"A Bit Better"
+description = "+1 weapon damage
++1 attack ability damage
+-0.1s movement ability cooldown
+-0.1s attack ability cooldown
++0.5/s fire rate
+Applies before other upgrades."
+
+[node name="StatBuffStack" type="Node" parent="."]
+script = ExtResource("2_e1n56")
+buff = SubResource("Resource_3w6l5")
+
+[node name="StatBuffStack2" type="Node" parent="."]
+script = ExtResource("2_e1n56")
+buff = SubResource("Resource_txv38")
+
+[node name="StatBuffStack3" type="Node" parent="."]
+script = ExtResource("2_e1n56")
+buff = SubResource("Resource_v8e0a")
+
+[node name="StatBuffStack4" type="Node" parent="."]
+script = ExtResource("2_e1n56")
+buff = SubResource("Resource_aitk5")
+
+[node name="StatBuffStack5" type="Node" parent="."]
+script = ExtResource("2_e1n56")
+buff = SubResource("Resource_3u76p")

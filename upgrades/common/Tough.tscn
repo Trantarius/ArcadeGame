@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://ce4bx2fui1rr0"]
+
+[ext_resource type="Script" path="res://upgrades/Upgrade.gd" id="1_aesvo"]
+[ext_resource type="Script" path="res://classes/StatBuffStack.gd" id="2_ftofs"]
+[ext_resource type="Script" path="res://classes/StatBuff.gd" id="3_u8jj1"]
+
+[sub_resource type="Resource" id="Resource_2stpr"]
+script = ExtResource("3_u8jj1")
+name = &"Tough"
+stage = 2
+strength = 10.0
+stat_name = &"max_health"
+target = 3
+
+[node name="Tough" type="Node"]
+script = ExtResource("1_aesvo")
+upgrade_name = &"Tough"
+description = "+10 max health"
+
+[node name="StatBuffStack" type="Node" parent="."]
+script = ExtResource("2_ftofs")
+buff = SubResource("Resource_2stpr")

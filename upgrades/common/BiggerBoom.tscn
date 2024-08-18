@@ -1,0 +1,35 @@
+[gd_scene load_steps=6 format=3 uid="uid://bpn8kv1lvjlog"]
+
+[ext_resource type="Script" path="res://upgrades/Upgrade.gd" id="1_ig41f"]
+[ext_resource type="Script" path="res://classes/StatBuffStack.gd" id="2_0jnov"]
+[ext_resource type="Script" path="res://classes/StatBuff.gd" id="3_8pijl"]
+
+[sub_resource type="Resource" id="Resource_6aidh"]
+script = ExtResource("3_8pijl")
+name = &"Bigger Boom"
+stage = 3
+strength = 2.0
+stat_name = &"explosion_size"
+target = 1
+
+[sub_resource type="Resource" id="Resource_15uq1"]
+script = ExtResource("3_8pijl")
+name = &"Bigger Boom"
+stage = 3
+strength = 0.5
+stat_name = &"damage"
+target = 1
+
+[node name="BiggerBoom" type="Node"]
+script = ExtResource("1_ig41f")
+upgrade_name = &"Bigger Boom"
+description = "x2 explosion size
+x0.5 explosion damage"
+
+[node name="StatBuffStack" type="Node" parent="."]
+script = ExtResource("2_0jnov")
+buff = SubResource("Resource_6aidh")
+
+[node name="StatBuffStack2" type="Node" parent="."]
+script = ExtResource("2_0jnov")
+buff = SubResource("Resource_15uq1")

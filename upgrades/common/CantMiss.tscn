@@ -1,0 +1,35 @@
+[gd_scene load_steps=6 format=3 uid="uid://b4p5nt06absqi"]
+
+[ext_resource type="Script" path="res://upgrades/Upgrade.gd" id="1_vssiu"]
+[ext_resource type="Script" path="res://classes/StatBuffStack.gd" id="2_lwnag"]
+[ext_resource type="Script" path="res://classes/StatBuff.gd" id="3_rqmls"]
+
+[sub_resource type="Resource" id="Resource_vt06a"]
+script = ExtResource("3_rqmls")
+name = &"Can\'t Miss"
+stage = 2
+strength = 4.0
+stat_name = &"projectile_size"
+target = 2
+
+[sub_resource type="Resource" id="Resource_gkcue"]
+script = ExtResource("3_rqmls")
+name = &"Can\'t Miss"
+stage = 2
+strength = 5.0
+stat_name = &"auto_aim"
+target = 2
+
+[node name="CantMiss" type="Node"]
+script = ExtResource("1_vssiu")
+upgrade_name = &"Can\'t Miss"
+description = "+4 weapon projectile size
++5° laser auto-aim"
+
+[node name="StatBuffStack" type="Node" parent="."]
+script = ExtResource("2_lwnag")
+buff = SubResource("Resource_vt06a")
+
+[node name="StatBuffStack2" type="Node" parent="."]
+script = ExtResource("2_lwnag")
+buff = SubResource("Resource_gkcue")

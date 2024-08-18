@@ -151,6 +151,8 @@ func take_damage(damage:Damage)->void:
 	elif(health<=0):
 		if(is_instance_valid(damage.attacker)):
 			damage.attacker.kill.emit(damage)
+		else:
+			push_error("No Attacker!")
 		death.emit(damage)
 		something_died.emit(damage)
 		if(free_on_death):

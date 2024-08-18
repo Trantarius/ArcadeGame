@@ -131,7 +131,7 @@ func _on_player_kill(damage:Damage)->void:
 		'point_value': damage.target.point_value.get_value() if damage.target is Enemy else 0,
 		'time': Time.get_ticks_msec()-run_start_time
 	})
-	
+
 	if(score>score_req && get_current_stage()!=BOSS):
 		match get_current_stage():
 			COMMON_UPGRADE:
@@ -154,6 +154,9 @@ func _on_player_kill(damage:Damage)->void:
 				pickup_spawner.drop(pickup, damage.target)
 				score_req += score_req_base + score_req_growth*progression_stage
 		progression_stage += 1
+		print('stage advanced')
+		print('new score_req: ',score_req)
+		print('next stage: ',get_current_stage())
 		if(get_current_stage()==BOSS):
 			print("spawning boss ... ")
 			current_boss = await enemy_spawner.spawn(preload('res://enemies/broadside/broadside.tscn'))

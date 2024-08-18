@@ -22,7 +22,7 @@ resource_local_to_scene = true
 script = ExtResource("2_3u81m")
 use_min_value = true
 use_max_value = false
-base = 100.0
+base = 50.0
 round_mode = 0
 min_value = 1.0
 

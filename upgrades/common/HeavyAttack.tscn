@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://cabjnswmdjrdi"]
+
+[ext_resource type="Script" path="res://upgrades/Upgrade.gd" id="1_ldwt2"]
+[ext_resource type="Script" path="res://classes/StatBuffStack.gd" id="2_xd3gl"]
+[ext_resource type="Script" path="res://classes/StatBuff.gd" id="3_p8qbn"]
+
+[sub_resource type="Resource" id="Resource_b2g28"]
+script = ExtResource("3_p8qbn")
+name = &"Heavy Attack"
+stage = 1
+strength = 1.1
+stat_name = &"damage"
+target = 1
+
+[node name="HeavyAttack" type="Node"]
+script = ExtResource("1_ldwt2")
+upgrade_name = &"Heavy Attack"
+description = "+10% attack ability damage"
+
+[node name="StatBuffStack" type="Node" parent="."]
+script = ExtResource("2_xd3gl")
+buff = SubResource("Resource_b2g28")

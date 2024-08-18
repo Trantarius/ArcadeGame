@@ -1,0 +1,35 @@
+[gd_scene load_steps=6 format=3 uid="uid://bfeysd8absnlm"]
+
+[ext_resource type="Script" path="res://upgrades/Upgrade.gd" id="1_i37a6"]
+[ext_resource type="Script" path="res://classes/StatBuffStack.gd" id="2_ee0nx"]
+[ext_resource type="Script" path="res://classes/StatBuff.gd" id="3_gills"]
+
+[sub_resource type="Resource" id="Resource_7fh60"]
+script = ExtResource("3_gills")
+name = &"Less is More"
+stage = 2
+strength = 5.0
+stat_name = &"damage"
+target = 2
+
+[sub_resource type="Resource" id="Resource_evjat"]
+script = ExtResource("3_gills")
+name = &"Less is More"
+stage = 2
+strength = -1.0
+stat_name = &"projectile_count"
+target = 2
+
+[node name="LessIsMore" type="Node"]
+script = ExtResource("1_i37a6")
+upgrade_name = &"Less is More"
+description = "+5 weapon damage
+-1 weapon projectile"
+
+[node name="StatBuffStack" type="Node" parent="."]
+script = ExtResource("2_ee0nx")
+buff = SubResource("Resource_7fh60")
+
+[node name="StatBuffStack2" type="Node" parent="."]
+script = ExtResource("2_ee0nx")
+buff = SubResource("Resource_evjat")

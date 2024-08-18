@@ -10,13 +10,15 @@ config_version=5
 
 [application]
 
-config/name="ArcadeGame"
+config/name="Starshot"
 run/main_scene="res://main_menu.tscn"
+config/use_custom_user_dir=true
+config/custom_user_dir_name="Starshot"
 config/features=PackedStringArray("4.2", "GL Compatibility")
 config/icon="res://icon.svg"
 run/main_scene.server="res://server.tscn"
 run/max_fps.server=100
-config/custom_user_dir_name.server="ArcadeGameServer"
+config/custom_user_dir_name.server="StarshotServer"
 config/use_custom_user_dir.server=true
 
 [autoload]

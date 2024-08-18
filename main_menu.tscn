@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://uy3scf6qnduw"]
+[gd_scene load_steps=14 format=3 uid="uid://uy3scf6qnduw"]
 
 [ext_resource type="Shader" path="res://visual_effects/ambientparticles.gdshader" id="1_edv84"]
 [ext_resource type="Script" path="res://main_menu.gd" id="1_pu7ds"]
@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://ilsxdk1xejk2" path="res://ui/red_x.png" id="6_v3xgj"]
 [ext_resource type="Texture2D" uid="uid://eb8qdwstkm0d" path="res://ui/green_check.png" id="7_hosra"]
 [ext_resource type="PackedScene" uid="uid://coy4lmhd8ie0k" path="res://ui/yes_no_dialog.tscn" id="9_pfy56"]
+[ext_resource type="FontFile" uid="uid://dtfstcnpcrao8" path="res://ui/theme/xirod.regular.otf" id="10_cn75h"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_57446"]
 shader = ExtResource("1_edv84")
@@ -36,6 +37,13 @@ func _on_viewport_size_changed()->void:
 	amount = ambient_particle_density * (rect.size.x*rect.size.y)/ 1_000_000
 	restart()
 "
+
+[sub_resource type="LabelSettings" id="LabelSettings_lox6w"]
+font = ExtResource("10_cn75h")
+font_size = 128
+font_color = Color(0.783523, 0.783523, 0.783523, 1)
+shadow_size = 5
+shadow_color = Color(0.230315, 0.230315, 0.230315, 1)
 
 [node name="MainMenu" type="Node" node_paths=PackedStringArray("main", "leaderboard", "settings")]
 script = ExtResource("1_pu7ds")
@@ -210,6 +218,18 @@ visible = false
 layout_mode = 2
 text = "You have unsaved changes.
 Do you want to apply them?"
+
+[node name="Label" type="Label" parent="UILayer"]
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.333
+offset_bottom = 23.0
+grow_horizontal = 2
+theme = ExtResource("3_lmwvf")
+text = "Starshot"
+label_settings = SubResource("LabelSettings_lox6w")
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [connection signal="pressed" from="UILayer/CenterContainer/Main/PanelContainer/VBoxContainer/PlayButton" to="." method="_on_play_button_pressed"]
 [connection signal="pressed" from="UILayer/CenterContainer/Main/PanelContainer/VBoxContainer/LeaderboardButton" to="." method="_on_leaderboard_button_pressed"]

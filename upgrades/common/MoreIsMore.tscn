@@ -1,0 +1,35 @@
+[gd_scene load_steps=6 format=3 uid="uid://ca8yiunlppotx"]
+
+[ext_resource type="Script" path="res://upgrades/Upgrade.gd" id="1_kymui"]
+[ext_resource type="Script" path="res://classes/StatBuffStack.gd" id="2_qn4kq"]
+[ext_resource type="Script" path="res://classes/StatBuff.gd" id="3_vsvh3"]
+
+[sub_resource type="Resource" id="Resource_26vjo"]
+script = ExtResource("3_vsvh3")
+name = &"More is More"
+stage = 2
+strength = 2.0
+stat_name = &"projectile_count"
+target = 2
+
+[sub_resource type="Resource" id="Resource_doo38"]
+script = ExtResource("3_vsvh3")
+name = &"More is More"
+stage = 2
+strength = -10.0
+stat_name = &"damage"
+target = 2
+
+[node name="MoreIsMore" type="Node"]
+script = ExtResource("1_kymui")
+upgrade_name = &"More is More"
+description = "+2 weapon projectiles
+-10 weapon damage"
+
+[node name="StatBuffStack" type="Node" parent="."]
+script = ExtResource("2_qn4kq")
+buff = SubResource("Resource_26vjo")
+
+[node name="StatBuffStack2" type="Node" parent="."]
+script = ExtResource("2_qn4kq")
+buff = SubResource("Resource_doo38")

@@ -1,0 +1,22 @@
+[gd_scene load_steps=5 format=3 uid="uid://cfdmxdo8swhsf"]
+
+[ext_resource type="Script" path="res://upgrades/Upgrade.gd" id="1_mxvee"]
+[ext_resource type="Script" path="res://classes/StatBuffStack.gd" id="2_b7mif"]
+[ext_resource type="Script" path="res://classes/StatBuff.gd" id="3_kvxic"]
+
+[sub_resource type="Resource" id="Resource_dye6x"]
+script = ExtResource("3_kvxic")
+name = &"Shoot More"
+stage = 0
+strength = 1.0
+stat_name = &"projectile_count"
+target = 2
+
+[node name="ShootMore" type="Node"]
+script = ExtResource("1_mxvee")
+upgrade_name = &"Shoot More"
+description = "+1 projectile for your main weapon"
+
+[node name="StatBuffStack" type="Node" parent="."]
+script = ExtResource("2_b7mif")
+buff = SubResource("Resource_dye6x")

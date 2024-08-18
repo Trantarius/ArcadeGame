@@ -1,10 +1,21 @@
-[gd_resource type="Resource" script_class="SceneList" load_steps=4 format=3 uid="uid://dc52bl1o46u1j"]
+[gd_resource type="Resource" script_class="SceneList" load_steps=15 format=3 uid="uid://dc52bl1o46u1j"]
 
 [ext_resource type="Script" path="res://classes/SceneList.gd" id="1_fty1d"]
 [ext_resource type="PackedScene" uid="uid://becix0upe0bxf" path="res://upgrades/common/FasterShooting.tscn" id="1_ja0a2"]
 [ext_resource type="PackedScene" uid="uid://bsgqgktfa8xx6" path="res://upgrades/common/WeaponTuning.tscn" id="2_hqobk"]
+[ext_resource type="PackedScene" uid="uid://nl0o3p7pb546" path="res://upgrades/common/ABitBetter.tscn" id="3_twj6j"]
+[ext_resource type="PackedScene" uid="uid://bpn8kv1lvjlog" path="res://upgrades/common/BiggerBoom.tscn" id="4_1bsbk"]
+[ext_resource type="PackedScene" uid="uid://b4p5nt06absqi" path="res://upgrades/common/CantMiss.tscn" id="5_brhdc"]
+[ext_resource type="PackedScene" uid="uid://cx5qjuvu37h7s" path="res://upgrades/common/FPSDamage.tscn" id="6_do634"]
+[ext_resource type="PackedScene" uid="uid://cabjnswmdjrdi" path="res://upgrades/common/HeavyAttack.tscn" id="7_2d68u"]
+[ext_resource type="PackedScene" uid="uid://bfeysd8absnlm" path="res://upgrades/common/LessIsMore.tscn" id="8_4cffr"]
+[ext_resource type="PackedScene" uid="uid://ca8yiunlppotx" path="res://upgrades/common/MoreIsMore.tscn" id="9_si1tc"]
+[ext_resource type="PackedScene" uid="uid://76kr5mw3yv7l" path="res://upgrades/common/QuickAttack.tscn" id="10_v6ee0"]
+[ext_resource type="PackedScene" uid="uid://cr0cplyujjrod" path="res://upgrades/common/QuickMovement.tscn" id="11_08tll"]
+[ext_resource type="PackedScene" uid="uid://cfdmxdo8swhsf" path="res://upgrades/common/ShootMore.tscn" id="12_q8n8y"]
+[ext_resource type="PackedScene" uid="uid://ce4bx2fui1rr0" path="res://upgrades/common/Tough.tscn" id="13_skgoo"]
 
 [resource]
 script = ExtResource("1_fty1d")
 include = Array[ExtResource("1_fty1d")]([])
-scenes = Array[PackedScene]([ExtResource("1_ja0a2"), ExtResource("2_hqobk")])
+scenes = Array[PackedScene]([ExtResource("1_ja0a2"), ExtResource("2_hqobk"), ExtResource("3_twj6j"), ExtResource("4_1bsbk"), ExtResource("5_brhdc"), ExtResource("6_do634"), ExtResource("7_2d68u"), ExtResource("8_4cffr"), ExtResource("9_si1tc"), ExtResource("10_v6ee0"), ExtResource("11_08tll"), ExtResource("12_q8n8y"), ExtResource("13_skgoo")])
