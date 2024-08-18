@@ -30,6 +30,9 @@ signal added_upgrade(upgrade:Upgrade)
 ## Map of ability type (see PlayerAbility.gd) to ability nodes
 var abilities:Dictionary
 
+## 0-1 parameter for determining volume of the rocket
+var _rocket_volume:float = 0
+
 func add_ability(ability:PlayerAbility)->void:
 	
 	if(abilities.has(ability.type) && abilities[ability.type].ability_name == ability.ability_name):
@@ -110,13 +113,11 @@ func _physics_process(delta: float) -> void:
 		$'.'.apply_force(global_transform.basis_xform(Vector2.UP).normalized() * max_thrust)
 		$Interpolator/RocketParticles.emitting=true
 		$Interpolator/RocketParticles.process_material.set_shader_parameter('base_velocity',self.linear_velocity)
-		#if(!$RocketSound.playing):
-		#	$RocketSound.playing=true
-		$RocketSound.volume_db = clamp($RocketSound.volume_db + delta*500, -20, -10)
+		_rocket_volume = clamp(_rocket_volume + delta*10, 0, 1)
 	else:
-		$RocketSound.volume_db = clamp($RocketSound.volume_db - delta*500, -20, -10)
-		#$RocketSound.playing=false
+		_rocket_volume = clamp(_rocket_volume - delta*10, 0, 1)
 		$Interpolator/RocketParticles.emitting=false
+	$RocketSound.volume_db = remap(_rocket_volume, 0, 1, -40, -10)
 	
 	$'.'.linear_velocity = $'.'.linear_velocity.limit_length(max_linear_speed)
 

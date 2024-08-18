@@ -23,6 +23,12 @@ signal damage_dealt(damage:Damage)
 
 func _ready()->void:
 	
+	var audio:AudioStreamPlayer2D = AudioStreamPlayer2D.new()
+	audio.stream = preload('res://audio/explosion.wav')
+	audio.autoplay = true
+	add_child(audio);
+	
+	
 	material = preload("res://visual_effects/explosion_material.tres").duplicate()
 	duration = (material.get_shader_parameter('diffusion_time') + material.get_shader_parameter('activation_time'))
 	

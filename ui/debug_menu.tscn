@@ -3,7 +3,7 @@
 [ext_resource type="Theme" uid="uid://d0ifc4kse0sbj" path="res://ui/theme/theme.tres" id="1_8pghh"]
 
 [sub_resource type="GDScript" id="GDScript_2tfo1"]
-script/source = "extends PanelContainer
+script/source = "extends Control
 
 func _input(event: InputEvent) -> void:
 	if(event.is_action_pressed(\"debug\")):
@@ -302,6 +302,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
+script = SubResource("GDScript_2tfo1")
 
 [node name="DebugMenu" type="PanelContainer" parent="."]
 process_mode = 3
@@ -316,7 +317,6 @@ offset_right = -24.0
 offset_bottom = 623.0
 grow_horizontal = 0
 theme = ExtResource("1_8pghh")
-script = SubResource("GDScript_2tfo1")
 
 [node name="PanelContainer" type="PanelContainer" parent="DebugMenu"]
 layout_mode = 2

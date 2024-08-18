@@ -114,14 +114,12 @@ layer = 2
 player = NodePath("../../Player")
 
 [node name="Minimap" parent="UILayer" instance=ExtResource("4_u66eo")]
-custom_minimum_size = Vector2(512, 512)
-anchors_preset = 3
+custom_minimum_size = Vector2(400, 400)
+anchors_preset = -1
 anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -512.0
-offset_top = -512.0
 offset_right = 0.0
 offset_bottom = 0.0
 grow_horizontal = 0
