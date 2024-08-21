@@ -43,6 +43,7 @@ func go_back()->void:
 	refresh()
 	$'../Main'.show()
 	hide()
+	$'../Main'.grab_focus.call_deferred()
 
 func _on_back_button_pressed() -> void:
 	var username:String = username_line.text

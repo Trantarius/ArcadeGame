@@ -11,6 +11,7 @@ size = Vector2(32, 32)
 collision_layer = 8
 collision_mask = 3
 script = ExtResource("1_u5o0f")
+lifetime = 30.0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("RectangleShape2D_vc8ka")

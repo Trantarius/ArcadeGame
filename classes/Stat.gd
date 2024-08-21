@@ -5,9 +5,9 @@ extends Resource
 @export var use_min_value:bool = false:
 	set(to):
 		use_min_value=to
-		if(use_min_value):
+		if(use_min_value&&Engine.is_editor_hint()):
 			min_value=0
-		else:
+		elif(!use_min_value):
 			min_value=-INF
 		notify_property_list_changed()
 		emit_changed()
@@ -15,16 +15,16 @@ extends Resource
 @export var use_max_value:bool = false:
 	set(to):
 		use_max_value=to
-		if(use_max_value):
+		if(use_max_value&&Engine.is_editor_hint()):
 			max_value=0
-		else:
+		elif(!use_max_value):
 			max_value=INF
 		notify_property_list_changed()
 		emit_changed()
 
 var min_value:float = -INF:
 	set(to):
-		if(use_min_value):
+		if(use_min_value||!Engine.is_editor_hint()):
 			min_value=to
 		else:
 			min_value=-INF
@@ -33,7 +33,7 @@ var min_value:float = -INF:
 
 var max_value:float = INF:
 	set(to):
-		if(use_max_value):
+		if(use_max_value||!Engine.is_editor_hint()):
 			max_value=to
 		else:
 			max_value=INF

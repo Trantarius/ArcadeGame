@@ -14,23 +14,23 @@ use_min_value = true
 use_max_value = false
 base = 1.0
 round_mode = 0
-min_value = 0.0
+min_value = 0.1
 
 [sub_resource type="Resource" id="Resource_q3yw0"]
 resource_local_to_scene = true
 script = ExtResource("2_retpv")
 use_min_value = true
 use_max_value = false
-base = 5.0
+base = 7.0
 round_mode = 0
-min_value = 0.0
+min_value = 1.0
 
 [sub_resource type="Resource" id="Resource_e7xn4"]
 resource_local_to_scene = true
 script = ExtResource("2_retpv")
 use_min_value = true
 use_max_value = false
-base = 8.0
+base = 7.0
 round_mode = 4
 min_value = 1.0
 

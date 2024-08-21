@@ -1,7 +1,6 @@
-[gd_scene load_steps=19 format=3 uid="uid://gvye6ccvjd55"]
+[gd_scene load_steps=12 format=3 uid="uid://gvye6ccvjd55"]
 
 [ext_resource type="PackedScene" uid="uid://crylwoyahw6go" path="res://ui/info_panel.tscn" id="2_8k6rt"]
-[ext_resource type="Script" path="res://classes/Stat.gd" id="2_bfb8h"]
 [ext_resource type="PackedScene" uid="uid://d3ek2vmqvfst3" path="res://abilities/weapon/light_cannon/light_cannon.tscn" id="2_dqgwh"]
 [ext_resource type="PackedScene" uid="uid://b4v2b4cphju7v" path="res://ui/debug_menu.tscn" id="3_bx4mw"]
 [ext_resource type="PackedScene" uid="uid://ccgupredk0a3f" path="res://player/player.tscn" id="3_d6lla"]
@@ -13,71 +12,11 @@
 [ext_resource type="Script" path="res://ui/world/HitNumberSpawner.gd" id="10_mwqnm"]
 [ext_resource type="Script" path="res://ui/world/HealthBarSpawner.gd" id="11_bnywn"]
 
-[sub_resource type="Resource" id="Resource_6krrj"]
-resource_local_to_scene = true
-script = ExtResource("2_bfb8h")
-use_min_value = true
-use_max_value = false
-base = 100.0
-round_mode = 0
-min_value = 1.0
-
-[sub_resource type="Resource" id="Resource_14si3"]
-resource_local_to_scene = true
-script = ExtResource("2_bfb8h")
-use_min_value = true
-use_max_value = false
-base = 3.0
-round_mode = 0
-min_value = 0.0
-
-[sub_resource type="Resource" id="Resource_qbk6m"]
-resource_local_to_scene = true
-script = ExtResource("2_bfb8h")
-use_min_value = true
-use_max_value = false
-base = 10.0
-round_mode = 0
-min_value = 0.0
-
-[sub_resource type="Resource" id="Resource_vfmdl"]
-resource_local_to_scene = true
-script = ExtResource("2_bfb8h")
-use_min_value = true
-use_max_value = false
-base = 1.0
-round_mode = 4
-min_value = 1.0
-
-[sub_resource type="Resource" id="Resource_tvbhd"]
-resource_local_to_scene = true
-script = ExtResource("2_bfb8h")
-use_min_value = true
-use_max_value = false
-base = 1000.0
-round_mode = 0
-min_value = 0.0
-
-[sub_resource type="Resource" id="Resource_l81r3"]
-resource_local_to_scene = true
-script = ExtResource("2_bfb8h")
-use_min_value = true
-use_max_value = false
-base = 8.0
-round_mode = 0
-min_value = 1.0
-
 [node name="Main" type="Node"]
 
 [node name="Player" parent="." instance=ExtResource("3_d6lla")]
-max_health = SubResource("Resource_6krrj")
 
 [node name="LightCannon" parent="Player" instance=ExtResource("2_dqgwh")]
-fire_rate = SubResource("Resource_14si3")
-damage = SubResource("Resource_qbk6m")
-projectile_count = SubResource("Resource_vfmdl")
-projectile_speed = SubResource("Resource_tvbhd")
-projectile_size = SubResource("Resource_l81r3")
 
 [node name="EnemySpawner" type="Node" parent="."]
 script = ExtResource("6_xg0x2")

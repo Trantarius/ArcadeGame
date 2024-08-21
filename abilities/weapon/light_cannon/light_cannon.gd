@@ -6,7 +6,7 @@ extends PlayerAbility
 @export var projectile_speed:Stat
 @export var projectile_size:Stat
 
-const proj_spacing:float = 0.5
+const proj_spacing:float = 1.0
 
 signal fired
 

@@ -6,7 +6,7 @@ extends PlayerAbility
 @export var projectile_speed:Stat
 @export var projectile_size:Stat
 
-const proj_spread:float = PI/6
+const proj_spread:float = PI/7
 signal fired
 
 func _ready()->void:

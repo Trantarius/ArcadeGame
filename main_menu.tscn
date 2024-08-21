@@ -83,6 +83,10 @@ theme = ExtResource("3_lmwvf")
 
 [node name="Main" type="PanelContainer" parent="UILayer/CenterContainer"]
 layout_mode = 2
+focus_neighbor_top = NodePath("PanelContainer/VBoxContainer/QuitButton")
+focus_neighbor_bottom = NodePath("PanelContainer/VBoxContainer/PlayButton")
+focus_next = NodePath("PanelContainer/VBoxContainer/PlayButton")
+focus_mode = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="UILayer/CenterContainer/Main"]
 layout_mode = 2
@@ -110,6 +114,7 @@ text = "Quit"
 [node name="Leaderboard" type="PanelContainer" parent="UILayer/CenterContainer"]
 visible = false
 layout_mode = 2
+focus_mode = 2
 
 [node name="PanelContainer" type="PanelContainer" parent="UILayer/CenterContainer/Leaderboard"]
 layout_mode = 2
@@ -138,6 +143,7 @@ text = "Back"
 visible = false
 custom_minimum_size = Vector2(430, 0)
 layout_mode = 2
+focus_mode = 2
 script = ExtResource("6_jmvyx")
 username_line = NodePath("PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/HBoxContainer/UsernameLine")
 bad_username_icon = NodePath("PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/HBoxContainer/BadUsername")

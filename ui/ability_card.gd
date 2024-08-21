@@ -22,7 +22,7 @@ extends Control
 			title_node.text = 'Name'
 			texture_node.texture = preload('res://icon.svg')
 			type_node.text = '[center][i]%s[/i][/center]'%['Type']
-			description_node.text = 'Description'
+			#description_node.text = 'Description'
 			state_node.text = 'State'
 
 signal pressed

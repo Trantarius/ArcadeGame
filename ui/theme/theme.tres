@@ -1,7 +1,8 @@
-[gd_resource type="Theme" load_steps=50 format=3 uid="uid://d0ifc4kse0sbj"]
+[gd_resource type="Theme" load_steps=51 format=3 uid="uid://d0ifc4kse0sbj"]
 
 [ext_resource type="StyleBox" uid="uid://bh30n16nd06xb" path="res://ui/theme/light_panel.tres" id="1_82dfx"]
 [ext_resource type="StyleBox" uid="uid://d3cvoog7fbni7" path="res://ui/theme/dark_panel.tres" id="1_cuywo"]
+[ext_resource type="StyleBox" uid="uid://skw2wun5iole" path="res://ui/theme/focus.tres" id="2_7parr"]
 [ext_resource type="StyleBox" uid="uid://dfpg7yy7ykxbs" path="res://ui/theme/very_dark_panel.tres" id="2_162mx"]
 [ext_resource type="StyleBox" uid="uid://deng3y2nccvck" path="res://ui/theme/medium_panel.tres" id="2_pmoym"]
 [ext_resource type="StyleBox" uid="uid://bshdv2clre68f" path="res://ui/theme/dark_fat_panel.tres" id="5_jhp1l"]
@@ -11,8 +12,6 @@
 [ext_resource type="FontFile" uid="uid://coqijjw0cefwc" path="res://ui/theme/Montserrat-BoldItalic.ttf" id="7_b6hmb"]
 [ext_resource type="FontFile" uid="uid://bf4qo700sf6q8" path="res://ui/theme/Montserrat-Italic.ttf" id="8_n74k1"]
 [ext_resource type="FontFile" uid="uid://bx86rrrouq7o4" path="res://ui/theme/CourierPrime-Regular.ttf" id="10_w0f7f"]
-
-[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i3bcs"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_y7jj3"]
 
@@ -39,6 +38,8 @@
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k6yt3"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_snvwu"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2ekna"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_bq0j3"]
 
@@ -230,7 +231,7 @@ vertical = true
 default_font = ExtResource("6_0eoas")
 default_font_size = 16
 Button/styles/disabled = ExtResource("2_pmoym")
-Button/styles/focus = SubResource("StyleBoxEmpty_i3bcs")
+Button/styles/focus = ExtResource("2_7parr")
 Button/styles/hover = ExtResource("1_82dfx")
 Button/styles/normal = ExtResource("2_pmoym")
 Button/styles/pressed = ExtResource("2_162mx")
@@ -253,6 +254,7 @@ DarkPanel/styles/panel = ExtResource("1_cuywo")
 FatPanel/base_type = &"PanelContainer"
 FatPanel/styles/panel = ExtResource("6_gv00j")
 FlatButton/styles/disabled = SubResource("StyleBoxEmpty_snvwu")
+FlatButton/styles/focus = SubResource("StyleBoxEmpty_2ekna")
 FlatButton/styles/hover = SubResource("StyleBoxEmpty_bq0j3")
 FlatButton/styles/normal = SubResource("StyleBoxEmpty_00m6f")
 FlatButton/styles/pressed = SubResource("StyleBoxEmpty_bfvhb")

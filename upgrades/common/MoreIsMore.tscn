@@ -16,7 +16,7 @@ target = 2
 script = ExtResource("3_vsvh3")
 name = &"More is More"
 stage = 2
-strength = -10.0
+strength = -5.0
 stat_name = &"damage"
 target = 2
 
@@ -24,7 +24,7 @@ target = 2
 script = ExtResource("1_kymui")
 upgrade_name = &"More is More"
 description = "+2 weapon projectiles
--10 weapon damage"
+-5 weapon damage"
 
 [node name="StatBuffStack" type="Node" parent="."]
 script = ExtResource("2_qn4kq")

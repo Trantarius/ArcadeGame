@@ -165,7 +165,7 @@ func _on_player_kill(damage:Damage)->void:
 
 func _on_boss_death(damage:Damage)->void:
 	# reset score requirement so that multiple stages can't be passed at once
-	score_req = player.score + score_req_base + score_req_growth*progression_stage
+	score_req = score + score_req_base + score_req_growth*progression_stage
 	current_boss = null
 	events.push_back({
 		'event':'boss_kill',
