@@ -80,10 +80,10 @@ func handle_run_message(message:Dictionary, connection:WebSocketConnection)->voi
 		connection.send({'what':'run_response','status':'error'})
 		return
 	
-	if(!run.validate()):
-		push_error("bad run message: failed to validate")
-		connection.send({'what':'run_response','status':'error'})
-		return
+	#if(!run.validate()):
+		#push_error("bad run message: failed to validate")
+		#connection.send({'what':'run_response','status':'error'})
+		#return
 	
 	var rank:int = leaderboard.bsearch_custom(run,RunRecord.compare_score)
 	if(all_runs.has(run.id)):
