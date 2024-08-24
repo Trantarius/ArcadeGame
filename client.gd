@@ -1,6 +1,6 @@
 extends WebSocketConnection
 
-var host:String = '72.73.27.191:8888'
+var host:String = '72.73.27.191:13337'
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
