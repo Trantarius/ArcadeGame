@@ -36,6 +36,8 @@ var events:Array[Dictionary]
 var perf_data:Array[Dictionary]
 var run_ended:bool = false
 
+var prestige_buff:StatBuff
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	run_start_time = Time.get_ticks_msec()
@@ -55,6 +57,22 @@ func _ready() -> void:
 	add_child(perf_timer)
 	perf_timer.timeout.connect(_update_perf_info)
 	perf_timer.start(10)
+	
+	prestige_buff = StatBuff.new()
+	prestige_buff.name = "prestige"
+	prestige_buff.stat_name = 'max_health'
+	prestige_buff.stage = Stat.POST_MUL
+	prestige_buff.strength = 1.5
+	
+	Actor.something_spawned.connect(_on_something_spawned)
+
+func _on_something_spawned(actor:Actor)->void:
+	if(actor is Enemy):
+		for i in range(0,boss_kills):
+			var stack:StatBuffStack = StatBuffStack.new()
+			stack.buff = prestige_buff
+			actor.add_child(stack)
+		
 
 func _update_perf_info()->void:
 	perf_data.push_back({
@@ -173,6 +191,7 @@ func _on_boss_death(damage:Damage)->void:
 	})
 	boss_kills+=1
 	progression_stage += 1
+	enemy_spawner.spawn_rate = 25.0 * pow(1.5,boss_kills)
 	if(get_current_stage()==BOSS):
 		current_boss =  await enemy_spawner.spawn(preload('res://enemies/broadside/broadside.tscn'))
 		current_boss.death.connect(_on_boss_death)
