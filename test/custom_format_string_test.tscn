@@ -1,6 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://djyoebuvlh6e7"]
+[gd_scene load_steps=16 format=3 uid="uid://djyoebuvlh6e7"]
 
 [ext_resource type="Theme" uid="uid://d0ifc4kse0sbj" path="res://ui/theme/theme.tres" id="1_s4jml"]
+[ext_resource type="Script" path="res://classes/StatBuffStack.gd" id="2_5p6hf"]
+[ext_resource type="Script" path="res://classes/Stat.gd" id="2_l3kq3"]
+[ext_resource type="Script" path="res://classes/StatBuff.gd" id="3_ikox6"]
 
 [sub_resource type="GDScript" id="GDScript_ponul"]
 script/source = "@tool
@@ -26,27 +29,83 @@ func _ready()->void:
 script/source = "@tool
 extends Node
 
-
-@export var foo:float = 123.321
-
-var bar:Stat = Stat.new(1.23, -INF, INF)
-
-var better_bar:Stat = Stat.new(2.34, -INF, INF)
-
-var worse_bar:Stat = Stat.new(345.678, -INF, INF)
-
-func _enter_tree()->void:
-	better_bar.pre_add_effects['sourceOne']=1.1
-	better_bar.mul_effects['sourceTwo']=2.2
-	better_bar.add_effects['sourceThree']=3.3
-	better_bar.post_mul_effects['sourceFour']=4.4
-	
-	worse_bar.pre_add_effects['sourceOne']=-1.1
-	worse_bar.mul_effects['sourceTwo']=0.2
-	worse_bar.add_effects['sourceThree']=-3.3
-	worse_bar.post_mul_effects['sourceFour']=0.4
-	
+@export var mystat:Stat
+@export var foo:Stat
+@export var bar:Stat
+@export var myprop:float
 "
+
+[sub_resource type="Resource" id="Resource_87mpb"]
+resource_local_to_scene = true
+script = ExtResource("2_l3kq3")
+use_min_value = false
+use_max_value = false
+base = 1.23
+round_mode = 0
+
+[sub_resource type="Resource" id="Resource_wn8xu"]
+resource_local_to_scene = true
+script = ExtResource("2_l3kq3")
+use_min_value = false
+use_max_value = false
+base = 32.1
+round_mode = 0
+
+[sub_resource type="Resource" id="Resource_1dymv"]
+resource_local_to_scene = true
+script = ExtResource("2_l3kq3")
+use_min_value = false
+use_max_value = false
+base = 13.2
+round_mode = 0
+
+[sub_resource type="Resource" id="Resource_pqkg4"]
+script = ExtResource("3_ikox6")
+name = &"FooBuffPreAdd"
+stage = 0
+strength = 1.0
+stat_name = &"foo"
+target = 3
+
+[sub_resource type="Resource" id="Resource_abmnp"]
+script = ExtResource("3_ikox6")
+name = &"FooDebuffMul"
+stage = 1
+strength = 0.7
+stat_name = &"foo"
+target = 3
+
+[sub_resource type="Resource" id="Resource_74ecg"]
+script = ExtResource("3_ikox6")
+name = &"FooBuffAdd"
+stage = 2
+strength = 2.3
+stat_name = &"foo"
+target = 3
+
+[sub_resource type="Resource" id="Resource_5kn8a"]
+script = ExtResource("3_ikox6")
+name = &"FooBuffPostMul"
+stage = 3
+strength = 1.1
+stat_name = &"foo"
+target = 3
+
+[sub_resource type="Resource" id="Resource_7vuco"]
+script = ExtResource("3_ikox6")
+name = &"BarDebuffPreAdd"
+stage = 0
+strength = -2.0
+stat_name = &"bar"
+target = 3
+
+[sub_resource type="Resource" id="Resource_4561m"]
+script = ExtResource("3_ikox6")
+name = &"BarBuffMul"
+stage = 1
+strength = 0.9
+stat_name = &"bar"
+target = 3
 
 [node name="CustomFormatStringTest" type="Control" node_paths=PackedStringArray("object")]
 layout_mode = 3
@@ -62,14 +121,14 @@ text = "[table=2]
 [cell]bad escape type:[/cell] [cell]{badEscape}[/cell]s
 [cell]action named ui_accept:[/cell] [cell]{action ui_accept}[/cell]
 [cell]action with bad name:[/cell] [cell]{action badAction}[/cell]
-[cell]property named foo:[/cell] [cell]{property foo}[/cell]
-[cell]property named foo with format:    [/cell] [cell]{property foo %08.2f}[/cell]
+[cell]property named myprop:[/cell] [cell]{property myprop}[/cell]
+[cell]property named myprop with format:    [/cell] [cell]{property myprop %08.2f}[/cell]
 [cell]property with bad name:[/cell] [cell]{property badProp}[/cell]
-[cell]stat named bar:[/cell] [cell]{stat bar}[/cell]
-[cell]buffed stat named better_bar:[/cell] [cell]{stat better_bar}[/cell]
-[cell]debuffed stat named worse_bar:[/cell] [cell]{stat worse_bar}[/cell]
+[cell]stat named mystat:[/cell] [cell]{stat mystat}[/cell]
+[cell]buffed stat named foo:[/cell] [cell]{stat foo}[/cell]
+[cell]debuffed stat named bar:[/cell] [cell]{stat bar}[/cell]
 [cell]stat with bad name:[/cell] [cell]{stat badStat}[/cell]
-[cell]stat with format:[/cell] [cell]{stat better_bar %.1f%%}[/cell]
+[cell]stat with format:[/cell] [cell]{stat foo %.1f%%}[/cell]
 [/table]
 "
 
@@ -85,31 +144,64 @@ text = "[table=2]
 [cell]bad escape type:[/cell] [cell][code][color=red]ERROR unknown escape type 'badEscape'[/color][/code][/cell]s
 [cell]action named ui_accept:[/cell] [cell][code][lb]Enter|Kp Enter|Space[rb][/code][/cell]
 [cell]action with bad name:[/cell] [cell][code][color=red]ERROR nonexistent action 'badAction'[/color][/code][/cell]
-[cell]property named foo:[/cell] [cell][code]123.321[/code][/cell]
-[cell]property named foo with format:    [/cell] [cell][code]00123.32[/code][/cell]
+[cell]property named myprop:[/cell] [cell][code][color=red]ERROR object doesn't have property 'myprop'[/color][/code][/cell]
+[cell]property named myprop with format:    [/cell] [cell][code][color=red]ERROR object doesn't have property 'myprop'[/color][/code][/cell]
 [cell]property with bad name:[/cell] [cell][code][color=red]ERROR object doesn't have property 'badProp'[/color][/code][/cell]
-[cell]stat named bar:[/cell] [cell][code]1.23[/code][/cell]
-[cell]buffed stat named better_bar:[/cell] [cell][code]2.34 ([hint=base: 2.34
-+1.10 from sourceOne = 3.44
-×2.20 from sourceTwo = 7.57
-+3.30 from sourceThree = 10.87
-×4.40 from sourceFour = 47.82
-][color=green]47.8192[/color][/hint])[/code][/cell]
-[cell]debuffed stat named worse_bar:[/cell] [cell][code]345.678 ([hint=base: 345.68
--1.10 from sourceOne = 344.58
-×0.20 from sourceTwo = 68.92
--3.30 from sourceThree = 65.62
-×0.40 from sourceFour = 26.25
-][color=red]26.24624[/color][/hint])[/code][/cell]
+[cell]stat named mystat:[/cell] [cell][code][color=red]ERROR object doesn't have property 'mystat' or it isn't a Stat[/color][/code][/cell]
+[cell]buffed stat named foo:[/cell] [cell][code][color=red]ERROR object doesn't have property 'foo' or it isn't a Stat[/color][/code][/cell]
+[cell]debuffed stat named bar:[/cell] [cell][code]0[/code][/cell]
 [cell]stat with bad name:[/cell] [cell][code][color=red]ERROR object doesn't have property 'badStat' or it isn't a Stat[/color][/code][/cell]
-[cell]stat with format:[/cell] [cell][code]2.3% ([hint=base: 2.34
-+1.10 from sourceOne = 3.44
-×2.20 from sourceTwo = 7.57
-+3.30 from sourceThree = 10.87
-×4.40 from sourceFour = 47.82
-][color=green]47.8%[/color][/hint])[/code][/cell]
+[cell]stat with format:[/cell] [cell][code][color=red]ERROR object doesn't have property 'foo' or it isn't a Stat[/color][/code][/cell]
 [/table]
 "
 
 [node name="Node" type="Node" parent="."]
 script = SubResource("GDScript_vxwrk")
+mystat = SubResource("Resource_87mpb")
+foo = SubResource("Resource_wn8xu")
+bar = SubResource("Resource_1dymv")
+myprop = 987.654
+
+[node name="Foo" type="Node" parent="Node"]
+
+[node name="FooBuffPreAdd" type="Node" parent="Node/Foo"]
+script = ExtResource("2_5p6hf")
+buff = SubResource("Resource_pqkg4")
+
+[node name="FooDebuffMul" type="Node" parent="Node/Foo"]
+script = ExtResource("2_5p6hf")
+buff = SubResource("Resource_abmnp")
+
+[node name="FooBuffAdd" type="Node" parent="Node/Foo"]
+script = ExtResource("2_5p6hf")
+buff = SubResource("Resource_74ecg")
+
+[node name="FooBuffAdd2" type="Node" parent="Node/Foo"]
+script = ExtResource("2_5p6hf")
+buff = SubResource("Resource_74ecg")
+
+[node name="FooBuffAdd3" type="Node" parent="Node/Foo"]
+script = ExtResource("2_5p6hf")
+buff = SubResource("Resource_74ecg")
+
+[node name="FooBuffPostMul" type="Node" parent="Node/Foo"]
+script = ExtResource("2_5p6hf")
+buff = SubResource("Resource_5kn8a")
+
+[node name="Bar" type="Node" parent="Node"]
+
+[node name="BarDebuffPreAdd" type="Node" parent="Node/Bar"]
+script = ExtResource("2_5p6hf")
+buff = SubResource("Resource_7vuco")
+
+[node name="BarBuffMul" type="Node" parent="Node/Bar"]
+script = ExtResource("2_5p6hf")
+buff = SubResource("Resource_4561m")
+
+[node name="BarBuffMul2" type="Node" parent="Node/Bar"]
+script = ExtResource("2_5p6hf")
+buff = SubResource("Resource_4561m")
+
+[node name="BarBuffMul3" type="Node" parent="Node/Bar"]
+script = ExtResource("2_5p6hf")
+buff = SubResource("Resource_4561m")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://5siqut2ormfj"]
+[gd_scene load_steps=21 format=3 uid="uid://c6pds33r23wjq"]
 
 [ext_resource type="PackedScene" uid="uid://ccgupredk0a3f" path="res://player/player.tscn" id="1_4dbea"]
 [ext_resource type="Script" path="res://classes/Stat.gd" id="2_ktr7o"]
@@ -61,6 +61,14 @@ base = 8.0
 round_mode = 0
 min_value = 1.0
 
+[sub_resource type="Resource" id="Resource_14h66"]
+resource_local_to_scene = true
+script = ExtResource("2_ktr7o")
+use_min_value = false
+use_max_value = false
+base = 40.0
+round_mode = 0
+
 [sub_resource type="Resource" id="Resource_s23um"]
 resource_local_to_scene = true
 script = ExtResource("2_ktr7o")
@@ -69,6 +77,14 @@ use_max_value = false
 base = 50.0
 round_mode = 0
 min_value = 1.0
+
+[sub_resource type="Resource" id="Resource_5cxm5"]
+resource_local_to_scene = true
+script = ExtResource("2_ktr7o")
+use_min_value = false
+use_max_value = false
+base = 40.0
+round_mode = 0
 
 [sub_resource type="Resource" id="Resource_l7tg3"]
 resource_local_to_scene = true
@@ -79,6 +95,14 @@ base = 50.0
 round_mode = 0
 min_value = 0.0
 
+[sub_resource type="Resource" id="Resource_270uy"]
+resource_local_to_scene = true
+script = ExtResource("2_ktr7o")
+use_min_value = false
+use_max_value = false
+base = 40.0
+round_mode = 0
+
 [sub_resource type="Resource" id="Resource_dyid4"]
 resource_local_to_scene = true
 script = ExtResource("2_ktr7o")
@@ -87,6 +111,14 @@ use_max_value = false
 base = 50.0
 round_mode = 0
 min_value = 0.0
+
+[sub_resource type="Resource" id="Resource_81ytc"]
+resource_local_to_scene = true
+script = ExtResource("2_ktr7o")
+use_min_value = false
+use_max_value = false
+base = 40.0
+round_mode = 0
 
 [sub_resource type="Resource" id="Resource_tq0w8"]
 resource_local_to_scene = true
@@ -117,54 +149,38 @@ projectile_size = SubResource("Resource_k66el")
 
 [node name="StatMod" type="Node" parent="Player"]
 script = ExtResource("5_xly35")
-mod_name = &"debug_max_health"
-strength = 1e+07
-stat_name = &"max_health"
-target = 3
 
 [node name="Hornet" parent="." instance=ExtResource("4_j20x2")]
 position = Vector2(-2, -262)
+point_value = SubResource("Resource_14h66")
 max_health = SubResource("Resource_s23um")
 
 [node name="StatMod" type="Node" parent="Hornet"]
 script = ExtResource("5_xly35")
-mod_name = &"debug_max_health"
-strength = 1e+07
-stat_name = &"max_health"
-target = 3
 
 [node name="Hornet2" parent="." instance=ExtResource("4_j20x2")]
 position = Vector2(292, -207)
+point_value = SubResource("Resource_5cxm5")
 max_health = SubResource("Resource_l7tg3")
 
 [node name="StatMod" type="Node" parent="Hornet2"]
 script = ExtResource("5_xly35")
-mod_name = &"debug_max_health"
-strength = 1e+07
-stat_name = &"max_health"
-target = 3
 
 [node name="Hornet3" parent="." instance=ExtResource("4_j20x2")]
 position = Vector2(400, 87)
+point_value = SubResource("Resource_270uy")
 max_health = SubResource("Resource_dyid4")
 
 [node name="StatMod" type="Node" parent="Hornet3"]
 script = ExtResource("5_xly35")
-mod_name = &"debug_max_health"
-strength = 1e+07
-stat_name = &"max_health"
-target = 3
 
 [node name="Hornet4" parent="." instance=ExtResource("4_j20x2")]
 position = Vector2(134, 324)
+point_value = SubResource("Resource_81ytc")
 max_health = SubResource("Resource_tq0w8")
 
 [node name="StatMod" type="Node" parent="Hornet4"]
 script = ExtResource("5_xly35")
-mod_name = &"debug_max_health"
-strength = 1e+07
-stat_name = &"max_health"
-target = 3
 
 [node name="Node" type="Node" parent="."]
 script = ExtResource("6_bx35c")

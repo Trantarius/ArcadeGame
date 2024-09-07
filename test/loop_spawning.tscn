@@ -94,6 +94,3 @@ func circle_fits(circle:Circle)->bool:
 
 [node name="LoopSpawning" type="Node2D"]
 script = SubResource("GDScript_xrmi8")
-spawn_count = 20
-spawn_distance = 100.0
-despawn_distance = 400.0

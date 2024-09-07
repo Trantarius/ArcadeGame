@@ -1,5 +1,6 @@
-[gd_scene load_steps=12 format=3 uid="uid://gvye6ccvjd55"]
+[gd_scene load_steps=19 format=3 uid="uid://gvye6ccvjd55"]
 
+[ext_resource type="Script" path="res://classes/Stat.gd" id="2_0br1h"]
 [ext_resource type="PackedScene" uid="uid://crylwoyahw6go" path="res://ui/info_panel.tscn" id="2_8k6rt"]
 [ext_resource type="PackedScene" uid="uid://d3ek2vmqvfst3" path="res://abilities/weapon/light_cannon/light_cannon.tscn" id="2_dqgwh"]
 [ext_resource type="PackedScene" uid="uid://b4v2b4cphju7v" path="res://ui/debug_menu.tscn" id="3_bx4mw"]
@@ -12,11 +13,71 @@
 [ext_resource type="Script" path="res://ui/world/HitNumberSpawner.gd" id="10_mwqnm"]
 [ext_resource type="Script" path="res://ui/world/HealthBarSpawner.gd" id="11_bnywn"]
 
+[sub_resource type="Resource" id="Resource_050sd"]
+resource_local_to_scene = true
+script = ExtResource("2_0br1h")
+use_min_value = true
+use_max_value = false
+base = 100.0
+round_mode = 0
+min_value = 1.0
+
+[sub_resource type="Resource" id="Resource_mcb62"]
+resource_local_to_scene = true
+script = ExtResource("2_0br1h")
+use_min_value = true
+use_max_value = false
+base = 5.0
+round_mode = 0
+min_value = 0.1
+
+[sub_resource type="Resource" id="Resource_0bxhg"]
+resource_local_to_scene = true
+script = ExtResource("2_0br1h")
+use_min_value = true
+use_max_value = false
+base = 10.0
+round_mode = 0
+min_value = 1.0
+
+[sub_resource type="Resource" id="Resource_lf6v1"]
+resource_local_to_scene = true
+script = ExtResource("2_0br1h")
+use_min_value = true
+use_max_value = false
+base = 1.0
+round_mode = 4
+min_value = 1.0
+
+[sub_resource type="Resource" id="Resource_ovy6f"]
+resource_local_to_scene = true
+script = ExtResource("2_0br1h")
+use_min_value = true
+use_max_value = false
+base = 1000.0
+round_mode = 0
+min_value = 0.0
+
+[sub_resource type="Resource" id="Resource_xmr86"]
+resource_local_to_scene = true
+script = ExtResource("2_0br1h")
+use_min_value = true
+use_max_value = false
+base = 8.0
+round_mode = 0
+min_value = 1.0
+
 [node name="Main" type="Node"]
 
 [node name="Player" parent="." instance=ExtResource("3_d6lla")]
+max_health = SubResource("Resource_050sd")
 
 [node name="LightCannon" parent="Player" instance=ExtResource("2_dqgwh")]
+fire_rate = SubResource("Resource_mcb62")
+damage = SubResource("Resource_0bxhg")
+projectile_count = SubResource("Resource_lf6v1")
+projectile_speed = SubResource("Resource_ovy6f")
+projectile_size = SubResource("Resource_xmr86")
 
 [node name="EnemySpawner" type="Node" parent="."]
 script = ExtResource("6_xg0x2")

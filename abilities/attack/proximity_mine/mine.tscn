@@ -29,7 +29,6 @@ fill_to = Vector2(1, 0.5)
 position = Vector2(280, 168)
 collision_layer = 16
 script = ExtResource("1_bumr1")
-explosion_radius = 512.0
 off_color = Color(0.188235, 0.133333, 0, 1)
 arming_color = Color(0.694118, 0.67451, 0, 1)
 armed_color = Color(0, 0.764706, 0, 1)

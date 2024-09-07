@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://c7co3d1yqogny"]
+[gd_scene load_steps=7 format=3 uid="uid://c7co3d1yqogny"]
 
 [ext_resource type="PackedScene" uid="uid://d4epik40543it" path="res://enemies/hornet/hornet.tscn" id="1_ynufp"]
 [ext_resource type="Script" path="res://classes/Stat.gd" id="2_fr03m"]
@@ -27,6 +27,14 @@ func _on_reversible_timer_timeout() -> void:
 	pass # Replace with function body.
 "
 
+[sub_resource type="Resource" id="Resource_p3ycy"]
+resource_local_to_scene = true
+script = ExtResource("2_fr03m")
+use_min_value = false
+use_max_value = false
+base = 40.0
+round_mode = 0
+
 [sub_resource type="Resource" id="Resource_4sdqt"]
 resource_local_to_scene = true
 script = ExtResource("2_fr03m")
@@ -41,6 +49,7 @@ script = SubResource("GDScript_mnvp5")
 
 [node name="Hornet" parent="." instance=ExtResource("1_ynufp")]
 position = Vector2(440, 484)
+point_value = SubResource("Resource_p3ycy")
 max_health = SubResource("Resource_4sdqt")
 
 [node name="ReversibleTimer" type="Node" parent="."]
