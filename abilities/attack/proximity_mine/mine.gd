@@ -21,6 +21,7 @@ extends RigidBody2D
 ## Indicator color while armed and enemies are detected
 @export var detonate_color:Color
 
+## Which physics layers to look in for targets to damage
 @export_flags_2d_physics var explosion_mask:int
 
 @onready var lifetime_timer:ReversibleTimer = $LifetimeTimer

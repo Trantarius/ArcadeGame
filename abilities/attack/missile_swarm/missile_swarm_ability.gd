@@ -1,8 +1,12 @@
 extends CooldownAbility
 
-@export var projectile_count:Stat # = Stat.new(8,1,INF,Stat.RANDOM)
-@export var damage:Stat # = Stat.new(10,0,INF)
-@export var explosion_size:Stat # = Stat.new(128, 4, INF)
+## The number of missiles fired when the ability is activated.
+@export var projectile_count:Stat
+## The amount of damage dealt by the explosion each missile causes.
+@export var damage:Stat
+## The radius of the missile explosion.
+@export var explosion_size:Stat
+## The maximum deviation from the player's current direction to fire a missile in (in radians).
 @export var fire_angle:float = 0.5
 
 func _on_triggered() -> void:

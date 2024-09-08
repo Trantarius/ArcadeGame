@@ -19,14 +19,18 @@ func _ready()->void:
 func _on_fire_timer_timeout_precise(ago: float) -> void:
 	var proj_count:int = projectile_count.get_value()
 	
+	# correct the current muzzle position and direction using the parents speed and the time error
 	var lin_err:Vector2 = -get_parent().linear_velocity * ago
 	var ang_err:float = -get_parent().angular_velocity * ago
 	var mpos:Vector2 = (get_parent().get_muzzle_position() - get_parent().global_position
 		).rotated(ang_err) + get_parent().global_position + lin_err
 	var mdir:Vector2 = get_parent().get_muzzle_direction().rotated(ang_err)
 	
+	# distance between first and last projectile
 	var tot_width:float = proj_count * projectile_size.get_value() + (proj_count-1) * projectile_size.get_value() * proj_spacing
+	# first projectile position
 	var p0:Vector2 = mpos - mdir.orthogonal() * (tot_width/2 - projectile_size.get_value()/2)
+	# displacement between projectiles
 	var dp:Vector2 = mdir.orthogonal() * projectile_size.get_value() * (1+proj_spacing)
 	
 	for n:int in range(proj_count):

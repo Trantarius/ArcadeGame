@@ -1,13 +1,14 @@
 extends Area2D
 
 ## Size of the resulting explosion
-var explosion_radius:float = 128
+@export var explosion_radius:float = 128
 ## Damage of the resulting explosion
-var explosion_damage:float = 10
+@export var explosion_damage:float = 10
 
 ## Time until deletion
 @export var lifetime:float = 10
 
+## Which physics layers to look in for targets to damage
 @export_flags_2d_physics var explosion_mask:int
 
 const max_speed:float = 1000

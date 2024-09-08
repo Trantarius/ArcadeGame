@@ -1,3 +1,6 @@
+## This class creates [AudioStreamPlayer2D] instances and places them at its position.
+## These stream players will delete themselves when the sound is done playing.
+## This allows sounds to overlap, and to outlive the instigating node (such as when an enemy dies).
 class_name SoundMaker
 extends Node2D
 

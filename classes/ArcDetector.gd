@@ -1,29 +1,43 @@
+## This class handles arc-shaped detection of physics bodies, and can optionally use raycasts
+## to ensure those bodies are "visible" to the detector.
 @tool
 class_name ArcDetector
 extends Area2D
 
+## Maximum distance at which to detect something. 
 @export var max_range:float = 500:
 	set(to):
 		max_range = to
-		make_detector_shape()
+		_make_detector_shape()
 
+## Maximum angle from center at which something can be detected.
 @export_range(0.01,PI-0.01) var max_angle:float = 1:
 	set(to):
 		max_angle = to
-		make_detector_shape()
+		_make_detector_shape()
 
+## Determines the precision of the detection shape. This is the approximate angle between
+## each vertex on the outer edge of the shape.
 @export_range(0.01, PI/2) var step_size:float = 0.25:
 	set(to):
 		step_size = to
-		make_detector_shape()
+		_make_detector_shape()
 
+## Maximum number of detected bodies that are reported. 
 @export var max_detected_count:int = 1
 
+## Enables the use of raycasting to ensure the detected body is "visible".
 @export var require_raycast:bool = false
+## Minimum angle between raycast attempts. Effectively places an upper limit on how long the 
+## detector will try to find a successful raycast.
 @export var min_raycast_separation:float = 0.05
+## Ensures a minimum angular difference between a body that the raycast is "going around" and the ray itself.
 @export var raycast_hint_margin:float = 0.05
+## Physics layers that can stop the raycast. This is in addition to [member collision_mask].
 @export_flags_2d_physics var raycast_mask:int
 
+## Enables drawing the detection area, and the attempted raycasts. Also causes the detector to be updated
+## every physics frame.
 @export var debug_draw:bool = false:
 	set(to):
 		debug_draw=to
@@ -31,6 +45,7 @@ extends Area2D
 
 ## The detected nodes in the form of {node:raycast_result}. If [member require_raycast] is false, the result is always {}.
 var detected:Dictionary
+## Number of raycasts performed in the last update.
 var raycasts_used:int
 
 # form of {collider:[shape_idx...]}
@@ -43,7 +58,7 @@ func _ready():
 	body_shape_entered.connect(_on_collider_shape_entered)
 	area_shape_exited.connect(_on_collider_shape_exited)
 	body_shape_exited.connect(_on_collider_shape_exited)
-	make_detector_shape()
+	_make_detector_shape()
 
 func _physics_process(_delta: float) -> void:
 	if(!Engine.is_editor_hint() && debug_draw):
@@ -61,6 +76,8 @@ func _on_collider_shape_exited(collider_rid:RID, collider:CollisionObject2D, col
 		if(_overlapping[collider].is_empty()):
 			_overlapping.erase(collider)
 
+## Updates the [member detected] array with the bodies intersecting the area.
+## If [member require_raycast] is enabled, raycasts will be used to verify the detected bodies are reachable.
 func update_detected()->void:
 	raycasts_used = 0
 	var raycast_record:Array[Dictionary]=[]
@@ -104,9 +121,11 @@ func update_detected()->void:
 			else:
 				_draw_target(det.global_position,Color(1,0,1),8)
 
+# used for sorting rays by angle
 func _cmp_rays(a:Dictionary, b:Dictionary)->bool:
-	return angle_difference(a.angle,b.angle)>0
+	return angle_difference(0,a.angle)<angle_difference(0,b.angle)
 
+# handles all raycasts for one object
 func _raycast_test(object:CollisionObject2D,raycast_record:Array[Dictionary])->Dictionary:
 	var todo:Array[float]
 	var hints:Array[float]
@@ -141,6 +160,7 @@ func _raycast_test(object:CollisionObject2D,raycast_record:Array[Dictionary])->D
 		hints = []
 	return {}
 
+# performs a single raycast for an object, and gets the necessary hints if it fails
 func _attempt_raycast(object:CollisionObject2D, angle:float, hints:Array[float], raycast_record:Array)->Dictionary:
 	
 	var result:Array[Dictionary]
@@ -169,6 +189,8 @@ func _attempt_raycast(object:CollisionObject2D, angle:float, hints:Array[float],
 		raycast_record[recn]['success'] = true
 	return ret
 
+# when a raycast fails, try to go around whatever was hit by turning to the edge of the bounding box
+# of the hit shape, and continuing in that direction for another raycast_hint_margin radians
 func _get_hint_angles_from_raycast(rayresult:Array[Dictionary], hints:Array[float])->void:
 	var rayangle:float = (rayresult.front().position-global_position).angle()
 	for hit:Dictionary in rayresult:
@@ -186,8 +208,8 @@ func _get_hint_angles_from_raycast(rayresult:Array[Dictionary], hints:Array[floa
 		hints.push_back(Util.angle_clamp(angles.min()+rayangle, -max_angle+global_rotation, max_angle+global_rotation))
 		hints.push_back(Util.angle_clamp(angles.max()+rayangle, -max_angle+global_rotation, max_angle+global_rotation))
 
-
-func make_detector_shape()->void:
+# generates the shape for the detector, and applies it to the area
+func _make_detector_shape()->void:
 	if(!is_instance_valid(_shapenode)):
 		_shapenode = CollisionPolygon2D.new()
 		add_child(_shapenode, false, Node.INTERNAL_MODE_BACK)

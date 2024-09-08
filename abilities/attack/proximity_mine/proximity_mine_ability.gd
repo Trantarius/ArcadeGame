@@ -1,8 +1,11 @@
 extends CooldownAbility
 
-@export var damage:Stat # = Stat.new(50,0,INF)
-@export var explosion_size:Stat # = Stat.new(256, 4, INF)
-@export var arming_time:Stat # = Stat.new(3, 0, INF)
+## Damage dealt by the mine's explostion
+@export var damage:Stat 
+## Radius of the mine's explosion
+@export var explosion_size:Stat 
+## Time it takes to arm the mine after dropping
+@export var arming_time:Stat 
 
 func _on_triggered() -> void:
 	var mine:Node2D = preload("res://abilities/attack/proximity_mine/mine.tscn").instantiate()

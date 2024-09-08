@@ -1,3 +1,5 @@
+## Parent class of all things that can take damage, or be targeted by AI. 
+## This includes Enemy and Player.
 class_name Actor
 extends Node2D
 
@@ -23,8 +25,6 @@ signal kill(damage:Damage)
 signal damage_taken(damage:Damage)
 signal damage_dealt(damage:Damage)
 signal health_changed(health:float, max_health:float)
-
-var modifiers:Dictionary
 
 static var something_spawned:Signal
 static var something_died:Signal
@@ -137,6 +137,8 @@ func _actor_physics_process()->void:
 		_actor_rotation_log = _actor_rotation_log.slice(start)
 		_actor_time_log = _actor_time_log.slice(start)
 
+## Cause an actor to take damage from the event described by [param damage].
+## Handles emitting all relevant signals and callbacks (e.g. [signal damage_taken], [signal damage_dealt], etc.) before applying. 
 func take_damage(damage:Damage)->void:
 	damage.target=self
 	if(health<=0):
@@ -160,4 +162,3 @@ func take_damage(damage:Damage)->void:
 			get_tree().current_scene.add_child(shatter)
 			shatter.adopt(self)
 			shatter.shatter()
-			#queue_free()
